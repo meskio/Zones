@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/large_dark_map" />
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TableRow
+        android:id="@+id/polygon_map_row"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:background="@drawable/abs__list_selector_holo_dark"
+        android:clickable="true" >
+
+        <ImageView
+            android:id="@+id/polygon_map_image"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/location_map" />
+
+        <TextView
+            android:id="@+id/polygon_map_text"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center|left"
+            android:paddingLeft="5dp"
+            android:text="@string/menu_polygon_map"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/polygon_list_row"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:background="@drawable/abs__list_selector_holo_dark"
+        android:clickable="true" >
+
+        <ImageView
+            android:id="@+id/polygon_list_image"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/collections_view_as_list" />
+
+        <TextView
+            android:id="@+id/polygon_list_text"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center|left"
+            android:paddingLeft="5dp"
+            android:text="@string/menu_polygon_list"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/settings_row"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:background="@drawable/abs__list_selector_holo_dark"
+        android:clickable="true" >
+
+        <ImageView
+            android:id="@+id/settings_image"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/action_settings" />
+
+        <TextView
+            android:id="@+id/settings_text"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center|left"
+            android:paddingLeft="5dp"
+            android:text="@string/menu_settings"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </TableRow>
+    
+    <TableRow
+        android:id="@+id/help_row"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:background="@drawable/abs__list_selector_holo_dark"
+        android:clickable="true" >
+
+        <ImageView
+            android:id="@+id/help_image"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/action_help" />
+
+        <TextView
+            android:id="@+id/help_text"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center|left"
+            android:paddingLeft="5dp"
+            android:text="@string/menu_help"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </TableRow>
+
+</LinearLayout>
+</FrameLayout>

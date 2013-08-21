@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="6"
+    android:orientation="vertical"
+    android:paddingBottom="12dp"
+    android:paddingLeft="12dp"
+    android:paddingTop="6dp" >
+
+    <TextView
+    	android:id="@+id/polygon_label"
+     	android:layout_height="wrap_content"
+     	android:layout_width="fill_parent"
+     	android:textAppearance="?android:attr/textAppearanceMedium" />
+
+ 	<TextView
+     	android:id="@+id/polygon_details"
+    	android:layout_width="fill_parent"
+     	android:layout_height="wrap_content"
+     	android:textAppearance="?android:attr/textAppearanceSmall" />
+</LinearLayout>

@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+        
+    <LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical" >
+    
+	    <TextView
+	        android:id="@+id/faq_question_1"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="5dp"
+	        android:paddingTop="2dp"
+	        android:text="@string/faq_question_1"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/faq_answer_1"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/faq_answer_1"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+	    
+	    <TextView
+	        android:id="@+id/faq_question_2"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="5dp"
+	        android:paddingTop="2dp"
+	        android:text="@string/faq_question_2"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/faq_answer_2"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/faq_answer_2"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+	    
+	    <TextView
+	        android:id="@+id/faq_question_3"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="5dp"
+	        android:paddingTop="2dp"
+	        android:text="@string/faq_question_3"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/faq_answer_3"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/faq_answer_3"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+	    
+	    <TextView
+	        android:id="@+id/faq_question_4"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="5dp"
+	        android:paddingTop="2dp"
+	        android:text="@string/faq_question_4"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/faq_answer_4"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/faq_answer_4"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingTop="5dp" >
+
+	        <ImageView
+	            android:id="@+id/sms_commands_image"
+	            android:layout_width="40dp"
+	            android:layout_height="40dp"
+	            android:scaleType="fitCenter"
+	            android:src="@drawable/social_send_now" />
+
+	        <TextView
+	            android:id="@+id/sms_commands_title"
+	            android:layout_width="wrap_content"
+	            android:layout_height="40dp"
+	            android:gravity="center_vertical"
+	            android:paddingLeft="2dp"
+	            android:text="@string/title_sms_commands"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+	    </LinearLayout>
+	    
+	    <View
+	        android:layout_width="fill_parent"
+	        android:layout_height="2dp"
+	        android:background="@color/holo_blue_dark" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_1"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/command_start_location_updates"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_1_description"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/command_start_location_updates_description"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_2"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/command_stop_location_updates"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_2_description"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/command_stop_location_updates_description"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_3"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/command_audio_alarm"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_3_description"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/action_audio_alarm_description"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_4"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/command_battery_level"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_4_description"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/command_battery_level_description"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_5"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/command_super_lock"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_5_description"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/action_super_lock_description"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_6"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/command_super_unlock"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_6_description"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/action_super_unlock_description"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_7"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/command_clear_call_history"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_7_description"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/action_clear_call_history_description"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_8"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/command_clear_contacts"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_8_description"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/action_clear_contacts_description"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_9"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/command_factory_reset"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <TextView
+	        android:id="@+id/sms_command_9_description"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="3dp"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="2dp"
+	        android:text="@string/action_factory_reset_description"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textSize="16sp" />
+	</LinearLayout>
+</ScrollView>

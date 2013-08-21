@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RedZone</string>
+    <string name="menu_polygon_map">Zone Map</string>
+    <string name="menu_polygon_list">Zone List</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_help">Help</string>
+    
+    <string name="faq_question_1">Why can\'t I use certain actions?</string>
+    <string name="faq_question_2">Why is RedZone\'s battery use so high?</string>
+    <string name="faq_question_3">Why aren\'t SMS commands working?</string>
+    <string name="faq_question_4">Why can\'t I uninstall RedZone?</string>
+    
+    <string name="faq_answer_1">Certain actions require device administrator privleges, enable device admin from the settings page.</string>
+    <string name="faq_answer_2">Geofencing requires use of the GPS, disable geofencing from the settings page if you wish to save battery or do not need the feature.</string>
+    <string name="faq_answer_3">All SMS commands must be followed by the SMS password defined from the settings page, eg: \'super lock userpass\'</string>
+    <string name="faq_answer_4">Device admin must be disabled to uninstall RedZone, disable device admin from the settings page.</string>
+
+    <string name="ok">OK</string>
+    <string name="enter">Enter</string>
+    <string name="exit">Exit</string>
+    <string name="entered_polygon">Entered zone:</string>
+    <string name="exited_polygon">Exited zone:</string>
+    <string name="device_location">Device location (lat, lon):</string>
+    <string name="email_subject">RedZone -</string>
+    <string name="polygons_selected">zones selected</string>
+
+    <string name="title_sms_commands">SMS Commands</string>
+    <string name="title_polygon_label_dialog">New zone label</string>
+    <string name="title_new_polygon_points">Add Points</string>
+    <string name="title_edit_zone">Edit Zone</string>
+    <string name="title_edit_point">Edit Point</string>
+    <string name="title_edit_actions">Edit Actions</string>
+    <string name="title_polygon_list_batch">Batch Selection Mode</string>
+    <string name="title_device_admin">Extended Permissions</string>
+    <string name="device_admin_description">Must be granted to support \'factory reset\' and \'super lock\' actions and SMS commands.</string>
+
+    <string name="error_gps_disabled">Please enable GPS for geofencing support.</string>
+    <string name="error_device_admin">Device admin must be enabled for this action.</string>
+    <string name="error_map_load">Failed to load the map!</string>
+    <string name="error_storage_load">Failed to load application storage!</string>
+    <string name="error_polygon_label">Zone label not allowed.</string>
+    <string name="error_too_few_points">Too few points!</string>
+    <string name="error_too_many_points">Too many points!</string>
+    <string name="error_polygon_not_normal">Polygon cannot be normalized, I\'m confused.</string>
+    
+    <string name="preference_geofencing">Geofencing</string>
+    <string name="preference_geofencing_description">Enable actions to be triggered by entering and exiting zones.</string>
+    <string name="preference_device_admin">Admin privileges</string>
+    <string name="preference_device_admin_description">Grant RedZone device admin privileges to enable \'super lock\' and \'factory reset\' actions.</string>
+    <string name="preference_show_notifications">Zone notifications</string>
+    <string name="preference_show_notifications_description">Display zone enter and exit notifications in the status bar.</string>
+    <string name="preference_vibrate">Vibrate</string>
+    <string name="preference_vibrate_description">Vibrate on enter and exit of all zones.</string>
+    <string name="preference_alarm_length">Alarm length</string>
+    <string name="preference_alarm_length_description">Length in seconds for the \'audio alarm\' action.</string>
+    <string name="preference_sms_receiver">SMS receiver</string>
+    <string name="preference_sms_receiver_description">Default phone number to send zone alerts to.</string>
+    <string name="preference_allow_sms_commands">SMS commands</string>
+    <string name="preference_allow_sms_commands_description">Allow actions to be triggered through SMS commands.</string>
+    <string name="preference_command_password">SMS password</string>
+    <string name="preference_command_password_description">Password to authenitcate SMS commands.</string>
+    <string name="preference_allow_email">Email alerts</string>
+    <string name="preference_allow_email_description">Allow zone alerts to be sent by email.</string>
+    <string name="preference_email_receiver">Email receiver</string>
+    <string name="preference_email_receiver_description">Email address to send zone alerts to.</string>
+    <string name="preference_smtp_username">SMTP username</string>
+    <string name="preference_smtp_username_description">Username for authentication with SMTP server.</string>
+    <string name="preference_smtp_password">SMTP password</string>
+    <string name="preference_smtp_password_description">Password for authentication with SMTP server.</string>
+    <string name="preference_smtp_server">SMTP server</string>
+    <string name="preference_smtp_server_description">Host name or IP address of SMTP server.</string>
+    <string name="preference_smtp_ssl_port">SMTP SSL port</string>
+    <string name="preference_smtp_ssl_port_description">Port on SMTP server to connect via SSL.</string>
+    
+    <string name="action_audio_alarm">Audio alarm</string>
+    <string name="action_audio_alarm_description">Sound a loud alarm for the length of time defined in settings.</string>
+    <string name="action_sms_alert">SMS alert</string>
+    <string name="action_sms_alert_description">Send an alert to the phone number defined in settings.</string>
+    <string name="action_email_alert">Email alert</string>
+    <string name="action_email_alert_description">Send an alert to the email address defined in settings.</string>
+    <string name="action_super_lock">Super lock</string>
+    <string name="action_super_lock_description">Lock the device screen and prevent it from turning back on, effectively disabling shutdown and airplane mode.</string>
+    <string name="action_super_unlock">Super unlock</string>
+    <string name="action_super_unlock_description">Allow the device screen to turn on again.</string>
+    <string name="action_clear_call_history">Clear call history</string>
+    <string name="action_clear_call_history_description">Delete history of all outgoing, incomming and missed calls.</string>
+    <string name="action_clear_contacts">Clear contacts</string>
+    <string name="action_clear_contacts_description">Delete all contacts, note that contacts may be re-sycned if contact syncing is enabled.</string>
+    <string name="action_factory_reset">Factory reset</string>
+    <string name="action_factory_reset_description">Perform a full factory reset, all user data and applications will be lost!</string>
+    
+    <string name="command_start_location_updates">start location updates</string>
+    <string name="command_start_location_updates_description">Subscribe the sender of this message to GPS location updates.</string>
+    <string name="command_start_location_updates_response">this phone is now subscribed to location updates.</string>
+    <string name="command_stop_location_updates">stop location updates</string>
+    <string name="command_stop_location_updates_description">Unsubscribe the sender of this message from GPS location updates.</string>
+    <string name="command_stop_location_updates_response">this phone is no longer subscribed to location updates.</string>
+    <string name="command_audio_alarm">audio alarm</string>
+    <string name="command_audio_alarm_response">Audio alarm started.</string>
+    <string name="command_battery_level">battery level</string>
+    <string name="command_battery_level_description">Reply with an SMS describing the device\'s calculated battery level.</string>
+    <string name="command_battery_level_response">Battery charged at:</string>
+    <string name="command_super_lock">super lock</string>
+    <string name="command_super_lock_response">Super lock locked, use the \'super unlock\' command to unlock.</string>
+    <string name="command_super_unlock">super unlock</string>
+    <string name="command_super_unlock_response">Super lock unlocked.</string>
+    <string name="command_clear_call_history">clear call history</string>
+    <string name="command_clear_call_history_response">Call history cleared.</string>
+    <string name="command_clear_contacts">clear contacts</string>
+    <string name="command_clear_contacts_response">Contacts cleared.</string>
+    <string name="command_factory_reset">factory reset</string>
+    <string name="command_factory_reset_response">All those moments will be lost in time, like tears in rain. Time to die.</string>
+
+    <string name="key_last_known_location">last-known-location</string>
+</resources>

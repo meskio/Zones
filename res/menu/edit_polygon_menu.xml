@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/polygon_action_button"
+        android:icon="@drawable/collections_view_as_list"
+        android:showAsAction="always"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/delete_polygon_button"
+        android:icon="@drawable/content_discard"
+        android:showAsAction="always"
+        android:visible="true"/>
+
+</menu>

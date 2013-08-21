@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<integer name="polygon_id_tag">10</integer>
+	<integer name="polygon_select_tag">20</integer>
+	
+	<integer name="action_audio_alarm">0</integer>
+    <integer name="action_sms_alert">1</integer>
+    <integer name="action_email_alert">2</integer>
+    <integer name="action_super_lock">3</integer>
+    <integer name="action_super_unlock">4</integer>
+    <integer name="action_clear_call_history">5</integer>
+    <integer name="action_clear_contacts">6</integer>
+    <integer name="action_factory_reset">7</integer>
+</resources>
