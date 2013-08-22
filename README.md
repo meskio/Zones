@@ -2,7 +2,7 @@ ZoneGuard
 ==================
   
 ZoneGuard is a "find my phone" type Android app with a geofencing twist. All devices
-running Android 4.2.2 and higher with Google Play Services installed are supported.
+running Android 2.2 and higher with Google Play Services installed are supported.
   
 Find My Phone
 -------------
