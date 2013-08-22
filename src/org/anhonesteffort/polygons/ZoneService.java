@@ -22,7 +22,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class ZoneService extends Service implements 
   GeometryChangeListener, LocationSubscriberChangeListener, BetterLocationListener {
@@ -38,7 +37,6 @@ public class ZoneService extends Service implements
   private static final int SUBSCRIBER_INTERVAL_MS      = 30000;
   private static final double AVG_WALKING_VELOCITY_MPS = 1.5;
 
-  private boolean gps_error_shown = false;
   private final IBinder binder = new ZoneServiceBinder();
   private DatabaseHelper applicationStorage;
   private BroadcastActionLauncher actionLauncher;
@@ -205,10 +203,7 @@ public class ZoneService extends Service implements
 
   @Override
   public void onLocationsDisabled(List<String> missingProviders) {
-    if(gps_error_shown == false) {
-      Toast.makeText(this, R.string.error_gps_disabled, Toast.LENGTH_LONG).show();
-      gps_error_shown = true;
-    }
+    // Nothing to do.
   }
 
   @Override

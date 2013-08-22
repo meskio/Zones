@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">RedZone</string>
+    <string name="app_name">ZoneGuard</string>
     <string name="menu_polygon_map">Zone Map</string>
     <string name="menu_polygon_list">Zone List</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_help">Help</string>
     
     <string name="faq_question_1">Why can\'t I use certain actions?</string>
-    <string name="faq_question_2">Why is RedZone\'s battery use so high?</string>
+    <string name="faq_question_2">Why is ZoneGuard\'s battery use so high?</string>
     <string name="faq_question_3">Why aren\'t SMS commands working?</string>
-    <string name="faq_question_4">Why can\'t I uninstall RedZone?</string>
+    <string name="faq_question_4">Why can\'t I uninstall ZoneGuard?</string>
     
     <string name="faq_answer_1">Certain actions require device administrator privleges, enable device admin from the settings page.</string>
     <string name="faq_answer_2">Geofencing requires use of the GPS, disable geofencing from the settings page if you wish to save battery or do not need the feature.</string>
     <string name="faq_answer_3">All SMS commands must be followed by the SMS password defined from the settings page, eg: \'super lock userpass\'</string>
-    <string name="faq_answer_4">Device admin must be disabled to uninstall RedZone, disable device admin from the settings page.</string>
+    <string name="faq_answer_4">Device admin must be disabled to uninstall ZoneGuard, disable device admin from the settings page.</string>
 
     <string name="ok">OK</string>
     <string name="enter">Enter</string>
@@ -22,7 +22,7 @@
     <string name="entered_polygon">Entered zone:</string>
     <string name="exited_polygon">Exited zone:</string>
     <string name="device_location">Device location (lat, lon):</string>
-    <string name="email_subject">RedZone -</string>
+    <string name="email_subject">ZoneGuard -</string>
     <string name="polygons_selected">zones selected</string>
 
     <string name="title_sms_commands">SMS Commands</string>
@@ -47,7 +47,7 @@
     <string name="preference_geofencing">Geofencing</string>
     <string name="preference_geofencing_description">Enable actions to be triggered by entering and exiting zones.</string>
     <string name="preference_device_admin">Admin privileges</string>
-    <string name="preference_device_admin_description">Grant RedZone device admin privileges to enable \'super lock\' and \'factory reset\' actions.</string>
+    <string name="preference_device_admin_description">Grant ZoneGuard device admin privileges to enable \'super lock\' and \'factory reset\' actions.</string>
     <string name="preference_show_notifications">Zone notifications</string>
     <string name="preference_show_notifications_description">Display zone enter and exit notifications in the status bar.</string>
     <string name="preference_vibrate">Vibrate</string>
