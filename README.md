@@ -6,7 +6,7 @@ running Android 4.2.2 and higher with Google Play Services installed are support
   
 Find My Phone
 -------------
-While most Find My Phone type apps require the user to access a web application,
+While most find my phone type apps require the user to access a web application,
 ZoneGuard is controlled entirely by commands within SMS (text) messages. SMS commands
 are authenticated by a user defined password following the command, the below
 commands are currently supported:  
