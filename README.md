@@ -1,13 +1,13 @@
-RedZone (Polygons!)
+ZoneGuard (Polygons!)
 ==================
   
-RedZone is a Find My Phone type Android app with a geofencing twist. All devices
+ZoneGuard is a "find my phone" type Android app with a geofencing twist. All devices
 running Android 4.2.2 and higher with Google Play Services installed are supported.
   
 Find My Phone
 -------------
 While most Find My Phone type apps require the user to access a web application,
-RedZone is controlled entirely by commands within SMS (text) messages. SMS commands
+ZoneGuard is controlled entirely by commands within SMS (text) messages. SMS commands
 are authenticated by a user defined password following the command, the below
 commands are currently supported:  
   
@@ -35,7 +35,7 @@ lost!
   
 Geofencing
 ----------
-The geofencing aspect of RedZone starts with allowing the user to draw zones
+The geofencing aspect of ZoneGuard starts with allowing the user to draw zones
 (polygons) on a map. The user can then assign actions to these zones and decide
 whether they should be run upon enter or exit of the zone. The below actions are
 currently supported:  
