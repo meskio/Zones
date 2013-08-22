@@ -66,6 +66,20 @@ DO setup full disk encryption on your device.
 DO draw zones around police stations and factory reset on enter.  
 **DO NOT** use the factory reset SMS command or action unless you're serious.  
 
+Building
+--------
+1) Clone the repo into a working directory.  
+  
+2) Import as an Android project in your IDE of choice.  
+  
+3) Download ActionBarSherlock and add it as a library project dependancy for ZoneGuard.  
+  
+4) Download Google Play Services and add it as a library project dependancy for ZoneGuard.  
+  
+5) Replace the Google Maps API key inside AndroidManifest.xml by following [this tutorial](https://developers.google.com/maps/documentation/android/start#the_google_maps_api_key)
+
+6) Build & run!
+
 License
 -------
 
