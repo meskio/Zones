@@ -1,4 +1,4 @@
-ZoneGuard (Polygons!)
+ZoneGuard
 ==================
   
 ZoneGuard is a "find my phone" type Android app with a geofencing twist. All devices
