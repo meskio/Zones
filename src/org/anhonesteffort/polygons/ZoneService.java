@@ -1,18 +1,5 @@
 package org.anhonesteffort.polygons;
 
-import org.anhonesteffort.polygons.action.BroadcastActionLauncher;
-import org.anhonesteffort.polygons.communication.SMSSender;
-import org.anhonesteffort.polygons.geometry.TaggedPoint;
-import org.anhonesteffort.polygons.geometry.TaggedPolygon;
-import org.anhonesteffort.polygons.location.BetterLocationListener;
-import org.anhonesteffort.polygons.location.BetterLocationManager;
-import org.anhonesteffort.polygons.map.GoogleGeometryFactory;
-import org.anhonesteffort.polygons.storage.DatabaseHelper;
-import org.anhonesteffort.polygons.storage.GeometryChangeListener;
-import org.anhonesteffort.polygons.storage.LocationSubscriberChangeListener;
-
-import java.util.List;
-
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -23,14 +10,27 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.anhonesteffort.polygons.database.DatabaseHelper;
+import org.anhonesteffort.polygons.database.GeometryChangeListener;
+import org.anhonesteffort.polygons.database.LocationSubscriberChangeListener;
+import org.anhonesteffort.polygons.database.model.PointRecord;
+import org.anhonesteffort.polygons.database.model.ZoneRecord;
+import org.anhonesteffort.polygons.location.BetterLocationListener;
+import org.anhonesteffort.polygons.location.BetterLocationManager;
+import org.anhonesteffort.polygons.map.GoogleGeometryFactory;
+import org.anhonesteffort.polygons.receiver.BroadcastActionLauncher;
+import org.anhonesteffort.polygons.transport.sms.SMSSender;
+
+import java.util.List;
+
 public class ZoneService extends Service implements 
   GeometryChangeListener, LocationSubscriberChangeListener, BetterLocationListener {
-  private static final String TAG           = "org.anhonesteffort.polygons.PolygonListActivity";
-  public static final String POLYGON_ENTER	= "org.anhonesteffort.polygons.POLYGON_ENTER";
-  public static final String POLYGON_EXIT		= "org.anhonesteffort.polygons.POLYGON_EXIT";
-  public static final String POLYGON_ID		  = "org.anhonesteffort.polygons.POLYGON_ID";
-  public static final String POLYGON_LABEL	= "org.anhonesteffort.polygons.POLYGON_LABEL";
-  public static final String PHONE_LOCATION	= "org.anhonesteffort.polygons.PHONE_LOCATION";
+  private static final String TAG           = "org.anhonesteffort.zoneDb.ZoneListActivity";
+  public static final String POLYGON_ENTER	= "org.anhonesteffort.zoneDb.POLYGON_ENTER";
+  public static final String POLYGON_EXIT		= "org.anhonesteffort.zoneDb.POLYGON_EXIT";
+  public static final String POLYGON_ID		  = "org.anhonesteffort.zoneDb.ZONE_ID";
+  public static final String POLYGON_LABEL	= "org.anhonesteffort.zoneDb.POLYGON_LABEL";
+  public static final String PHONE_LOCATION	= "org.anhonesteffort.zoneDb.PHONE_LOCATION";
   
   private static final int MINIMUM_INTERVAL_MS         = 1500;
   private static final int REGULAR_INTERVAL_MS         = 120000;
@@ -57,8 +57,8 @@ public class ZoneService extends Service implements
     
     // Register for changes in polygon geometries and location subscribers.
     applicationStorage = DatabaseHelper.getInstance(this.getBaseContext());
-    applicationStorage.polygons.addGeometryChangeListener(this);
-    applicationStorage.actions.addLocationSubscriberChangeListener(this);
+    applicationStorage.zoneDb.addGeometryChangeListener(this);
+    applicationStorage.actionDb.addLocationSubscriberChangeListener(this);
     
     // Use the BetterLocationManager for location updates.
     locationManager = new BetterLocationManager(this.getApplicationContext());
@@ -83,8 +83,8 @@ public class ZoneService extends Service implements
     super.onDestroy();
     
     // Unregister from changes in polygon geometries, location subscribers, location updates and SCREEN_ON broadcasts.
-    applicationStorage.polygons.removeGeometryChangeListener(this);
-    applicationStorage.actions.removeLocationSubscriberChangeListener(this);
+    applicationStorage.zoneDb.removeGeometryChangeListener(this);
+    applicationStorage.actionDb.removeLocationSubscriberChangeListener(this);
     locationManager.removeLocationUpdates(this);
     this.unregisterReceiver(actionLauncher);
   }
@@ -101,46 +101,46 @@ public class ZoneService extends Service implements
     Log.d(TAG, "sendPolygonBroadcasts()");
     
     // Polygons we occupied before, we occupy now.
-    List<TaggedPolygon<TaggedPoint>> polygonsIOccupied = applicationStorage.polygons.getPolygonsOccupied();
-    TaggedPoint bestPoint = new TaggedPoint(0, bestLocation.getLongitude(), bestLocation.getLatitude());
-    List<TaggedPolygon<TaggedPoint>> polygonsIOccupy = applicationStorage.polygons.getPolygonsContainingPoint(bestPoint);
+    List<ZoneRecord> zonesIOccupied = applicationStorage.zoneDb.getZonesOccupied();
+    PointRecord bestPoint = new PointRecord(0, bestLocation.getLongitude(), bestLocation.getLatitude());
+    List<ZoneRecord> zonesIOccupy = applicationStorage.zoneDb.getZonesContainingPoint(bestPoint);
 
-    // Figure out which polygons we have left.
+    // Figure out which zoneDb we have left.
     boolean have = true;
-    for(TaggedPolygon<TaggedPoint> polygonOccupied : polygonsIOccupied) {
+    for(ZoneRecord zoneOccupied : zonesIOccupied) {
       have = false;
-      for(TaggedPolygon<TaggedPoint> polygon : polygonsIOccupy) {
-        if(polygonOccupied.getID() == polygon.getID())
+      for(ZoneRecord zone : zonesIOccupy) {
+        if(zoneOccupied.getId() == zone.getId())
           have = true;
       }
       if(have == false) {
-        applicationStorage.polygons.setPolygonOccupancy(polygonOccupied.getID(), false);
+        applicationStorage.zoneDb.setZoneOccupancy(zoneOccupied.getId(), false);
 
         // Send the polygon exit broadcast.
         double[] phoneLocation = {bestLocation.getLatitude(), bestLocation.getLongitude()};
         Intent polygonEnterIntent = new Intent(POLYGON_EXIT);
-        polygonEnterIntent.putExtra(POLYGON_ID, polygonOccupied.getID());
-        polygonEnterIntent.putExtra(POLYGON_LABEL, polygonOccupied.getLabel());
+        polygonEnterIntent.putExtra(POLYGON_ID, zoneOccupied.getId());
+        polygonEnterIntent.putExtra(POLYGON_LABEL, zoneOccupied.getLabel());
         polygonEnterIntent.putExtra(PHONE_LOCATION, phoneLocation);
         sendBroadcast(polygonEnterIntent);
       }
     }
 
-    // Figure out which polygons we have entered.
-    for(TaggedPolygon<TaggedPoint> polygon : polygonsIOccupy) {
+    // Figure out which zoneDb we have entered.
+    for(ZoneRecord zone : zonesIOccupy) {
       have = false;
-      for(TaggedPolygon<TaggedPoint> polygonOccupied : polygonsIOccupied) {
-        if(polygon.getID() == polygonOccupied.getID())
+      for(ZoneRecord zoneOccupied : zonesIOccupied) {
+        if(zone.getId() == zoneOccupied.getId())
           have = true;
       }
       if(have == false) {
-        applicationStorage.polygons.setPolygonOccupancy(polygon.getID(), true);
+        applicationStorage.zoneDb.setZoneOccupancy(zone.getId(), true);
 
         // Send the polygon enter broadcast.
         double[] phoneLocation = {bestLocation.getLatitude(), bestLocation.getLongitude()};
         Intent polygonEnterIntent = new Intent(POLYGON_ENTER);
-        polygonEnterIntent.putExtra(POLYGON_ID, polygon.getID());
-        polygonEnterIntent.putExtra(POLYGON_LABEL, polygon.getLabel());
+        polygonEnterIntent.putExtra(POLYGON_ID, zone.getId());
+        polygonEnterIntent.putExtra(POLYGON_LABEL, zone.getLabel());
         polygonEnterIntent.putExtra(PHONE_LOCATION, phoneLocation);
         sendBroadcast(polygonEnterIntent);
       }
@@ -153,7 +153,7 @@ public class ZoneService extends Service implements
     bestLocation = location;
     
     // If we have any location update subscribers oblige them.
-    List<String> locationSubscribers = applicationStorage.actions.getLocationSubscribers();
+    List<String> locationSubscribers = applicationStorage.actionDb.getLocationSubscribers();
     if(locationSubscribers.size() > 0) {
       locationManager.requestLocationUpdates(SUBSCRIBER_INTERVAL_MS, this);
       for(String subscriber : locationSubscribers)
@@ -162,10 +162,10 @@ public class ZoneService extends Service implements
     
     // Otherwise conserve power by only updating location when reasonable.
     else {
-      TaggedPoint bestPoint = GoogleGeometryFactory.buildTaggedPoint(bestLocation);
+      PointRecord bestPoint = GoogleGeometryFactory.buildPointRecord(bestLocation);
       double device_velocity_mps = AVG_WALKING_VELOCITY_MPS;
       double time_to_polygon_ms = REGULAR_INTERVAL_MS * 2;
-      double distance_to_polygon_m = applicationStorage.polygons.getDistanceToClosestPolygon(bestPoint);
+      double distance_to_polygon_m = applicationStorage.zoneDb.distanceToClosestZone(bestPoint);
       
       // Assume the user is walking if device velocity unknown.
       if(location.getSpeed() > 0)

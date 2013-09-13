@@ -9,7 +9,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 
 public class ContactCleaner extends IntentService {
-  private static final String TAG = "org.anhonesteffort.polygons.action.ContactCleaner";
+  private static final String TAG = "org.anhonesteffort.zoneDb.action.ContactCleaner";
 
   public ContactCleaner() {
     super("ContactCleaner");

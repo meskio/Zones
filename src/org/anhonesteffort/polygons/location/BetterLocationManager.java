@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class BetterLocationManager implements LocationListener {
-  private static final String TAG = "org.anhonesteffort.polygons.location.BetterLocationManager";
+  private static final String TAG = "org.anhonesteffort.zoneDb.location.BetterLocationManager";
   
   private Context context;
   private LocationManager locationManager;

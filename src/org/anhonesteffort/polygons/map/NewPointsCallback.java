@@ -1,23 +1,21 @@
 package org.anhonesteffort.polygons.map;
 
-import org.anhonesteffort.polygons.R;
-import org.anhonesteffort.polygons.geometry.TaggedPoint;
-import org.anhonesteffort.polygons.geometry.TaggedPolygon;
-import org.anhonesteffort.polygons.map.PolygonMapActivity.DrawState;
-
 import android.util.Log;
 
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import org.anhonesteffort.polygons.R;
+import org.anhonesteffort.polygons.database.model.ZoneRecord;
+import org.anhonesteffort.polygons.map.ZoneMapActivity.DrawState;
 
 public class NewPointsCallback implements ActionMode.Callback {
   private static final String TAG = "org.anhonesteffort.polygons.map.NewPointsCallback";
-  private PolygonMapActivity mapActivity;
-  private TaggedPolygon<TaggedPoint> selectedPolygon;
+  private ZoneMapActivity mapActivity;
+  private ZoneRecord selectedZone;
   
-  public NewPointsCallback(PolygonMapActivity mapActivity) {
+  public NewPointsCallback(ZoneMapActivity mapActivity) {
     this.mapActivity = mapActivity;
   }
   
@@ -28,8 +26,8 @@ public class NewPointsCallback implements ActionMode.Callback {
     inflater.inflate(R.menu.new_points_menu, menu);
     mode.setTitle(mapActivity.getString(R.string.title_new_polygon_points));
     
-    selectedPolygon = mapActivity.getSelectedPolygon();
-    mode.setSubtitle(selectedPolygon.getLabel());
+    selectedZone = mapActivity.getSelectedZone();
+    mode.setSubtitle(selectedZone.getLabel());
     return true;
   }
 
@@ -46,7 +44,7 @@ public class NewPointsCallback implements ActionMode.Callback {
   @Override
   public void onDestroyActionMode(ActionMode mode) {
     Log.d(TAG, "onDestroyActionMode()");
-    mapActivity.updateSelectedPolygon();
+    mapActivity.updateSelectedZone();
     mapActivity.setState(DrawState.NAVIGATE);
   }
 }

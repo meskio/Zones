@@ -1,37 +1,36 @@
 package org.anhonesteffort.polygons.map;
 
-import org.anhonesteffort.polygons.R;
-import org.anhonesteffort.polygons.geometry.TaggedPoint;
-import org.anhonesteffort.polygons.map.PolygonMapActivity.DrawState;
-
 import android.util.Log;
 
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import org.anhonesteffort.polygons.R;
+import org.anhonesteffort.polygons.database.model.PointRecord;
+import org.anhonesteffort.polygons.map.ZoneMapActivity.DrawState;
 
 public class PointEditCallback implements ActionMode.Callback {
   private static final String TAG = "org.anhonesteffort.polygons.map.PointEditCallback";
-  private PolygonMapActivity mapActivity;
+  private ZoneMapActivity mapActivity;
   
-  public PointEditCallback(PolygonMapActivity mapActivity) {
+  public PointEditCallback(ZoneMapActivity mapActivity) {
     this.mapActivity = mapActivity;
   }
   
   private void removeSelectedPoint() {
     Log.d(TAG, "removeSelectedPoint()");
-    TaggedPoint removePoint = null;
+    PointRecord removePoint = null;
 
-    for(TaggedPoint point : mapActivity.getSelectedPolygon().getPoints()) {
-      if(point.getID() == mapActivity.getSelectedPoint().getID())
+    for(PointRecord point : mapActivity.getSelectedZone().getPoints()) {
+      if(point.getId() == mapActivity.getSelectedPoint().getId())
         removePoint = point;
     }
     if(removePoint != null)
-      mapActivity.getSelectedPolygon().getPoints().remove(removePoint);
+      mapActivity.getSelectedZone().getPoints().remove(removePoint);
     
-    mapActivity.updateSelectedPolygon();
-    mapActivity.setState(DrawState.EDIT_POLYGON);
+    mapActivity.updateSelectedZone();
+    mapActivity.setState(DrawState.EDIT_ZONE);
   }
   
   @Override
@@ -40,13 +39,13 @@ public class PointEditCallback implements ActionMode.Callback {
     MenuInflater inflater = mode.getMenuInflater();
     inflater.inflate(R.menu.edit_point_menu, menu);
     mode.setTitle(mapActivity.getString(R.string.title_edit_point));
-    mode.setSubtitle(mapActivity.getSelectedPolygon().getLabel());
+    mode.setSubtitle(mapActivity.getSelectedZone().getLabel());
     return true;
   }
 
   @Override
   public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-    mode.setSubtitle(mapActivity.getSelectedPolygon().getLabel());
+    mode.setSubtitle(mapActivity.getSelectedZone().getLabel());
     return true;
   }
 

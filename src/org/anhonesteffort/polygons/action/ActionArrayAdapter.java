@@ -1,12 +1,5 @@
 package org.anhonesteffort.polygons.action;
 
-import org.anhonesteffort.polygons.R;
-import org.anhonesteffort.polygons.PreferencesActivity;
-import org.anhonesteffort.polygons.storage.ActionBroadcastRecord;
-import org.anhonesteffort.polygons.storage.DatabaseHelper;
-
-import java.util.List;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -20,12 +13,19 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
-public class ActionArrayAdapter extends ArrayAdapter<ActionBroadcastRecord> {
+import org.anhonesteffort.polygons.PreferencesActivity;
+import org.anhonesteffort.polygons.R;
+import org.anhonesteffort.polygons.database.DatabaseHelper;
+import org.anhonesteffort.polygons.database.model.ActionRecord;
+
+import java.util.List;
+
+public class ActionArrayAdapter extends ArrayAdapter<ActionRecord> {
   private static final String TAG = "org.anhonesteffort.polygons.action.ActionArrayAdapter";
-  private List<ActionBroadcastRecord> items;
+  private List<ActionRecord> items;
   private Context context;
 
-  public ActionArrayAdapter(Context context, int textViewResourceId, List<ActionBroadcastRecord> items) {
+  public ActionArrayAdapter(Context context, int textViewResourceId, List<ActionRecord> items) {
     super(context, textViewResourceId, items);
     this.context = context;
     this.items = items;
@@ -33,7 +33,7 @@ public class ActionArrayAdapter extends ArrayAdapter<ActionBroadcastRecord> {
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    ActionBroadcastRecord action = items.get(position);
+    ActionRecord action = items.get(position);
     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 
     LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -66,11 +66,11 @@ public class ActionArrayAdapter extends ArrayAdapter<ActionBroadcastRecord> {
   }
 
   private class onActionChangeListener implements OnCheckedChangeListener {
-    private ActionBroadcastRecord action;
+    private ActionRecord action;
     private boolean enter_check_box;
     private boolean exit_check_box;
 
-    public onActionChangeListener(ActionBroadcastRecord action, boolean enter_check_box, boolean exit_check_box) {
+    public onActionChangeListener(ActionRecord action, boolean enter_check_box, boolean exit_check_box) {
       this.action = action;
       this.enter_check_box = enter_check_box;
       this.exit_check_box = exit_check_box;
@@ -89,7 +89,7 @@ public class ActionArrayAdapter extends ArrayAdapter<ActionBroadcastRecord> {
       else if(exit_check_box)
         action.setRunOnExit(isChecked);
 
-      applicationStorage.actions.updatePolygonAction(action);
+      applicationStorage.actionDb.updateActionBroadcast(action);
     }
   }
 }

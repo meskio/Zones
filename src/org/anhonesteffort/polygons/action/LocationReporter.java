@@ -1,14 +1,5 @@
 package org.anhonesteffort.polygons.action;
 
-import org.anhonesteffort.polygons.R;
-import org.anhonesteffort.polygons.PreferencesActivity;
-import org.anhonesteffort.polygons.ZoneService;
-import org.anhonesteffort.polygons.communication.SMSSender;
-import org.anhonesteffort.polygons.communication.SMTPClient;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,11 +7,20 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.anhonesteffort.polygons.PreferencesActivity;
+import org.anhonesteffort.polygons.R;
+import org.anhonesteffort.polygons.ZoneService;
+import org.anhonesteffort.polygons.transport.sms.SMSSender;
+import org.anhonesteffort.polygons.transport.smtp.SMTPClient;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+
 public class LocationReporter extends IntentService {
   private static final String TAG         = "org.anhonesteffort.polygons.action.LocationReporter";
-  public static final String ENTER_EXIT   = "org.anhonesteffort.maptest.action.LocationReporter.ENTER_EXIT";
-  public static final String SMS_REPORT   = "org.anhonesteffort.maptest.action.LocationReporter.SMS";
-  public static final String EMAIL_REPORT = "org.anhonesteffort.maptest.action.LocationReporter.EMAIL";
+  public static final String ENTER_EXIT   = "org.anhonesteffort.polygons.action.LocationReporter.ENTER_EXIT";
+  public static final String SMS_REPORT   = "org.anhonesteffort.polygons.action.LocationReporter.SMS";
+  public static final String EMAIL_REPORT = "org.anhonesteffort.polygons.action.LocationReporter.EMAIL";
 
   private Bundle eventData;
   private SharedPreferences settings;

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ZoneGuard.iml" filepath="$PROJECT_DIR$/ZoneGuard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../google-play-services_lib/google-play-services_lib.iml" filepath="$PROJECT_DIR$/../google-play-services_lib/google-play-services_lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../ActionBarSherlock-4.2.0/library/library.iml" filepath="$PROJECT_DIR$/../ActionBarSherlock-4.2.0/library/library.iml" />
+    </modules>
+  </component>
+</project>
+

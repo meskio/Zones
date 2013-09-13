@@ -2,7 +2,6 @@ package org.anhonesteffort.polygons;
 
 import java.util.LinkedList;
 
-import org.anhonesteffort.polygons.R;
 import org.anhonesteffort.polygons.ZoneService.ZoneServiceBinder;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
@@ -20,6 +19,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceCategory;
 import android.util.Log;
+import org.anhonesteffort.polygons.receiver.*;
 
 @SuppressWarnings("deprecation")
 public class PreferencesActivity extends SherlockPreferenceActivity {
@@ -42,7 +42,7 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
   public static final String PREF_EMAIL_SERVER          = "pref_smtp_server";
   public static final String PREF_EMAIL_PORT            = "pref_smtp_ssl_port";
 
-  private static final String TAG = "org.anhonesteffort.polygons.PreferencesActivity";
+  private static final String TAG = "org.anhonesteffort.zoneDb.PreferencesActivity";
   private LinkedList<Preference> preferences = new LinkedList<Preference>();
   private ZoneService zoneService;
   private boolean zoneServiceBound = false;

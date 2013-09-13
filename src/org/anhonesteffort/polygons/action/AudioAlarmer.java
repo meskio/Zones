@@ -13,7 +13,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class AudioAlarmer extends IntentService {
-  private static final String TAG = "org.anhonesteffort.polygons.action.ActionListActivity";
+  private static final String TAG = "org.anhonesteffort.polygons.action.AuidoAlarmer";
   private SoundPool soundPool;
   private int soundID;
   boolean loaded = false;
