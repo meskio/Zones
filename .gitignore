@@ -20,3 +20,7 @@ local.properties
 .project
 .settings
 .classpath
+
+build.log
+build-log.xml
+

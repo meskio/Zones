@@ -116,7 +116,7 @@ public class GoogleZoneMap
   }
 
   public void removePolygon(int polygon_id) {
-    Log.d(TAG, "removeZone(), polygon_id: " + polygon_id);
+    Log.d(TAG, "deleteZone(), polygon_id: " + polygon_id);
     if(mapPolygons.get(polygon_id, null) != null) {
       mapPolygons.get(polygon_id).remove();
       mapPolygons.remove(polygon_id);

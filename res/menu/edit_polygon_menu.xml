@@ -7,7 +7,7 @@
         android:visible="true"/>
 
     <item
-        android:id="@+id/delete_polygon_button"
+        android:id="@+id/delete_zone_button"
         android:icon="@drawable/content_discard"
         android:showAsAction="always"
         android:visible="true"/>

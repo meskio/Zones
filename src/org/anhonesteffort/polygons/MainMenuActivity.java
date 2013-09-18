@@ -1,7 +1,5 @@
 package org.anhonesteffort.polygons;
 
-import org.anhonesteffort.polygons.map.ZoneMapActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +8,7 @@ import android.view.View.OnClickListener;
 import android.widget.TableRow;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import org.anhonesteffort.polygons.map.ZoneMapActivity;
 
 public class MainMenuActivity extends SherlockFragmentActivity {
   private static final String TAG = "org.anhonesteffort.zoneDb.MainMenuActivity";
@@ -45,7 +44,6 @@ public class MainMenuActivity extends SherlockFragmentActivity {
       public void onClick(View v) {
         Intent intent = new Intent();
         intent.setClass(getApplicationContext(), ZoneListActivity.class);
-        intent.putExtra(ZoneListActivity.RESTORE_SELECTIONS, false);
         startActivity(intent);
       }
     });

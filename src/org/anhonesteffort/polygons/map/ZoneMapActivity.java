@@ -59,7 +59,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.polygon_map_layout);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setSubtitle(R.string.menu_polygon_map);
+    getSupportActionBar().setSubtitle(R.string.menu_title_polygon_map);
 
     databaseHelper = DatabaseHelper.getInstance(getBaseContext());
     zoneMap = new GoogleZoneMap(this);
@@ -332,7 +332,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
 
       case ZoneRecord.TOO_FEW_POINTS:
         if(myState == DrawState.NEW_POINTS)
-          databaseHelper.zoneDb.removeZone(selectedZone.getId());
+          databaseHelper.zoneDb.deleteZone(selectedZone.getId());
         else {
           selectedZone = databaseHelper.zoneDb.getZone(selectedZone.getId());
           zoneMap.removePolygon(selectedZone.getId());
@@ -343,7 +343,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
 
       case ZoneRecord.TOO_MANY_POINTS:
         if(myState == DrawState.NEW_POINTS) {
-          databaseHelper.zoneDb.removeZone(selectedZone.getId());
+          databaseHelper.zoneDb.deleteZone(selectedZone.getId());
         }
         else {
           selectedZone.getPoints().remove(selectedZone.getPoints().size() - 1);
@@ -360,7 +360,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
 
       default:
         zoneMap.removePolygon(selectedZone.getId());
-        databaseHelper.zoneDb.removeZone(selectedZone.getId());
+        databaseHelper.zoneDb.deleteZone(selectedZone.getId());
         
         setState(DrawState.NAVIGATE);
         if(actionMode != null)
@@ -375,12 +375,12 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
     
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     LayoutInflater inflater = this.getLayoutInflater();
-    final View view = inflater.inflate(R.layout.new_polygon_label_layout, null);
+    final View view = inflater.inflate(R.layout.new_zone_label_layout, null);
 
-    builder.setView(view).setTitle(R.string.title_polygon_label_dialog);
+    builder.setView(view).setTitle(R.string.title_zone_label_dialog);
     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
       public void onClick(DialogInterface dialog, int id) {
-        EditText polygonLabelEdit = (EditText) view.findViewById(R.id.polygon_label);
+        EditText polygonLabelEdit = (EditText) view.findViewById(R.id.zone_list_row_label);
         if(polygonLabelEdit.getText().length() < 1 || 
             databaseHelper.zoneDb.isLabelAvailable(polygonLabelEdit.getText().toString()) == false) {
           Toast.makeText(ZoneMapActivity.this, ZoneMapActivity.this.getString(R.string.error_polygon_label), Toast.LENGTH_SHORT).show();

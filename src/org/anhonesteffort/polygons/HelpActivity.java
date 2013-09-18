@@ -12,7 +12,7 @@ public class HelpActivity extends SherlockActivity {
     super.onCreate(savedInstanceState);
     this.setContentView(R.layout.help_page_layout);
     this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    this.getSupportActionBar().setSubtitle(R.string.menu_help);
+    this.getSupportActionBar().setSubtitle(R.string.menu_title_help);
   }
 
   @Override

@@ -150,8 +150,8 @@ public class ZoneDatabase {
     return outZone;
   }
 
-  public void removeZone(int zone_id) {
-    Log.d(TAG, "removeZone(), id: " + zone_id);
+  public void deleteZone(int zone_id) {
+    Log.d(TAG, "deleteZone(), id: " + zone_id);
     dbHelper.exec("DELETE FROM zone WHERE id = '" + zone_id + "'");
   }
 
@@ -163,7 +163,7 @@ public class ZoneDatabase {
 
     // Enforce point limits.
     if(zone.getPoints().size() < ZoneRecord.MIN_POINTS || zone.getPoints().size() > ZoneRecord.MAX_POINTS) {
-      removeZone(zone.getId());
+      deleteZone(zone.getId());
       geometryChange();
       return new ZoneRecord(-1, "");
     }

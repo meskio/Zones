@@ -156,7 +156,7 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
     super.onCreate(savedInstanceState);
     this.addPreferencesFromResource(R.xml.application_preferences);
     this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    this.getSupportActionBar().setSubtitle(R.string.menu_settings);
+    this.getSupportActionBar().setSubtitle(R.string.menu_title_settings);
     
     // Bind to the ZoneService background service.
     Intent locationWatchIntent = new Intent(this, ZoneService.class);

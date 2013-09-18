@@ -18,26 +18,27 @@ import org.anhonesteffort.polygons.map.GoogleGeometryFactory;
 import java.util.List;
 
 public class ZoneArrayAdapter extends ArrayAdapter<ZoneRecord> {
-  private static final String TAG = "org.anhonesteffort.polygons.ZoneArrayAdapter";
-  private List<ZoneRecord> items;
-  private Context context;
 
-  public ZoneArrayAdapter(Context context, int textViewResourceId, List<ZoneRecord> items) {
-    super(context, textViewResourceId, items);
+  private Context context;
+  private List<ZoneRecord> zoneList;
+
+  public ZoneArrayAdapter(Context context, int textViewResourceId, List<ZoneRecord> zoneList) {
+    super(context, textViewResourceId, zoneList);
+
     this.context = context;
-    this.items = items;
+    this.zoneList = zoneList;
   }
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    ZoneRecord zone = items.get(position);
-    DatabaseHelper applicationStorage = DatabaseHelper.getInstance(context);
     int meters;
 
-    LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    convertView = vi.inflate(R.layout.polygon_row_layout, null);
+    ZoneRecord zone = zoneList.get(position);
+    DatabaseHelper applicationStorage = DatabaseHelper.getInstance(context);
 
-    // Count the number of actionDb set for this polygon.
+    LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    convertView = layoutInflater.inflate(R.layout.zone_list_row_layout, null);
+
     int count = 0;
     List<ActionRecord> actions = applicationStorage.actionDb.getActions(zone.getId());
     for(ActionRecord action : actions) {
@@ -47,7 +48,6 @@ public class ZoneArrayAdapter extends ArrayAdapter<ZoneRecord> {
         count++;
     }
 
-    // Try to determine the distance to this polygon.
     LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     if(lastLocation != null) {
@@ -61,21 +61,23 @@ public class ZoneArrayAdapter extends ArrayAdapter<ZoneRecord> {
     else
       meters = -1;
 
-    // Populate the view.
-    TextView polygonLabel = (TextView) convertView.findViewById(R.id.polygon_label);
-    TextView polygonDetails = (TextView) convertView.findViewById(R.id.polygon_details);
-    polygonLabel.setText(zone.getLabel());
+    TextView zoneLabelView = (TextView) convertView.findViewById(R.id.zone_list_row_label);
+    TextView zoneDetailsView = (TextView) convertView.findViewById(R.id.zone_list_row_details);
+    zoneLabelView.setText(zone.getLabel());
+
     if(count == 1)
-      polygonDetails.setText(count + " action ready at " + meters + "m away.");
+      zoneDetailsView.setText(count + " action ready at " + meters + "m away.");
     else
-      polygonDetails.setText(count + " actionDb ready at " + meters + "m away.");
+      zoneDetailsView.setText(count + " actions ready at " + meters + "m away.");
+
     if(applicationStorage.zoneDb.isZoneSelected(zone.getId()))
       convertView.setBackgroundResource(R.color.abs__holo_blue_light);
     else
       convertView.setBackgroundResource(0);
 
-    convertView.setTag(R.integer.polygon_id_tag, Integer.valueOf(zone.getId()));
-    convertView.setTag(R.integer.polygon_select_tag, Boolean.valueOf(applicationStorage.zoneDb.isZoneSelected(zone.getId())));
+    convertView.setTag(R.integer.zone_list_row_id_tag, Integer.valueOf(zone.getId()));
+    convertView.setTag(R.integer.zone_list_row_select_tag, Boolean.valueOf(applicationStorage.zoneDb.isZoneSelected(zone.getId())));
+
     return convertView;
   }
 

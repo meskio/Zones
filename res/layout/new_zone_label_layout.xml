@@ -6,7 +6,7 @@
     android:padding="20dp" >
 
 	<EditText
-	    android:id="@+id/polygon_label"
+	    android:id="@+id/zone_list_row_label"
 	    android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="4"
