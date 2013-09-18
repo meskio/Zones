@@ -1,7 +1,7 @@
-ZoneGuard
+Zones
 ==================
   
-ZoneGuard is a "find my phone" type Android app with a geofencing twist. All devices
+Zones is a "find my phone" type Android app with a geofencing twist. All devices
 running Android 2.2 and higher with Google Play Services installed are supported.
   
 Find My Phone
@@ -72,9 +72,9 @@ Building
   
 2) Import as an Android project in your IDE of choice.  
   
-3) Download ActionBarSherlock and add it as a library project dependancy for ZoneGuard.  
+3) Download ActionBarSherlock and add it as a library project dependancy for Zones.  
   
-4) Download Google Play Services and add it as a library project dependancy for ZoneGuard.  
+4) Download Google Play Services and add it as a library project dependancy for Zones.  
   
 5) Replace the Google Maps API key inside AndroidManifest.xml by following [this tutorial](https://developers.google.com/maps/documentation/android/start#the_google_maps_api_key)
 
