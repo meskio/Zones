@@ -1,6 +1,7 @@
 package org.anhonesteffort.polygons.database;
 
 import android.content.ContentValues;
+import android.database.SQLException;
 import android.util.Log;
 import org.anhonesteffort.polygons.R;
 import org.anhonesteffort.polygons.database.model.ActionRecord;
@@ -10,9 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ActionDatabase {
-  private static final String TAG = "org.anhonesteffort.zoneDb.database.ActionDatabase";
+  private static final String TAG = "ActionDatabase";
+
   private DatabaseHelper dbHelper;
-  private ArrayList<LocationSubscriberChangeListener> listeners = new ArrayList<LocationSubscriberChangeListener>();
+  private ArrayList<LocationSubscriberChangeListener> locationSubscriberListeners = new ArrayList<LocationSubscriberChangeListener>();
 
   public ActionDatabase(DatabaseHelper dbHelper) {
     this.dbHelper = dbHelper;
@@ -91,40 +93,46 @@ public class ActionDatabase {
                   ")");
   }
 
-  // Returns true if the action tables have already been initialized.
-  public boolean isInitialized() {
-    BetterStatement actions = dbHelper.prepare("SELECT 1 FROM action LIMIT 1");
-    if(actions.step()) {
-      actions.close();
-      return true;
+  private boolean isInitialized() {
+    try {
+
+      SpatialCursor actionRecords = dbHelper.prepare("SELECT 1 FROM action LIMIT 1");
+      if(actionRecords.getCount() > 0) {
+        actionRecords.close();
+        return true;
+      }
+      actionRecords.close();
+
+    } catch (SQLException e) {
+      dbHelper.displayException(e);
     }
-    actions.close();
+
     return false;
   }
   
   public void addLocationSubscriberChangeListener(LocationSubscriberChangeListener listener) {
-    listeners.add(listener);
+    locationSubscriberListeners.add(listener);
   }
 
   public void removeLocationSubscriberChangeListener(LocationSubscriberChangeListener listener) {
-    listeners.remove(listener);
+    locationSubscriberListeners.remove(listener);
   }
   
   private void subscriberChange() {
-    for(LocationSubscriberChangeListener listener : listeners) {
+    for(LocationSubscriberChangeListener listener : locationSubscriberListeners) {
       if(listener != null)
         listener.onSubscriberChange();
     }
   }
   
-  // Returns a list of all phone numbers subscribed to location updates.
   public List<String> getLocationSubscribers() {
     List<String> subscriberNumbers = new LinkedList<String>();
-    BetterStatement subscribers = dbHelper.prepare("SELECT phone_number FROM location_update_receiver");
+    SpatialCursor subscriberRecords = dbHelper.prepare("SELECT phone_number FROM location_update_receiver");
 
-    while(subscribers.step())
-      subscriberNumbers.add(subscribers.getString(0));
-    subscribers.close();
+    while(subscriberRecords.moveToNext())
+      subscriberNumbers.add(subscriberRecords.getString(0));
+
+    subscriberRecords.close();
     return subscriberNumbers;
   }
   
@@ -142,37 +150,38 @@ public class ActionDatabase {
     }
   }
 
-  // Returns a list of all available actionDb.
   public List<ActionRecord> getActions() {
     List<ActionRecord> actionNames = new LinkedList<ActionRecord>();
-    BetterStatement actions = dbHelper.prepare("SELECT id, name, description FROM action");
+    SpatialCursor actionRecords = dbHelper.prepare("SELECT id, name, description FROM action");
 
-    while(actions.step())
-      actionNames.add(new ActionRecord(actions.getInt(0), actions.getString(1), actions.getString(2), -1));
-    actions.close();
+    while(actionRecords.moveToNext())
+      actionNames.add(new ActionRecord(actionRecords.getInt(0),
+                                       actionRecords.getString(1),
+                                       actionRecords.getString(2), -1));
+
+    actionRecords.close();
     return actionNames;
   }
 
-  // Returns a list of all available actionDb with exit & enter appropriately set for the specified zone.
   public List<ActionRecord> getActions(int zone_id) {
     List<ActionRecord> actions = getActions();
     List<ActionRecord> orderedActions = new LinkedList<ActionRecord>();
-    BetterStatement zoneActions = dbHelper.prepare("SELECT action_id, zone_id, enter, exit " +
-                                                        "FROM action_broadcast " +
-                                                        "WHERE zone_id = '" + zone_id + "'");
+    SpatialCursor zoneActionRecords = dbHelper.prepare("SELECT action_id, zone_id, enter, exit " +
+                                                       "FROM action_broadcast " +
+                                                       "WHERE zone_id = '" + zone_id + "'");
 
     for(ActionRecord action : actions) {
       boolean found = false;
-      while(zoneActions.step()) {
-        if(action.getID() == zoneActions.getInt(0)) {
+      while(zoneActionRecords.moveToNext()) {
+        if(action.getID() == zoneActionRecords.getInt(0)) {
           found = true;
           orderedActions.add(new ActionRecord(
                                    action.getID(),
                                    action.getName(),
                                    action.getDescription(),
-                                   zoneActions.getInt(1),
-                                   (zoneActions.getInt(2) != 0),
-                                   (zoneActions.getInt(3) != 0)));
+                                   zoneActionRecords.getInt(1),
+                                   (zoneActionRecords.getInt(2) != 0),
+                                   (zoneActionRecords.getInt(3) != 0)));
         }
       }
       if(found == false) {
@@ -180,7 +189,7 @@ public class ActionDatabase {
         orderedActions.add(action);
       }
     }
-    zoneActions.close();
+    zoneActionRecords.close();
     return orderedActions;
   }
 
@@ -188,15 +197,14 @@ public class ActionDatabase {
     Log.d(TAG, "updateActionBroadcast(), action_id: " + action.getID() + ", zone_id: " + action.getZoneId());
 
     dbHelper.exec("DELETE FROM action_broadcast " +
-        "WHERE action_id = '" + action.getID() + "' " +
-        "AND zone_id = '" + action.getZoneId() + "'");
+                  "WHERE action_id = '" + action.getID() + "' " +
+                  "AND zone_id = '" + action.getZoneId() + "'");
 
     ContentValues values = new ContentValues();
     values.put("action_id", action.getID());
     values.put("zone_id", action.getZoneId());
     values.put("enter", (action.runOnEnter()? 1 : 0));
     values.put("exit", (action.runOnExit()? 1 : 0));
-
     dbHelper.insert("action_broadcast", values);
   }
   

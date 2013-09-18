@@ -157,7 +157,7 @@ public class GoogleZoneMap
   }
 
   public void focusOnZone(ZoneRecord zoneRecord) {
-    PointRecord[] zoneBounds = databaseHelper.zoneDb.getZoneBounds(zoneRecord.getId());
+    PointRecord[] zoneBounds = databaseHelper.zoneDatabase.getZoneBounds(zoneRecord.getId());
     if(zoneBounds[0].getX() == -1)
       return;
 
@@ -214,7 +214,7 @@ public class GoogleZoneMap
     return;
   }
 
-  // Clear the map and redraw all zoneDb within provided bounds.
+  // Clear the map and redraw all zoneDatabase within provided bounds.
   private void addZonesWithinBounds(LatLngBounds bounds) {
     ZoneRecord visibleZone;
     List<ZoneRecord> visibleZoneList;
@@ -226,7 +226,7 @@ public class GoogleZoneMap
     googleMap.clear();
 
     visibleZone = GoogleGeometryFactory.buildZoneRecord(bounds);
-    visibleZoneList = databaseHelper.zoneDb.getZonesIntersecting(visibleZone);
+    visibleZoneList = databaseHelper.zoneDatabase.getZonesIntersecting(visibleZone);
 
     for(ZoneRecord zoneRecord : visibleZoneList) {
       if(mapActivity.getState() != DrawState.NEW_POINTS || zoneRecord.getId() != mapActivity.getSelectedZone().getId()) {

@@ -65,7 +65,7 @@ public class ZoneListActivity extends SherlockActivity implements
     Log.d(TAG, "onResume()");
 
     if(!list_is_initialized) {
-      applicationStorage.zoneDb.clearSelectedZones();
+      applicationStorage.zoneDatabase.clearSelectedZones();
       initializeList();
     }
   }
@@ -78,7 +78,7 @@ public class ZoneListActivity extends SherlockActivity implements
     if(savedInstanceState != null && savedInstanceState.getBoolean(RESTORE_SELECTIONS, false)) {
       initializeList();
 
-      select_count = applicationStorage.zoneDb.getZonesSelected().size();
+      select_count = applicationStorage.zoneDatabase.getZonesSelected().size();
       if(select_count > 0) {
         select_mode_active = true;
         mActionMode = startActionMode(this);
@@ -123,8 +123,8 @@ public class ZoneListActivity extends SherlockActivity implements
     switch (item.getItemId()) {
 
       case R.id.delete_zone_button:
-        for(ZoneRecord zone : applicationStorage.zoneDb.getZonesSelected())
-          applicationStorage.zoneDb.deleteZone(zone.getId());
+        for(ZoneRecord zone : applicationStorage.zoneDatabase.getZonesSelected())
+          applicationStorage.zoneDatabase.deleteZone(zone.getId());
 
         mActionMode.finish();
         initializeList();
@@ -146,7 +146,7 @@ public class ZoneListActivity extends SherlockActivity implements
       zoneListView.getChildAt(i).setTag(R.integer.zone_list_row_select_tag, Boolean.FALSE);
     }
 
-    applicationStorage.zoneDb.clearSelectedZones();
+    applicationStorage.zoneDatabase.clearSelectedZones();
     select_count = 0;
     select_mode_active = false;
   }
@@ -189,7 +189,7 @@ public class ZoneListActivity extends SherlockActivity implements
   private void initializeList() {
     Log.d(TAG, "initializeList()");
 
-    List<ZoneRecord> zones = applicationStorage.zoneDb.getZones();
+    List<ZoneRecord> zones = applicationStorage.zoneDatabase.getZones();
     ArrayAdapter<ZoneRecord> adapter = new ZoneArrayAdapter(this, R.layout.zone_list_row_layout, zones);
 
     zoneListView = (ListView) findViewById(R.id.list);
@@ -215,7 +215,7 @@ public class ZoneListActivity extends SherlockActivity implements
     Log.d(TAG, "selectZone()");
 
     select_count++;
-    applicationStorage.zoneDb.setZoneSelected(((Integer) view.getTag(R.integer.zone_list_row_id_tag)).intValue(), true);
+    applicationStorage.zoneDatabase.setZoneSelected(((Integer) view.getTag(R.integer.zone_list_row_id_tag)).intValue(), true);
     view.setTag(R.integer.zone_list_row_select_tag, Boolean.TRUE);
     view.setBackgroundResource(R.color.abs__holo_blue_light);
     updateActionMode();
@@ -224,7 +224,7 @@ public class ZoneListActivity extends SherlockActivity implements
   private void unselectZone(View view) {
     Log.d(TAG, "unselectZone()");
 
-    applicationStorage.zoneDb.setZoneSelected(((Integer) view.getTag(R.integer.zone_list_row_id_tag)).intValue(), false);
+    applicationStorage.zoneDatabase.setZoneSelected(((Integer) view.getTag(R.integer.zone_list_row_id_tag)).intValue(), false);
     view.setTag(R.integer.zone_list_row_select_tag, Boolean.FALSE);
     view.setBackgroundResource(0);
     if(--select_count < 1)
@@ -243,7 +243,7 @@ public class ZoneListActivity extends SherlockActivity implements
 
       public void onClick(DialogInterface dialog, int id) {
         EditText zoneLabelEdit = (EditText) view.findViewById(R.id.zone_list_row_label);
-        List<ZoneRecord> selectedZones = applicationStorage.zoneDb.getZonesSelected();
+        List<ZoneRecord> selectedZones = applicationStorage.zoneDatabase.getZonesSelected();
         handleEditZoneLabel(selectedZones.get(0), zoneLabelEdit.getText().toString());
       }
 
@@ -255,7 +255,7 @@ public class ZoneListActivity extends SherlockActivity implements
   private void handleEditZoneLabel(ZoneRecord selectedZone, String newLabel) {
     if (selectedZone != null) {
       ZoneRecord updatedZone = new ZoneRecord(selectedZone.getId(), newLabel, selectedZone.getPoints());
-      applicationStorage.zoneDb.updateZone(updatedZone);
+      applicationStorage.zoneDatabase.updateZone(updatedZone);
       mActionMode.finish();
       initializeList();
     }

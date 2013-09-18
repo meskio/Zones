@@ -11,16 +11,19 @@ import java.io.File;
 import java.util.Map;
 
 public class DatabaseHelper {
-  private static final String TAG = "org.anhonesteffort.zoneDb.database.DatabaseHelper";
+
+  private static final String TAG = "org.anhonesteffort.zoneDatabase.database.DatabaseHelper";
+
+  private static DatabaseHelper instance;
   private Context applicationContext;
   private Database db;
-  public ActionDatabase actionDb;
-  public ZoneDatabase zoneDb;
-  private static DatabaseHelper instance;
+
+  public ActionDatabase actionDatabase;
+  public ZoneDatabase zoneDatabase;
 
   public synchronized static DatabaseHelper getInstance(Context context) {
     if(instance == null)
-      instance = new DatabaseHelper(new File(context.getFilesDir(), "zoneDb.sqlite"), context);
+      instance = new DatabaseHelper(new File(context.getFilesDir(), "zoneDatabase.sqlite"), context);
     return instance;
   }
 
@@ -32,10 +35,10 @@ public class DatabaseHelper {
 
     try {
       db.open(spatialDbFile.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
-      zoneDb = new ZoneDatabase(this);
-      actionDb = new ActionDatabase(this);
+      zoneDatabase = new ZoneDatabase(this);
+      actionDatabase = new ActionDatabase(this);
     } catch (Exception e) {
-      throwError(e.toString());
+      displayException(e);
     }
   }
   
@@ -47,16 +50,16 @@ public class DatabaseHelper {
     return input.replace("\'", "'");
   }
 
-  public void throwError(String error) {
-    Log.e(TAG, "throwError(), error: " + error);
-  }
-
   public String getStringResource(int resource_id) {
     return applicationContext.getString(resource_id);
   }
 
-  protected Database getDB() {
+  protected Database getDatabase() {
     return db;
+  }
+
+  protected SpatialCursor prepare(String sql) {
+    return new SpatialCursor(this, sql);
   }
 
   protected void exec(String sql) {
@@ -64,7 +67,7 @@ public class DatabaseHelper {
       db.exec("PRAGMA foreign_keys=ON; " + sql, null);
     }
     catch (Exception e) {
-      throwError(e.toString());
+      displayException(e);
     }
   }
 
@@ -116,15 +119,15 @@ public class DatabaseHelper {
     exec(sql);
   }
 
-  protected BetterStatement prepare(String sql) {
-    return new BetterStatement(this, sql);
-  }
-
   public void close() {
     try {
       db.close();
     } catch (Exception e) {
-      throwError(e.toString());
+      displayException(e);
     }
+  }
+
+  public void displayException(java.lang.Exception e) {
+    Log.e(TAG, "displayException(): " + e.toString());
   }
 }

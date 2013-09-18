@@ -31,12 +31,12 @@ public class SpatialCursor implements Cursor {
   private int row_count = 0;
   private int row_position = FIRST_ROW_POSITION;
 
-  private SpatialCursor(DatabaseHelper dbHelper, String sqlQuery) {
+  protected SpatialCursor(DatabaseHelper dbHelper, String sql) {
     dataSetObservers = new LinkedList<DataSetObserver>();
 
     try {
 
-      statement = dbHelper.getDB().prepare(sqlQuery);
+      statement = dbHelper.getDatabase().prepare(sql);
       is_open = true;
       countRows();
 

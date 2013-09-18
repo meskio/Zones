@@ -23,7 +23,7 @@ public class ActionListActivity extends SherlockActivity {
   private ListView actionList;
 
   private void initializeList() {
-    List<ActionRecord> zoneActions = applicationStorage.actionDb.getActions(selectedZone.getId());
+    List<ActionRecord> zoneActions = applicationStorage.actionDatabase.getActions(selectedZone.getId());
     ArrayAdapter<ActionRecord> actionArrayAdapter = new ActionArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, zoneActions);
 
     actionList = (ListView) findViewById(R.id.list);
@@ -36,7 +36,7 @@ public class ActionListActivity extends SherlockActivity {
     Log.d(TAG, "onCreate()");
 
     applicationStorage = DatabaseHelper.getInstance(this.getBaseContext());
-    selectedZone = applicationStorage.zoneDb.getZone(getIntent().getExtras().getInt(ZONE_ID));
+    selectedZone = applicationStorage.zoneDatabase.getZone(getIntent().getExtras().getInt(ZONE_ID));
 
     setContentView(R.layout.action_list_layout);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);

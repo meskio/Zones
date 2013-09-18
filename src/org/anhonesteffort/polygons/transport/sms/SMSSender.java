@@ -4,7 +4,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 public class SMSSender {
-  private static final String TAG = "org.anhonesteffort.zoneDb.sms.SMSSender";
+  private static final String TAG = "org.anhonesteffort.zoneDatabase.sms.SMSSender";
   
   public static boolean sendTextMessage(String recipient, String message) {
     if(message != null && recipient != null) {
