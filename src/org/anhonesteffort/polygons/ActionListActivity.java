@@ -7,7 +7,6 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
-import org.anhonesteffort.polygons.action.ActionArrayAdapter;
 import org.anhonesteffort.polygons.database.DatabaseHelper;
 import org.anhonesteffort.polygons.database.model.ActionRecord;
 import org.anhonesteffort.polygons.database.model.ZoneRecord;

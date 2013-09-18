@@ -65,11 +65,6 @@ public class ActionDatabase {
                     "'" + dbHelper.getStringResource(R.string.action_sms_alert_description) + "'" +
                   ")");
     dbHelper.exec("INSERT INTO action (id, name, description) VALUES(" +
-                    "'" + R.integer.action_email_alert + "', " +
-                    "'" + dbHelper.getStringResource(R.string.action_email_alert) + "', " +
-                    "'" + dbHelper.getStringResource(R.string.action_email_alert_description) + "'" +
-                  ")");
-    dbHelper.exec("INSERT INTO action (id, name, description) VALUES(" +
                     "'" + R.integer.action_super_lock + "', " +
                     "'" + dbHelper.getStringResource(R.string.action_super_lock) + "', " +
                     "'" + dbHelper.getStringResource(R.string.action_super_lock_description) + "'" +

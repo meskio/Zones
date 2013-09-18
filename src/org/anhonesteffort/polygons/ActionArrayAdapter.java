@@ -1,4 +1,4 @@
-package org.anhonesteffort.polygons.action;
+package org.anhonesteffort.polygons;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,8 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
-import org.anhonesteffort.polygons.PreferencesActivity;
-import org.anhonesteffort.polygons.R;
 import org.anhonesteffort.polygons.database.DatabaseHelper;
 import org.anhonesteffort.polygons.database.model.ActionRecord;
 
@@ -38,10 +36,6 @@ public class ActionArrayAdapter extends ArrayAdapter<ActionRecord> {
         action.getID() == R.integer.action_super_unlock ||
         action.getID() == R.integer.action_factory_reset) &&
         (settings.getBoolean(PreferencesActivity.PREF_DEVICE_ADMIN, false) == false))
-      return false;
-
-    if(action.getID() == R.integer.action_email_alert &&
-        settings.getBoolean(PreferencesActivity.PREF_EMAIL, false) == false)
       return false;
 
     return true;

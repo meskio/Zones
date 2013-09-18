@@ -80,14 +80,6 @@ public class BroadcastActionLauncher extends BroadcastReceiver {
         context.startService(actionIntent);
         break;
         
-      case R.integer.action_email_alert:
-        actionIntent = new Intent(context, LocationReporter.class);
-        zoneData.putString(LocationReporter.ENTER_EXIT, enter_exit);
-        zoneData.putBoolean(LocationReporter.EMAIL_REPORT, true);
-        actionIntent.putExtras(zoneData);
-        context.startService(actionIntent);
-        break;
-        
       case R.integer.action_super_lock:
         sharedPreferences.edit().putBoolean(PreferencesActivity.PREF_SUPER_LOCK, true).commit();
         if(policyManager.isAdminActive(adminReceiver))

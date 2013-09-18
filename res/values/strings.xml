@@ -22,7 +22,6 @@
     <string name="entered_zone">Entered zone:</string>
     <string name="exited_zone">Exited zone:</string>
     <string name="device_location">Device location (lat, lon):</string>
-    <string name="email_subject">ZoneGuard -</string>
     <string name="zones_selected">zones selected</string>
 
     <string name="title_sms_commands">SMS Commands</string>
@@ -60,25 +59,11 @@
     <string name="preference_allow_sms_commands_description">Allow actions to be triggered through SMS commands.</string>
     <string name="preference_command_password">SMS password</string>
     <string name="preference_command_password_description">Password to authenticate SMS commands.</string>
-    <string name="preference_allow_email">Email alerts</string>
-    <string name="preference_allow_email_description">Allow zone alerts to be sent by email.</string>
-    <string name="preference_email_receiver">Email receiver</string>
-    <string name="preference_email_receiver_description">Email address to send zone alerts to.</string>
-    <string name="preference_smtp_username">SMTP username</string>
-    <string name="preference_smtp_username_description">Username for authentication with SMTP server.</string>
-    <string name="preference_smtp_password">SMTP password</string>
-    <string name="preference_smtp_password_description">Password for authentication with SMTP server.</string>
-    <string name="preference_smtp_server">SMTP server</string>
-    <string name="preference_smtp_server_description">Host name or IP address of SMTP server.</string>
-    <string name="preference_smtp_ssl_port">SMTP SSL port</string>
-    <string name="preference_smtp_ssl_port_description">Port on SMTP server to connect via SSL.</string>
     
     <string name="action_audio_alarm">Audio alarm</string>
     <string name="action_audio_alarm_description">Sound a loud alarm for the length of time defined in settings.</string>
     <string name="action_sms_alert">SMS alert</string>
     <string name="action_sms_alert_description">Send an alert to the phone number defined in settings.</string>
-    <string name="action_email_alert">Email alert</string>
-    <string name="action_email_alert_description">Send an alert to the email address defined in settings.</string>
     <string name="action_super_lock">Super lock</string>
     <string name="action_super_lock_description">Lock the device screen and prevent it from turning back on, effectively disabling shutdown and airplane mode.</string>
     <string name="action_super_unlock">Super unlock</string>

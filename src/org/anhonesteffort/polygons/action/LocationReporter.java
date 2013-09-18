@@ -11,10 +11,6 @@ import org.anhonesteffort.polygons.PreferencesActivity;
 import org.anhonesteffort.polygons.R;
 import org.anhonesteffort.polygons.ZoneService;
 import org.anhonesteffort.polygons.transport.sms.SMSSender;
-import org.anhonesteffort.polygons.transport.smtp.SMTPClient;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 
 public class LocationReporter extends IntentService {
 
@@ -22,7 +18,6 @@ public class LocationReporter extends IntentService {
 
   public static final String ENTER_EXIT   = "org.anhonesteffort.polygons.action.LocationReporter.ENTER_EXIT";
   public static final String SMS_REPORT   = "org.anhonesteffort.polygons.action.LocationReporter.SMS";
-  public static final String EMAIL_REPORT = "org.anhonesteffort.polygons.action.LocationReporter.EMAIL";
 
   private Bundle eventData;
   private SharedPreferences settings;
@@ -54,31 +49,6 @@ public class LocationReporter extends IntentService {
       SMSSender.sendTextMessage(receiver, createMessage());
   }
 
-  private void sendZoneEmail() {
-    Log.d(TAG, "sendZoneEmail()");
-
-    if(settings.getBoolean(PreferencesActivity.PREF_EMAIL, false)) {
-      try {
-        SMTPClient email = new SMTPClient(settings.getString(PreferencesActivity.PREF_EMAIL_USERNAME, ""),
-                                settings.getString(PreferencesActivity.PREF_EMAIL_PASSWORD, ""),
-                                settings.getString(PreferencesActivity.PREF_EMAIL_SERVER, ""),
-                                SMTPClient.AuthType.SSL,
-                                Integer.parseInt(settings.getString(PreferencesActivity.PREF_EMAIL_PORT, "465")));
-
-        Thread.currentThread().setContextClassLoader(email.getClass().getClassLoader());
-
-        email.sendMessage(settings.getString(PreferencesActivity.PREF_EMAIL_RECEIVER, ""),
-                            this.getString(R.string.email_subject),
-                            createMessage());
-
-      } catch (AddressException e) {
-        e.printStackTrace();
-      } catch (MessagingException e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
   @Override
   protected void onHandleIntent(Intent intent) {
     Log.d(TAG, "onHandleIntent()");
@@ -88,8 +58,5 @@ public class LocationReporter extends IntentService {
 
     if(eventData.containsKey(SMS_REPORT))
       sendZoneSMS();
-
-    if(eventData.containsKey(EMAIL_REPORT))
-      sendZoneEmail();
   }
 }

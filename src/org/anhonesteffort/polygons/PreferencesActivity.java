@@ -10,15 +10,12 @@ import android.os.IBinder;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.PreferenceCategory;
 import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
 import org.anhonesteffort.polygons.ZoneService.ZoneServiceBinder;
 import org.anhonesteffort.polygons.receiver.AdminReceiver;
-
-import java.util.LinkedList;
 
 @SuppressWarnings("deprecation")
 public class PreferencesActivity extends SherlockPreferenceActivity {
@@ -36,15 +33,6 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
   public static final String PREF_SMS_COMMANDS          = "pref_allow_sms_commands";
   public static final String PREF_SMS_COMMAND_PASSWORD  = "pref_sms_command_password";
 
-  public static final String CATEGORY_EMAIL             = "category_email";
-  public static final String PREF_EMAIL                 = "pref_allow_email";
-  public static final String PREF_EMAIL_RECEIVER        = "pref_email_receiver";
-  public static final String PREF_EMAIL_USERNAME        = "pref_smtp_username";
-  public static final String PREF_EMAIL_PASSWORD        = "pref_smtp_password";
-  public static final String PREF_EMAIL_SERVER          = "pref_smtp_server";
-  public static final String PREF_EMAIL_PORT            = "pref_smtp_ssl_port";
-
-  private LinkedList<Preference> preferences = new LinkedList<Preference>();
   private ZoneService zoneService;
   private boolean zoneServiceBound = false;
   
@@ -61,20 +49,9 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
     startService(locationWatchIntent);
     bindService(locationWatchIntent, mConnection, Context.BIND_AUTO_CREATE);
 
-    preferences.add(this.findPreference(PREF_EMAIL_RECEIVER));
-    preferences.add(this.findPreference(PREF_EMAIL_USERNAME));
-    preferences.add(this.findPreference(PREF_EMAIL_PASSWORD));
-    preferences.add(this.findPreference(PREF_EMAIL_SERVER));
-    preferences.add(this.findPreference(PREF_EMAIL_PORT));
-
     updateAdminPreferenceCheckBox();
     this.findPreference(PREF_GEOFENCING).setOnPreferenceChangeListener(new GeofencingClickListener());
     this.findPreference(PREF_DEVICE_ADMIN).setOnPreferenceChangeListener(new DeviceAdminClickListener());
-
-    CheckBoxPreference allowEmail = (CheckBoxPreference) this.findPreference(PREF_EMAIL);
-    allowEmail.setOnPreferenceChangeListener(new EmailPreferenceChangeListener());
-    if(allowEmail.isChecked() == false)
-      hideEmailPreferences();
   }
 
   @Override
@@ -133,15 +110,6 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
       allowAdmin.setChecked(true);
   }
 
-  private void hideEmailPreferences() {
-    PreferenceCategory emailPreferences = (PreferenceCategory) PreferencesActivity.this.findPreference(CATEGORY_EMAIL);
-    emailPreferences.removePreference(this.findPreference(PREF_EMAIL_RECEIVER));
-    emailPreferences.removePreference(this.findPreference(PREF_EMAIL_USERNAME));
-    emailPreferences.removePreference(this.findPreference(PREF_EMAIL_PASSWORD));
-    emailPreferences.removePreference(this.findPreference(PREF_EMAIL_SERVER));
-    emailPreferences.removePreference(this.findPreference(PREF_EMAIL_PORT));
-  }
-
   private class GeofencingClickListener implements OnPreferenceChangeListener {
 
     @Override
@@ -182,27 +150,6 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
       else {
         policyManager.removeActiveAdmin(adminReceiver);
         deviceAdminCheckBox.setChecked(false);
-      }
-
-      return false;
-    }
-  }
-
-  private class EmailPreferenceChangeListener implements OnPreferenceChangeListener {
-
-    @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
-      CheckBoxPreference allowEmail = (CheckBoxPreference) preference;
-
-      if((Boolean) newValue) {
-        PreferenceCategory emailPreferences = (PreferenceCategory) PreferencesActivity.this.findPreference(CATEGORY_EMAIL);
-        for(Preference emailPreference : preferences)
-          emailPreferences.addPreference(emailPreference);
-        allowEmail.setChecked(true);
-      }
-      else {
-        hideEmailPreferences();
-        allowEmail.setChecked(false);
       }
 
       return false;

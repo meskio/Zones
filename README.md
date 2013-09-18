@@ -35,10 +35,9 @@ lost!
   
 Geofencing
 ----------
-The geofencing aspect of Zones starts with allowing the user to draw zones
-(polygons) on a map. The user can then assign actions to these zones and decide
-whether they should be run upon entry or exit of the zone. The actions below are
-currently supported:  
+The geofencing aspect of Zones starts with allowing the user to draw zones on a map.
+The user can then assign actions to these zones and decide whether they should be run
+upon entry or exit of the zone. The actions below are currently supported:  
   
 **Audio alarm** - Sound a loud alarm for the length of time defined in settings.  
   
