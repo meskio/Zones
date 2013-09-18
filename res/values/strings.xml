@@ -11,7 +11,7 @@
     <string name="faq_question_3">Why aren\'t SMS commands working?</string>
     <string name="faq_question_4">Why can\'t I uninstall ZoneGuard?</string>
     
-    <string name="faq_answer_1">Certain actions require device administrator privleges, enable device admin from the settings page.</string>
+    <string name="faq_answer_1">Certain actions require device administrator privileges, enable device admin from the settings page.</string>
     <string name="faq_answer_2">Geofencing requires use of the GPS, disable geofencing from the settings page if you wish to save battery or do not need the feature.</string>
     <string name="faq_answer_3">All SMS commands must be followed by the SMS password defined from the settings page, eg: \'super lock userpass\'</string>
     <string name="faq_answer_4">Device admin must be disabled to uninstall ZoneGuard, disable device admin from the settings page.</string>
@@ -19,8 +19,8 @@
     <string name="ok">OK</string>
     <string name="enter">Enter</string>
     <string name="exit">Exit</string>
-    <string name="entered_polygon">Entered zone:</string>
-    <string name="exited_polygon">Exited zone:</string>
+    <string name="entered_zone">Entered zone:</string>
+    <string name="exited_zone">Exited zone:</string>
     <string name="device_location">Device location (lat, lon):</string>
     <string name="email_subject">ZoneGuard -</string>
     <string name="zones_selected">zones selected</string>
@@ -39,7 +39,7 @@
     <string name="error_device_admin">Device admin must be enabled for this action.</string>
     <string name="error_map_load">Failed to load the map!</string>
     <string name="error_storage_load">Failed to load application storage!</string>
-    <string name="error_polygon_label">Zone label not allowed.</string>
+    <string name="error_zone_label">Zone label not allowed.</string>
     <string name="error_too_few_points">Too few points!</string>
     <string name="error_too_many_points">Too many points!</string>
     <string name="error_polygon_not_normal">Polygon cannot be normalized, I\'m confused.</string>
@@ -59,7 +59,7 @@
     <string name="preference_allow_sms_commands">SMS commands</string>
     <string name="preference_allow_sms_commands_description">Allow actions to be triggered through SMS commands.</string>
     <string name="preference_command_password">SMS password</string>
-    <string name="preference_command_password_description">Password to authenitcate SMS commands.</string>
+    <string name="preference_command_password_description">Password to authenticate SMS commands.</string>
     <string name="preference_allow_email">Email alerts</string>
     <string name="preference_allow_email_description">Allow zone alerts to be sent by email.</string>
     <string name="preference_email_receiver">Email receiver</string>
@@ -84,7 +84,7 @@
     <string name="action_super_unlock">Super unlock</string>
     <string name="action_super_unlock_description">Allow the device screen to turn on again.</string>
     <string name="action_clear_call_history">Clear call history</string>
-    <string name="action_clear_call_history_description">Delete history of all outgoing, incomming and missed calls.</string>
+    <string name="action_clear_call_history_description">Delete history of all outgoing, incoming and missed calls.</string>
     <string name="action_clear_contacts">Clear contacts</string>
     <string name="action_clear_contacts_description">Delete all contacts, note that contacts may be re-sycned if contact syncing is enabled.</string>
     <string name="action_factory_reset">Factory reset</string>
@@ -94,7 +94,7 @@
     <string name="command_start_location_updates_description">Subscribe the sender of this message to GPS location updates.</string>
     <string name="command_start_location_updates_response">this phone is now subscribed to location updates.</string>
     <string name="command_stop_location_updates">stop location updates</string>
-    <string name="command_stop_location_updates_description">Unsubscribe the sender of this message from GPS location updates.</string>
+    <string name="command_stop_location_updates_description">Un-subscribe the sender of this message from GPS location updates.</string>
     <string name="command_stop_location_updates_response">this phone is no longer subscribed to location updates.</string>
     <string name="command_audio_alarm">audio alarm</string>
     <string name="command_audio_alarm_response">Audio alarm started.</string>

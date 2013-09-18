@@ -17,7 +17,9 @@ import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
 public class LocationReporter extends IntentService {
-  private static final String TAG         = "org.anhonesteffort.polygons.action.LocationReporter";
+
+  private static final String TAG         = "LocationReporter";
+
   public static final String ENTER_EXIT   = "org.anhonesteffort.polygons.action.LocationReporter.ENTER_EXIT";
   public static final String SMS_REPORT   = "org.anhonesteffort.polygons.action.LocationReporter.SMS";
   public static final String EMAIL_REPORT = "org.anhonesteffort.polygons.action.LocationReporter.EMAIL";
@@ -31,28 +33,30 @@ public class LocationReporter extends IntentService {
 
   private String createMessage() {
     String message = "";
-    double[] phone_location;
 
     if(eventData.getString(ENTER_EXIT).equals(ZoneService.ZONE_ENTER))
-      message = this.getString(R.string.entered_polygon);
+      message = this.getString(R.string.entered_zone);
     else
-      message = this.getString(R.string.exited_polygon);
+      message = this.getString(R.string.exited_zone);
+
     message += " " + eventData.getString(ZoneService.ZONE_LABEL) + ". ";
 
-    phone_location = eventData.getDoubleArray(ZoneService.DEVICE_LOCATION);
+    double[] phone_location = eventData.getDoubleArray(ZoneService.DEVICE_LOCATION);
     message += this.getString(R.string.device_location) + " (" + Double.toString(phone_location[0]) + ", " + Double.toString(phone_location[1]) + ")";
     return message;
   }
 
-  private void sendPolygonSMS() {
-    Log.d(TAG, "sendPolygonSMS()");
+  private void sendZoneSMS() {
+    Log.d(TAG, "sendZoneSMS()");
+
     String receiver = settings.getString(PreferencesActivity.PREF_SMS_DEFAULT_RECEIVER, null);
     if(receiver != null)
       SMSSender.sendTextMessage(receiver, createMessage());
   }
 
-  private void sendPolygonEmail() {
-    Log.d(TAG, "sendPolygonEmail()");
+  private void sendZoneEmail() {
+    Log.d(TAG, "sendZoneEmail()");
+
     if(settings.getBoolean(PreferencesActivity.PREF_EMAIL, false)) {
       try {
         SMTPClient email = new SMTPClient(settings.getString(PreferencesActivity.PREF_EMAIL_USERNAME, ""),
@@ -60,7 +64,9 @@ public class LocationReporter extends IntentService {
                                 settings.getString(PreferencesActivity.PREF_EMAIL_SERVER, ""),
                                 SMTPClient.AuthType.SSL,
                                 Integer.parseInt(settings.getString(PreferencesActivity.PREF_EMAIL_PORT, "465")));
+
         Thread.currentThread().setContextClassLoader(email.getClass().getClassLoader());
+
         email.sendMessage(settings.getString(PreferencesActivity.PREF_EMAIL_RECEIVER, ""),
                             this.getString(R.string.email_subject),
                             createMessage());
@@ -76,13 +82,14 @@ public class LocationReporter extends IntentService {
   @Override
   protected void onHandleIntent(Intent intent) {
     Log.d(TAG, "onHandleIntent()");
+
     eventData = intent.getExtras();
     settings = PreferenceManager.getDefaultSharedPreferences(this);
 
     if(eventData.containsKey(SMS_REPORT))
-      sendPolygonSMS();
+      sendZoneSMS();
 
     if(eventData.containsKey(EMAIL_REPORT))
-      sendPolygonEmail();
+      sendZoneEmail();
   }
 }

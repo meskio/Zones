@@ -383,7 +383,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
         EditText polygonLabelEdit = (EditText) view.findViewById(R.id.zone_list_row_label);
         if(polygonLabelEdit.getText().length() < 1 || 
             databaseHelper.zoneDb.isLabelAvailable(polygonLabelEdit.getText().toString()) == false) {
-          Toast.makeText(ZoneMapActivity.this, ZoneMapActivity.this.getString(R.string.error_polygon_label), Toast.LENGTH_SHORT).show();
+          Toast.makeText(ZoneMapActivity.this, ZoneMapActivity.this.getString(R.string.error_zone_label), Toast.LENGTH_SHORT).show();
           setState(DrawState.NEW_LABEL);
         }
         else {

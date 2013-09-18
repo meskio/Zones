@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.util.Log;
 
 public class CallHistoryCleaner extends IntentService {
-  private static final String TAG = "org.anhonesteffort.zoneDb.action.CallHistoryCleaner";
+
+  private static final String TAG = "CallHistoryCleaner";
   
   public CallHistoryCleaner() {
     super("CallHistoryCleaner");

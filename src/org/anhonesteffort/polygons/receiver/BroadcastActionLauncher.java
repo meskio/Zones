@@ -143,9 +143,9 @@ public class BroadcastActionLauncher extends BroadcastReceiver {
       // Show status bar notifications.
       if(sharedPreferences.getBoolean(PreferencesActivity.PREF_NOTIFICATIONS, false)) {
         if(intent.getAction().equals(ZoneService.ZONE_ENTER))
-          showNotification(context, true, context.getString(R.string.entered_polygon) + " " + intent.getExtras().getString(ZoneService.ZONE_LABEL));
+          showNotification(context, true, context.getString(R.string.entered_zone) + " " + intent.getExtras().getString(ZoneService.ZONE_LABEL));
         else if(intent.getAction().equals(ZoneService.ZONE_EXIT))
-          showNotification(context, false, context.getString(R.string.exited_polygon) + " " + intent.getExtras().getString(ZoneService.ZONE_LABEL));
+          showNotification(context, false, context.getString(R.string.exited_zone) + " " + intent.getExtras().getString(ZoneService.ZONE_LABEL));
       }
       
       // Vibrate on zone enter & exit.

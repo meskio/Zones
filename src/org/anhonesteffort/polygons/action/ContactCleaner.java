@@ -9,7 +9,8 @@ import android.provider.ContactsContract;
 import android.util.Log;
 
 public class ContactCleaner extends IntentService {
-  private static final String TAG = "org.anhonesteffort.zoneDb.action.ContactCleaner";
+
+  private static final String TAG = "ContactCleaner";
 
   public ContactCleaner() {
     super("ContactCleaner");
@@ -19,6 +20,7 @@ public class ContactCleaner extends IntentService {
   @Override
   protected void onHandleIntent(Intent intent) {
     Log.d(TAG, "onHandleIntent()");
+
     ContentResolver contentResolver = this.getContentResolver();
     Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
     
