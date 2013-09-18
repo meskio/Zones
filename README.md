@@ -7,7 +7,7 @@ running Android 2.2 and higher with Google Play Services installed are supported
 Find My Phone
 -------------
 While most find my phone type apps require the user to access a web application,
-ZoneGuard is controlled entirely by commands within SMS (text) messages. SMS commands
+Zones is controlled entirely by commands within SMS (text) messages. SMS commands
 are authenticated by a user-defined password following the command. The commands below 
 are currently supported:  
   
@@ -35,7 +35,7 @@ lost!
   
 Geofencing
 ----------
-The geofencing aspect of ZoneGuard starts with allowing the user to draw zones
+The geofencing aspect of Zones starts with allowing the user to draw zones
 (polygons) on a map. The user can then assign actions to these zones and decide
 whether they should be run upon entry or exit of the zone. The actions below are
 currently supported:  

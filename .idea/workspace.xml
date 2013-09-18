@@ -22,14 +22,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/res/xml/application_preferences.xml" afterPath="$PROJECT_DIR$/res/xml/preferences.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/action/ActionArrayAdapter.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/action/ActionArrayAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/AdminReceiver.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/AdminReceiver.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/BroadcastActionLauncher.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/BroadcastActionLauncher.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/action/LocationReporter.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/action/LocationReporter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/PreferencesActivity.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/PreferencesActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ZoneService.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ZoneService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/SMSActionLauncher.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/SMSActionLauncher.java" />
     </list>
     <ignored path="ZoneGuard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -120,6 +114,7 @@
     <file path="/ActionRecord.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379470322913" ignored="false" />
     <file path="/PreferencesActivity.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379471559009" ignored="false" />
     <file path="/BroadcastActionLauncher.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379472867672" ignored="false" />
+    <file path="/SMSActionLauncher.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379474008371" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,10 +184,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BroadcastActionLauncher.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="BroadcastActionLauncher.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/BroadcastActionLauncher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="126" column="68" selection-start="5062" selection-end="5062" vertical-scroll-proportion="2.559727">
+            <state line="126" column="68" selection-start="5062" selection-end="5062" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SMSActionLauncher.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/SMSActionLauncher.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="25" column="13" selection-start="935" selection-end="935" vertical-scroll-proportion="0.102389075">
               <folding />
             </state>
           </provider>
@@ -646,7 +650,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1301" height="744" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988048" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988048" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -666,7 +670,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24940239" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23346613" sideWeight="0.672" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23346613" sideWeight="0.672" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3296" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -846,16 +850,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/SMSActionLauncher.java">
+    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/BroadcastActionLauncher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="72" selection-start="1047" selection-end="1047" vertical-scroll-proportion="0.102389075">
+        <state line="126" column="68" selection-start="5062" selection-end="5062" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/BroadcastActionLauncher.java">
+    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/SMSActionLauncher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="126" column="68" selection-start="5062" selection-end="5062" vertical-scroll-proportion="2.559727">
+        <state line="25" column="13" selection-start="935" selection-end="935" vertical-scroll-proportion="0.102389075">
           <folding />
         </state>
       </provider>

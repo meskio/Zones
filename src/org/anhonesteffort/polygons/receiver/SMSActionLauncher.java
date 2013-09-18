@@ -1,14 +1,5 @@
 package org.anhonesteffort.polygons.receiver;
 
-import java.util.Locale;
-
-import org.anhonesteffort.polygons.R;
-import org.anhonesteffort.polygons.PreferencesActivity;
-import org.anhonesteffort.polygons.ZoneService;
-import org.anhonesteffort.polygons.action.*;
-import org.anhonesteffort.polygons.transport.sms.SMSSender;
-import org.anhonesteffort.polygons.database.DatabaseHelper;
-
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -21,8 +12,20 @@ import android.preference.PreferenceManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import org.anhonesteffort.polygons.PreferencesActivity;
+import org.anhonesteffort.polygons.R;
+import org.anhonesteffort.polygons.ZoneService;
+import org.anhonesteffort.polygons.action.AudioAlarmer;
+import org.anhonesteffort.polygons.action.CallHistoryCleaner;
+import org.anhonesteffort.polygons.action.ContactCleaner;
+import org.anhonesteffort.polygons.database.DatabaseHelper;
+import org.anhonesteffort.polygons.transport.sms.SMSSender;
+
+import java.util.Locale;
+
 public class SMSActionLauncher extends BroadcastReceiver {
-  private static final String TAG = "org.anhonesteffort.polygons.receiver.SMSActionLauncher";
+
+  private static final String TAG = "SMSActionLauncher";
 
   private boolean messageIsAuthorized(String message, String password) {
     message = message.trim();
@@ -35,30 +38,37 @@ public class SMSActionLauncher extends BroadcastReceiver {
       if(i < 0 || message.charAt(i) != password.charAt(j++))
         return false;
     }
+
     if(j == password.length())
       return true;
+
     return false;
   }
 
   @Override
   public void onReceive(Context context, Intent intent) {
     Log.d(TAG, "onReceive()");
+
     Object[] pdus = (Object[])intent.getExtras().get("pdus");
     SmsMessage shortMessage = SmsMessage.createFromPdu((byte[]) pdus[0]);
+
     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
     DatabaseHelper applicationStorage = DatabaseHelper.getInstance(context);
+    Intent resultIntent;
     boolean match = false;
 
     // Only process commands if allowed in application preferences.
     if(settings.getBoolean(PreferencesActivity.PREF_SMS_COMMANDS, true)) {
       Log.d(TAG, "SMS message sender: " + shortMessage.getOriginatingAddress());
       Log.d(TAG, "SMS message text: " + shortMessage.getDisplayMessageBody());
+
       String message = shortMessage.getDisplayMessageBody();
       String commandPassword = settings.getString(PreferencesActivity.PREF_SMS_COMMAND_PASSWORD, "");
       
       // Only run authorized commands.
       if(messageIsAuthorized(message, commandPassword)) {
         Log.d(TAG, "SMS message is authorized.");
+
         // Command: start location updates.
         if(message.toLowerCase(Locale.ENGLISH).startsWith(context.getString(R.string.command_start_location_updates))) {
           applicationStorage.actionDb.addLocationSubscriber(shortMessage.getOriginatingAddress());
@@ -85,8 +95,8 @@ public class SMSActionLauncher extends BroadcastReceiver {
         
         // Command: audio alarm.
         else if(message.toLowerCase(Locale.ENGLISH).startsWith(context.getString(R.string.command_audio_alarm))) {
-          Intent newIntent = new Intent(context, AudioAlarmer.class);
-          context.startService(newIntent);
+          resultIntent = new Intent(context, AudioAlarmer.class);
+          context.startService(resultIntent);
           SMSSender.sendTextMessage(shortMessage.getOriginatingAddress(), context.getString(R.string.command_audio_alarm_response));
           match = true;
         }
@@ -116,16 +126,16 @@ public class SMSActionLauncher extends BroadcastReceiver {
         
         // Command: clear call history.
         else if(message.toLowerCase(Locale.ENGLISH).startsWith(context.getString(R.string.command_clear_call_history))) {
-          Intent newIntent = new Intent(context, CallHistoryCleaner.class);
-          context.startService(newIntent);
+          resultIntent = new Intent(context, CallHistoryCleaner.class);
+          context.startService(resultIntent);
           SMSSender.sendTextMessage(shortMessage.getOriginatingAddress(), context.getString(R.string.command_clear_call_history_response));
           match = true;
         }
         
         // Command: clear contacts.
         else if(message.toLowerCase(Locale.ENGLISH).startsWith(context.getString(R.string.command_clear_contacts))) {
-          Intent newIntent = new Intent(context, ContactCleaner.class);
-          context.startService(newIntent);
+          resultIntent = new Intent(context, ContactCleaner.class);
+          context.startService(resultIntent);
           SMSSender.sendTextMessage(shortMessage.getOriginatingAddress(), context.getString(R.string.command_clear_contacts_response));
           match = true;
         }
@@ -134,21 +144,24 @@ public class SMSActionLauncher extends BroadcastReceiver {
         else if(message.toLowerCase(Locale.ENGLISH).startsWith(context.getString(R.string.command_factory_reset))) {
           DevicePolicyManager policyManager = (DevicePolicyManager)context.getSystemService(Context.DEVICE_POLICY_SERVICE);
           ComponentName adminReceiver = new ComponentName(context, AdminReceiver.class);
+
           if(policyManager.isAdminActive(adminReceiver)) {
             policyManager.wipeData(0);
             SMSSender.sendTextMessage(shortMessage.getOriginatingAddress(), context.getString(R.string.command_factory_reset_response));
           }
           else
             SMSSender.sendTextMessage(shortMessage.getOriginatingAddress(), context.getString(R.string.error_device_admin));
+
           match = true;
         }
         
         // Start the background service if not already running.
         if(match) {
-          Intent locationWatchIntent = new Intent(context.getApplicationContext(), ZoneService.class);
-          context.getApplicationContext().startService(locationWatchIntent);
+          resultIntent = new Intent(context.getApplicationContext(), ZoneService.class);
+          context.getApplicationContext().startService(resultIntent);
         }
       }
     }
   }
+
 }
