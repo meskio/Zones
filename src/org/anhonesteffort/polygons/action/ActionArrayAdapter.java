@@ -67,8 +67,8 @@ public class ActionArrayAdapter extends ArrayAdapter<ActionRecord> {
       actionDescription.setText(action.getDescription());
       actionEnterCheck.setChecked(action.runOnEnter());
       actionExitCheck.setChecked(action.runOnExit());
-      actionEnterCheck.setOnCheckedChangeListener(new onActionChangeListener(action, true, false));
-      actionExitCheck.setOnCheckedChangeListener(new onActionChangeListener(action, false, true));
+      actionEnterCheck.setOnCheckedChangeListener(new onActionChangeListener(action, true));
+      actionExitCheck.setOnCheckedChangeListener(new onActionChangeListener(action, false));
     }
 
     return convertView;
@@ -76,25 +76,23 @@ public class ActionArrayAdapter extends ArrayAdapter<ActionRecord> {
 
   private class onActionChangeListener implements OnCheckedChangeListener {
     private ActionRecord action;
-    private boolean enter_check_box;
-    private boolean exit_check_box;
+    private boolean is_enter_check_box;
 
-    public onActionChangeListener(ActionRecord action, boolean enter_check_box, boolean exit_check_box) {
+    public onActionChangeListener(ActionRecord action, boolean is_enter_check_box) {
       this.action = action;
-      this.enter_check_box = enter_check_box;
-      this.exit_check_box = exit_check_box;
+      this.is_enter_check_box = is_enter_check_box;
     }
 
     @Override
     public void onCheckedChanged(CompoundButton checkBoxView, boolean isChecked) {
       DatabaseHelper applicationStorage = DatabaseHelper.getInstance(context);
 
-      if(checkBoxView.isShown() == false)
+      if (checkBoxView.isShown() == false)
         return;
 
-      if(enter_check_box)
+      if (is_enter_check_box)
         action.setRunOnEnter(isChecked);
-      else if(exit_check_box)
+      else
         action.setRunOnExit(isChecked);
 
       applicationStorage.actionDb.updateActionBroadcast(action);

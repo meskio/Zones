@@ -6,7 +6,8 @@ import android.content.Intent;
 import android.util.Log;
 
 public class AdminReceiver extends DeviceAdminReceiver {
-  private static final String TAG = "org.anhonesteffort.zoneDb.AdminReceiver";
+
+  private static final String TAG = "AdminReceiver";
 
   @Override
   public void onEnabled(Context context, Intent intent) {

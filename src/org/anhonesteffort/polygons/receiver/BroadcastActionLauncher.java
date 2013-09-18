@@ -1,15 +1,5 @@
 package org.anhonesteffort.polygons.receiver;
 
-import org.anhonesteffort.polygons.R;
-import org.anhonesteffort.polygons.PreferencesActivity;
-import org.anhonesteffort.polygons.ZoneService;
-import org.anhonesteffort.polygons.action.*;
-import org.anhonesteffort.polygons.database.model.ActionRecord;
-import org.anhonesteffort.polygons.map.ZoneMapActivity;
-import org.anhonesteffort.polygons.database.DatabaseHelper;
-
-import java.util.List;
-
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
@@ -25,12 +15,30 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import org.anhonesteffort.polygons.PreferencesActivity;
+import org.anhonesteffort.polygons.R;
+import org.anhonesteffort.polygons.ZoneService;
+import org.anhonesteffort.polygons.action.AudioAlarmer;
+import org.anhonesteffort.polygons.action.CallHistoryCleaner;
+import org.anhonesteffort.polygons.action.ContactCleaner;
+import org.anhonesteffort.polygons.action.LocationReporter;
+import org.anhonesteffort.polygons.database.DatabaseHelper;
+import org.anhonesteffort.polygons.database.model.ActionRecord;
+import org.anhonesteffort.polygons.map.ZoneMapActivity;
+
+import java.util.List;
+
 public class BroadcastActionLauncher extends BroadcastReceiver {
-  private static final String TAG = "org.anhonesteffort.polygons.receiver.BroadcastActionLauncher";
-  private SharedPreferences settings;
+
+  private static final String TAG = "BroadcastActionLauncher";
+
+  private SharedPreferences sharedPreferences;
+  private DevicePolicyManager policyManager;
+  private ComponentName adminReceiver;
 
   private void showNotification(Context context, boolean enter, String title) {
     Log.d(TAG, "showNotification()");
+
     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                                                 .setContentTitle(title)
                                                 .setContentText(title);
@@ -53,12 +61,11 @@ public class BroadcastActionLauncher extends BroadcastReceiver {
     mNotificationManager.notify(1020, mBuilder.getNotification());
   }
 
-  private void launchAction(Context context, Bundle polygonData, ActionRecord action, String enter_exit) {
+  private void launchAction(Context context, Bundle zoneData, ActionRecord action, String enter_exit) {
     Log.d(TAG, "launchAction() action_id: " + action.getID());
+
     Intent actionIntent;
-    DevicePolicyManager policyManager;
-    ComponentName adminReceiver;
-    
+
     switch(action.getID()) {
       case R.integer.action_audio_alarm:
         actionIntent = new Intent(context, AudioAlarmer.class);
@@ -67,30 +74,28 @@ public class BroadcastActionLauncher extends BroadcastReceiver {
       
       case R.integer.action_sms_alert:
         actionIntent = new Intent(context, LocationReporter.class);
-        polygonData.putString(LocationReporter.ENTER_EXIT, enter_exit);
-        polygonData.putBoolean(LocationReporter.SMS_REPORT, true);
-        actionIntent.putExtras(polygonData);
+        zoneData.putString(LocationReporter.ENTER_EXIT, enter_exit);
+        zoneData.putBoolean(LocationReporter.SMS_REPORT, true);
+        actionIntent.putExtras(zoneData);
         context.startService(actionIntent);
         break;
         
       case R.integer.action_email_alert:
         actionIntent = new Intent(context, LocationReporter.class);
-        polygonData.putString(LocationReporter.ENTER_EXIT, enter_exit);
-        polygonData.putBoolean(LocationReporter.EMAIL_REPORT, true);
-        actionIntent.putExtras(polygonData);
+        zoneData.putString(LocationReporter.ENTER_EXIT, enter_exit);
+        zoneData.putBoolean(LocationReporter.EMAIL_REPORT, true);
+        actionIntent.putExtras(zoneData);
         context.startService(actionIntent);
         break;
         
       case R.integer.action_super_lock:
-        settings.edit().putBoolean(PreferencesActivity.PREF_SUPER_LOCK, true).commit();
-        policyManager = (DevicePolicyManager)context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        adminReceiver = new ComponentName(context, AdminReceiver.class);
+        sharedPreferences.edit().putBoolean(PreferencesActivity.PREF_SUPER_LOCK, true).commit();
         if(policyManager.isAdminActive(adminReceiver))
           policyManager.lockNow();
         break;
         
       case R.integer.action_super_unlock:
-        settings.edit().putBoolean(PreferencesActivity.PREF_SUPER_LOCK, false).commit();
+        sharedPreferences.edit().putBoolean(PreferencesActivity.PREF_SUPER_LOCK, false).commit();
         break;
         
       case R.integer.action_clear_call_history:
@@ -104,8 +109,6 @@ public class BroadcastActionLauncher extends BroadcastReceiver {
         break;
         
       case R.integer.action_factory_reset:
-        policyManager = (DevicePolicyManager)context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        adminReceiver = new ComponentName(context, AdminReceiver.class);
         if(policyManager.isAdminActive(adminReceiver))
           policyManager.wipeData(0);
         break;
@@ -118,31 +121,35 @@ public class BroadcastActionLauncher extends BroadcastReceiver {
   @Override
   public void onReceive(Context context, Intent intent) {
     Log.d(TAG, "onReceive()");
+
+    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    policyManager = (DevicePolicyManager)context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+    adminReceiver = new ComponentName(context, AdminReceiver.class);
+
     DatabaseHelper applicationStorage = DatabaseHelper.getInstance(context);
-    settings = PreferenceManager.getDefaultSharedPreferences(context);
+
+    // Zone exit & enter related broadcasts.
+    if(intent.getAction().equals(ZoneService.ZONE_ENTER) || intent.getAction().equals(ZoneService.ZONE_EXIT)) {
+      List<ActionRecord> actions = applicationStorage.actionDb.getActions(intent.getExtras().getInt(ZoneService.ZONE_ID));
     
-    // Polygon exit & enter related broadcasts.
-    if(intent.getAction().equals(ZoneService.POLYGON_ENTER) || intent.getAction().equals(ZoneService.POLYGON_EXIT)) {
-      List<ActionRecord> actions = applicationStorage.actionDb.getActions(intent.getExtras().getInt(ZoneService.POLYGON_ID));
-    
-      // Launch polygon enter & exit actionDb.
+      // Launch zone enter & exit actions.
       for(ActionRecord action : actions) {
-        if(intent.getAction().equals(ZoneService.POLYGON_ENTER) && action.runOnEnter())
+        if(intent.getAction().equals(ZoneService.ZONE_ENTER) && action.runOnEnter())
           launchAction(context, intent.getExtras(), action, intent.getAction());
-        else if(intent.getAction().equals(ZoneService.POLYGON_EXIT) && action.runOnExit())
+        else if(intent.getAction().equals(ZoneService.ZONE_EXIT) && action.runOnExit())
           launchAction(context, intent.getExtras(), action, intent.getAction());
       }
       
       // Show status bar notifications.
-      if(settings.getBoolean(PreferencesActivity.PREF_NOTIFICATIONS, false)) {
-        if(intent.getAction().equals(ZoneService.POLYGON_ENTER))
-          showNotification(context, true, context.getString(R.string.entered_polygon) + " " + intent.getExtras().getString(ZoneService.POLYGON_LABEL));
-        else if(intent.getAction().equals(ZoneService.POLYGON_EXIT))
-          showNotification(context, false, context.getString(R.string.exited_polygon) + " " + intent.getExtras().getString(ZoneService.POLYGON_LABEL));
+      if(sharedPreferences.getBoolean(PreferencesActivity.PREF_NOTIFICATIONS, false)) {
+        if(intent.getAction().equals(ZoneService.ZONE_ENTER))
+          showNotification(context, true, context.getString(R.string.entered_polygon) + " " + intent.getExtras().getString(ZoneService.ZONE_LABEL));
+        else if(intent.getAction().equals(ZoneService.ZONE_EXIT))
+          showNotification(context, false, context.getString(R.string.exited_polygon) + " " + intent.getExtras().getString(ZoneService.ZONE_LABEL));
       }
       
-      // Vibrate on polygon enter & exit.
-      if(settings.getBoolean(PreferencesActivity.PREF_VIBRATE, false)) {
+      // Vibrate on zone enter & exit.
+      if(sharedPreferences.getBoolean(PreferencesActivity.PREF_VIBRATE, false)) {
         Vibrator vibrate = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         long[] pattern = {0, 200, 200, 200, 200, 200};
         vibrate.vibrate(pattern, -1);
@@ -150,13 +157,12 @@ public class BroadcastActionLauncher extends BroadcastReceiver {
     }
     
     // Enforce the super lock.
-    else if(settings.getBoolean(PreferencesActivity.PREF_SUPER_LOCK, false) && intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-      DevicePolicyManager policyManager = (DevicePolicyManager)context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-      ComponentName adminReceiver = new ComponentName(context, AdminReceiver.class);
+    else if(sharedPreferences.getBoolean(PreferencesActivity.PREF_SUPER_LOCK, false) && intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
       if(policyManager.isAdminActive(adminReceiver)) {
         Log.d(TAG, "policyManager.lockNow()");
         policyManager.lockNow();
       }
     }
   }
+
 }

@@ -25,12 +25,13 @@ import java.util.List;
 
 public class ZoneService extends Service implements 
   GeometryChangeListener, LocationSubscriberChangeListener, BetterLocationListener {
-  private static final String TAG           = "org.anhonesteffort.zoneDb.ZoneListActivity";
-  public static final String POLYGON_ENTER	= "org.anhonesteffort.zoneDb.POLYGON_ENTER";
-  public static final String POLYGON_EXIT		= "org.anhonesteffort.zoneDb.POLYGON_EXIT";
-  public static final String POLYGON_ID		  = "org.anhonesteffort.zoneDb.ZONE_ID";
-  public static final String POLYGON_LABEL	= "org.anhonesteffort.zoneDb.POLYGON_LABEL";
-  public static final String PHONE_LOCATION	= "org.anhonesteffort.zoneDb.PHONE_LOCATION";
+  private static final String TAG            = "ZoneService";
+
+  public static final String ZONE_ENTER      = "org.anhonesteffort.polygons.ZoneService.ZONE_ENTER";
+  public static final String ZONE_EXIT       = "org.anhonesteffort.polygons.ZoneService.ZONE_EXIT";
+  public static final String ZONE_ID         = "org.anhonesteffort.polygons.ZoneService.ZONE_ID";
+  public static final String ZONE_LABEL      = "org.anhonesteffort.polygons.ZoneService.ZONE_LABEL";
+  public static final String DEVICE_LOCATION = "org.anhonesteffort.polygons.ZoneService.DEVICE_LOCATION";
   
   private static final int MINIMUM_INTERVAL_MS         = 1500;
   private static final int REGULAR_INTERVAL_MS         = 120000;
@@ -118,10 +119,10 @@ public class ZoneService extends Service implements
 
         // Send the polygon exit broadcast.
         double[] phoneLocation = {bestLocation.getLatitude(), bestLocation.getLongitude()};
-        Intent polygonEnterIntent = new Intent(POLYGON_EXIT);
-        polygonEnterIntent.putExtra(POLYGON_ID, zoneOccupied.getId());
-        polygonEnterIntent.putExtra(POLYGON_LABEL, zoneOccupied.getLabel());
-        polygonEnterIntent.putExtra(PHONE_LOCATION, phoneLocation);
+        Intent polygonEnterIntent = new Intent(ZONE_EXIT);
+        polygonEnterIntent.putExtra(ZONE_ID, zoneOccupied.getId());
+        polygonEnterIntent.putExtra(ZONE_LABEL, zoneOccupied.getLabel());
+        polygonEnterIntent.putExtra(DEVICE_LOCATION, phoneLocation);
         sendBroadcast(polygonEnterIntent);
       }
     }
@@ -138,10 +139,10 @@ public class ZoneService extends Service implements
 
         // Send the polygon enter broadcast.
         double[] phoneLocation = {bestLocation.getLatitude(), bestLocation.getLongitude()};
-        Intent polygonEnterIntent = new Intent(POLYGON_ENTER);
-        polygonEnterIntent.putExtra(POLYGON_ID, zone.getId());
-        polygonEnterIntent.putExtra(POLYGON_LABEL, zone.getLabel());
-        polygonEnterIntent.putExtra(PHONE_LOCATION, phoneLocation);
+        Intent polygonEnterIntent = new Intent(ZONE_ENTER);
+        polygonEnterIntent.putExtra(ZONE_ID, zone.getId());
+        polygonEnterIntent.putExtra(ZONE_LABEL, zone.getLabel());
+        polygonEnterIntent.putExtra(DEVICE_LOCATION, phoneLocation);
         sendBroadcast(polygonEnterIntent);
       }
     }

@@ -1,12 +1,5 @@
 package org.anhonesteffort.polygons;
 
-import java.util.LinkedList;
-
-import org.anhonesteffort.polygons.ZoneService.ZoneServiceBinder;
-
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-import com.actionbarsherlock.view.MenuItem;
-
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,10 +12,19 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceCategory;
 import android.util.Log;
-import org.anhonesteffort.polygons.receiver.*;
+
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
+import com.actionbarsherlock.view.MenuItem;
+import org.anhonesteffort.polygons.ZoneService.ZoneServiceBinder;
+import org.anhonesteffort.polygons.receiver.AdminReceiver;
+
+import java.util.LinkedList;
 
 @SuppressWarnings("deprecation")
 public class PreferencesActivity extends SherlockPreferenceActivity {
+
+  private static final String TAG = "PreferencesActivity";
+
   public static final String PREF_GEOFENCING            = "pref_allow_geofencing";
   public static final String PREF_DEVICE_ADMIN          = "pref_allow_device_admin";
   public static final String PREF_AUDIO_ALARM_LENGTH    = "pref_audio_alarm_length";
@@ -42,29 +44,85 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
   public static final String PREF_EMAIL_SERVER          = "pref_smtp_server";
   public static final String PREF_EMAIL_PORT            = "pref_smtp_ssl_port";
 
-  private static final String TAG = "org.anhonesteffort.zoneDb.PreferencesActivity";
   private LinkedList<Preference> preferences = new LinkedList<Preference>();
   private ZoneService zoneService;
   private boolean zoneServiceBound = false;
   
-  private ServiceConnection mConnection = new ServiceConnection() {
-    
-      @Override
-      public void onServiceConnected(ComponentName className, IBinder service) {
-        Log.d(TAG, "onServiceConnected()");
-        ZoneServiceBinder binder = (ZoneServiceBinder) service;
-        zoneService = binder.getService();
-        zoneServiceBound = true;
-      }
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    Log.d(TAG, "onCreate()");
 
-      @Override
-      public void onServiceDisconnected(ComponentName arg0) {
-        Log.d(TAG, "onServiceDisconnected()");
-        zoneServiceBound = false;
-      }
-  };
+    this.addPreferencesFromResource(R.xml.preferences);
+    this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    this.getSupportActionBar().setSubtitle(R.string.menu_title_settings);
+
+    Intent locationWatchIntent = new Intent(this, ZoneService.class);
+    startService(locationWatchIntent);
+    bindService(locationWatchIntent, mConnection, Context.BIND_AUTO_CREATE);
+
+    preferences.add(this.findPreference(PREF_EMAIL_RECEIVER));
+    preferences.add(this.findPreference(PREF_EMAIL_USERNAME));
+    preferences.add(this.findPreference(PREF_EMAIL_PASSWORD));
+    preferences.add(this.findPreference(PREF_EMAIL_SERVER));
+    preferences.add(this.findPreference(PREF_EMAIL_PORT));
+
+    updateAdminPreferenceCheckBox();
+    this.findPreference(PREF_GEOFENCING).setOnPreferenceChangeListener(new GeofencingClickListener());
+    this.findPreference(PREF_DEVICE_ADMIN).setOnPreferenceChangeListener(new DeviceAdminClickListener());
+
+    CheckBoxPreference allowEmail = (CheckBoxPreference) this.findPreference(PREF_EMAIL);
+    allowEmail.setOnPreferenceChangeListener(new EmailPreferenceChangeListener());
+    if(allowEmail.isChecked() == false)
+      hideEmailPreferences();
+  }
+
+  @Override
+  public void onActivityResult(int reqCode, int resultCode, Intent data) {
+    super.onActivityResult(reqCode, resultCode, data);
+    updateAdminPreferenceCheckBox();
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        finish();
+        break;
+    }
+    return true;
+  }
   
-  private void setAdminPreference() {
+  @Override
+  protected void onStop() {
+    super.onStop();
+    Log.d(TAG, "onStop()");
+
+    if(zoneServiceBound) {
+      unbindService(mConnection);
+      zoneServiceBound = false;
+    }
+  }
+
+  private ServiceConnection mConnection = new ServiceConnection() {
+
+    @Override
+    public void onServiceConnected(ComponentName className, IBinder service) {
+      Log.d(TAG, "onServiceConnected()");
+      ZoneServiceBinder binder = (ZoneServiceBinder) service;
+      zoneService = binder.getService();
+      zoneServiceBound = true;
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName arg0) {
+      Log.d(TAG, "onServiceDisconnected()");
+      zoneServiceBound = false;
+    }
+
+  };
+
+  private void updateAdminPreferenceCheckBox() {
     DevicePolicyManager policyManager = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
     ComponentName adminReceiver = new ComponentName(PreferencesActivity.this, AdminReceiver.class);
     CheckBoxPreference allowAdmin = (CheckBoxPreference) this.findPreference(PREF_DEVICE_ADMIN);
@@ -83,8 +141,9 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
     emailPreferences.removePreference(this.findPreference(PREF_EMAIL_SERVER));
     emailPreferences.removePreference(this.findPreference(PREF_EMAIL_PORT));
   }
-  
+
   private class GeofencingClickListener implements OnPreferenceChangeListener {
+
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
       CheckBoxPreference enableGeofencing = (CheckBoxPreference) preference;
@@ -99,7 +158,7 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
           zoneService.onGeofencingPreferenceChange(false);
         enableGeofencing.setChecked(false);
       }
-      
+
       return false;
     }
   }
@@ -110,10 +169,10 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-      CheckBoxPreference allowAdmin = (CheckBoxPreference) preference;
+      CheckBoxPreference deviceAdminCheckBox = (CheckBoxPreference) preference;
 
       if((Boolean) newValue) {
-        allowAdmin.setChecked(true);
+        deviceAdminCheckBox.setChecked(true);
         ComponentName mDeviceAdmin = new ComponentName(PreferencesActivity.this, AdminReceiver.class);
         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mDeviceAdmin);
@@ -122,18 +181,19 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
       }
       else {
         policyManager.removeActiveAdmin(adminReceiver);
-        allowAdmin.setChecked(false);
+        deviceAdminCheckBox.setChecked(false);
       }
-      
+
       return false;
     }
   }
 
   private class EmailPreferenceChangeListener implements OnPreferenceChangeListener {
-    
+
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
       CheckBoxPreference allowEmail = (CheckBoxPreference) preference;
+
       if((Boolean) newValue) {
         PreferenceCategory emailPreferences = (PreferenceCategory) PreferencesActivity.this.findPreference(CATEGORY_EMAIL);
         for(Preference emailPreference : preferences)
@@ -144,67 +204,9 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
         hideEmailPreferences();
         allowEmail.setChecked(false);
       }
-      
+
       return false;
     }
   }
-  
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    Log.d(TAG, "onCreate()");
-    
-    super.onCreate(savedInstanceState);
-    this.addPreferencesFromResource(R.xml.application_preferences);
-    this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    this.getSupportActionBar().setSubtitle(R.string.menu_title_settings);
-    
-    // Bind to the ZoneService background service.
-    Intent locationWatchIntent = new Intent(this, ZoneService.class);
-    startService(locationWatchIntent);
-    bindService(locationWatchIntent, mConnection, Context.BIND_AUTO_CREATE);
 
-    preferences.add(this.findPreference(PREF_EMAIL_RECEIVER));
-    preferences.add(this.findPreference(PREF_EMAIL_USERNAME));
-    preferences.add(this.findPreference(PREF_EMAIL_PASSWORD));
-    preferences.add(this.findPreference(PREF_EMAIL_SERVER));
-    preferences.add(this.findPreference(PREF_EMAIL_PORT));
-
-    setAdminPreference();
-    this.findPreference(PREF_GEOFENCING).setOnPreferenceChangeListener(new GeofencingClickListener());
-    this.findPreference(PREF_DEVICE_ADMIN).setOnPreferenceChangeListener(new DeviceAdminClickListener());
-
-    CheckBoxPreference allowEmail = (CheckBoxPreference) this.findPreference(PREF_EMAIL);
-    allowEmail.setOnPreferenceChangeListener(new EmailPreferenceChangeListener());
-    if(allowEmail.isChecked() == false)
-      hideEmailPreferences();
-  }
-
-  @Override
-  public void onActivityResult(int reqCode, int resultCode, Intent data) {
-    super.onActivityResult(reqCode, resultCode, data);
-    setAdminPreference();
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-    
-      case android.R.id.home:
-        finish();
-        break;
-        
-    }
-    return true;
-  }
-  
-  @Override
-  protected void onStop() {
-    Log.d(TAG, "onStop()");
-    super.onStop();
-    
-    if(zoneServiceBound) {
-      unbindService(mConnection);
-      zoneServiceBound = false;
-    }
-  }
 }

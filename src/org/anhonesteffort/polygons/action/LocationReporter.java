@@ -33,13 +33,13 @@ public class LocationReporter extends IntentService {
     String message = "";
     double[] phone_location;
 
-    if(eventData.getString(ENTER_EXIT).equals(ZoneService.POLYGON_ENTER))
+    if(eventData.getString(ENTER_EXIT).equals(ZoneService.ZONE_ENTER))
       message = this.getString(R.string.entered_polygon);
     else
       message = this.getString(R.string.exited_polygon);
-    message += " " + eventData.getString(ZoneService.POLYGON_LABEL) + ". ";
+    message += " " + eventData.getString(ZoneService.ZONE_LABEL) + ". ";
 
-    phone_location = eventData.getDoubleArray(ZoneService.PHONE_LOCATION);
+    phone_location = eventData.getDoubleArray(ZoneService.DEVICE_LOCATION);
     message += this.getString(R.string.device_location) + " (" + Double.toString(phone_location[0]) + ", " + Double.toString(phone_location[1]) + ")";
     return message;
   }

@@ -22,21 +22,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/res/layout/action_row_layout.xml" afterPath="$PROJECT_DIR$/res/layout/action_list_row_layout.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/res/xml/application_preferences.xml" afterPath="$PROJECT_DIR$/res/xml/preferences.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/action/ActionArrayAdapter.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/action/ActionArrayAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/ActionDatabase.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/ActionDatabase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ActionListActivity.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ActionListActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/model/ActionRecord.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/model/ActionRecord.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/HelpActivity.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/HelpActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/MainMenuActivity.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/MainMenuActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ZoneListActivity.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ZoneListActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/layout/main_menu_layout.xml" afterPath="$PROJECT_DIR$/res/layout/main_menu_layout.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/AdminReceiver.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/AdminReceiver.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/BroadcastActionLauncher.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/BroadcastActionLauncher.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/action/LocationReporter.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/action/LocationReporter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/PreferencesActivity.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/PreferencesActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ZoneService.java" afterPath="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ZoneService.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ZoneGuard.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379464866156" ignored="false" />
-    <file path="/fragment.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379468766001" ignored="false" />
+    <file path="/fragment.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379472487462" ignored="false" />
     <file path="/DatabaseHelper.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1378934118389" ignored="false" />
     <file path="/ZoneRecord.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1378514545509" ignored="false" />
     <file path="/TaggedPolygon.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1378511992897" ignored="false" />
@@ -58,7 +56,7 @@
     <file path="/PolygonEditCallback.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1378749876118" ignored="false" />
     <file path="/PolygonMapActivity.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1378750453416" ignored="false" />
     <file path="/ZoneMapActivity.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1378760748839" ignored="false" />
-    <file path="/ZoneService.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1378761607676" ignored="false" />
+    <file path="/ZoneService.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379472507374" ignored="false" />
     <file path="/ActionListActivity.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379468717957" ignored="false" />
     <file path="/ZoneArrayAdapter.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379465598532" ignored="false" />
     <file path="/ZoneListActivity.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379466337209" ignored="false" />
@@ -118,8 +116,10 @@
     <file path="$PROJECT_DIR$/../google-play-services_lib/res/values-zh-rTW/strings.xml" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1378923413109" ignored="false" />
     <file path="/HackedCursor.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379467675253" ignored="false" />
     <file path="/MainMenuActivity.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379468215032" ignored="false" />
-    <file path="/ActionArrayAdapter.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379469807790" ignored="false" />
+    <file path="/ActionArrayAdapter.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379470991360" ignored="false" />
     <file path="/ActionRecord.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379470322913" ignored="false" />
+    <file path="/PreferencesActivity.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379471559009" ignored="false" />
+    <file path="/BroadcastActionLauncher.java" changelist="4e2427c0-c9ff-4a6b-90cc-a2cc3d9ed60e" time="1379472867672" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,31 +189,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ActionListActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/ActionListActivity.java">
+      <file leaf-file-name="BroadcastActionLauncher.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/BroadcastActionLauncher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+            <state line="126" column="68" selection-start="5062" selection-end="5062" vertical-scroll-proportion="2.559727">
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ActionArrayAdapter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/action/ActionArrayAdapter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="35" column="4" selection-start="1208" selection-end="1208" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ActionDatabase.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/ActionDatabase.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="27" selection-start="27" selection-end="27" vertical-scroll-proportion="-1.2771286">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -236,11 +216,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ZoneService.java" />
-        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/map/GoogleZoneMap.java" />
-        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/DatabaseHelper.java" />
-        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/ZoneDatabase.java" />
         <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ZoneArrayAdapter.java" />
         <option value="$PROJECT_DIR$/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/HackedCursor.java" />
@@ -248,10 +223,15 @@
         <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ZoneListActivity.java" />
         <option value="$PROJECT_DIR$/res/layout/main_menu_layout.xml" />
         <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/MainMenuActivity.java" />
-        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ActionListActivity.java" />
-        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/action/ActionArrayAdapter.java" />
         <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/model/ActionRecord.java" />
         <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/ActionDatabase.java" />
+        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/action/ActionArrayAdapter.java" />
+        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/PreferencesActivity.java" />
+        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/AdminReceiver.java" />
+        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ActionListActivity.java" />
+        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/ZoneService.java" />
+        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/BroadcastActionLauncher.java" />
+        <option value="$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/SMSActionLauncher.java" />
       </list>
     </option>
   </component>
@@ -288,7 +268,24 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
+      <pane id="Scope">
+        <subPane subId="Default">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+        <subPane subId="Changed Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -657,7 +654,7 @@
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988048" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32695374" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3264" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328" sideWeight="0.49800798" order="7" side_tool="true" content_ui="tabs" />
@@ -742,50 +739,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/DatabaseHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="13" selection-start="1414" selection-end="1414" vertical-scroll-proportion="-0.32279533">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/map/ZoneMapActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="26" selection-start="1714" selection-end="1714" vertical-scroll-proportion="0.30716723">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/map/GoogleZoneMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="10" selection-start="2207" selection-end="2207" vertical-scroll-proportion="0.025041737">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/BetterStatement.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="74" column="4" selection-start="1618" selection-end="1618" vertical-scroll-proportion="0.7996661">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="18" selection-start="1630" selection-end="1630" vertical-scroll-proportion="0.33333334">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/res/menu/zone_list_menu.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="20" selection-start="98" selection-end="98" vertical-scroll-proportion="0.074875206">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/ZoneArrayAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="17" column="65" selection-start="627" selection-end="627" vertical-scroll-proportion="0.2003339">
@@ -826,16 +779,55 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/ActionListActivity.java">
+    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/model/ActionRecord.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+        <state line="23" column="36" selection-start="674" selection-end="674" vertical-scroll-proportion="0.5759599">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/ActionDatabase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="25" selection-start="706" selection-end="706" vertical-scroll-proportion="0.5008347">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/action/ActionArrayAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="4" selection-start="1208" selection-end="1208" vertical-scroll-proportion="0.0">
+        <state line="88" column="42" selection-start="3400" selection-end="3400" vertical-scroll-proportion="1.3005009">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/PreferencesActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="84" selection-start="1507" selection-end="1507" vertical-scroll-proportion="0.4095563">
+          <folding>
+            <element signature="e#762#794#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/xml/preferences.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-1.7045075">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/AdminReceiver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="31" selection-start="395" selection-end="395" vertical-scroll-proportion="0.25041735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/ActionListActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="60" column="14" selection-start="2088" selection-end="2088" vertical-scroll-proportion="0.94880545">
           <folding />
         </state>
       </provider>
@@ -847,19 +839,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/model/ActionRecord.java">
+    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/ZoneService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="36" selection-start="674" selection-end="674" vertical-scroll-proportion="0.5759599">
+        <state line="34" column="81" selection-start="1725" selection-end="1725" vertical-scroll-proportion="0.3327645">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/database/ActionDatabase.java">
+    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/SMSActionLauncher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="27" selection-start="27" selection-end="27" vertical-scroll-proportion="-1.2771286">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="27" column="72" selection-start="1047" selection-end="1047" vertical-scroll-proportion="0.102389075">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/anhonesteffort/polygons/receiver/BroadcastActionLauncher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="126" column="68" selection-start="5062" selection-end="5062" vertical-scroll-proportion="2.559727">
+          <folding />
         </state>
       </provider>
     </entry>
