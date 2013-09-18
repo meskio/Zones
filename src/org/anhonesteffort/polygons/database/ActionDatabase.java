@@ -11,12 +11,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ActionDatabase {
+
   private static final String TAG = "ActionDatabase";
 
   private DatabaseHelper dbHelper;
   private ArrayList<LocationSubscriberChangeListener> locationSubscriberListeners = new ArrayList<LocationSubscriberChangeListener>();
 
-  public ActionDatabase(DatabaseHelper dbHelper) {
+  protected ActionDatabase(DatabaseHelper dbHelper) {
     this.dbHelper = dbHelper;
     
     if(isInitialized() == false) {
@@ -25,7 +26,7 @@ public class ActionDatabase {
     }
   }
 
-  public void initialize() {
+  private void initialize() {
     // Drop all tables.
     dbHelper.exec("DROP TABLE IF EXISTS location_update_receiver");
     dbHelper.exec("DROP TABLE IF EXISTS action");

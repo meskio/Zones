@@ -12,18 +12,18 @@ import java.util.Map;
 
 public class DatabaseHelper {
 
-  private static final String TAG = "org.anhonesteffort.zoneDatabase.database.DatabaseHelper";
+  private static final String TAG = "DatabaseHelper";
 
   private static DatabaseHelper instance;
   private Context applicationContext;
   private Database db;
 
-  public ActionDatabase actionDatabase;
-  public ZoneDatabase zoneDatabase;
+  private ActionDatabase actionDatabase;
+  private ZoneDatabase zoneDatabase;
 
   public synchronized static DatabaseHelper getInstance(Context context) {
     if(instance == null)
-      instance = new DatabaseHelper(new File(context.getFilesDir(), "zoneDatabase.sqlite"), context);
+      instance = new DatabaseHelper(new File(context.getFilesDir(), "ZonesDatabase.sqlite"), context);
     return instance;
   }
 
@@ -52,6 +52,14 @@ public class DatabaseHelper {
 
   public String getStringResource(int resource_id) {
     return applicationContext.getString(resource_id);
+  }
+
+  public ZoneDatabase getZoneDatabase() {
+    return zoneDatabase;
+  }
+
+  public ActionDatabase getActionDatabase() {
+    return actionDatabase;
   }
 
   protected Database getDatabase() {

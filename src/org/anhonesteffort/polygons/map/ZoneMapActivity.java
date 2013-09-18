@@ -235,11 +235,11 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
     if(instanceState.containsKey(MAP_TYPE))
       zoneMap.setViewType(instanceState.getInt(MAP_TYPE));
     if(instanceState.containsKey(SELECTED_ZONE_ID))
-      selectedZone = databaseHelper.zoneDatabase.getZone(instanceState.getInt(SELECTED_ZONE_ID));
+      selectedZone = databaseHelper.getZoneDatabase().getZone(instanceState.getInt(SELECTED_ZONE_ID));
     if(instanceState.containsKey(SELECTED_ZONE_FOCUS))
       zoneMap.focusOnZone(selectedZone);
     if(instanceState.containsKey(SELECTED_POINT_ID))
-      selectedPoint = databaseHelper.zoneDatabase.getPoint(instanceState.getInt(SELECTED_POINT_ID));
+      selectedPoint = databaseHelper.getZoneDatabase().getPoint(instanceState.getInt(SELECTED_POINT_ID));
     if(instanceState.containsKey(SAVED_STATE))
       setState(DrawState.values()[instanceState.getInt(SAVED_STATE)]);
   }
@@ -260,7 +260,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
   public void onMapClick(PointRecord clickPoint) {
     Log.d(TAG, "onMapClick()");
     if(myState == DrawState.NEW_POINTS || myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
-      clickPoint = databaseHelper.zoneDatabase.addPoint(clickPoint, selectedZone.getId());
+      clickPoint = databaseHelper.getZoneDatabase().addPoint(clickPoint, selectedZone.getId());
       selectedZone.getPoints().add(clickPoint);
       zoneMap.addPoint(new MapPoint(clickPoint));
     }
@@ -274,7 +274,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
   public void onMapLongClick(PointRecord clickPoint) {
     Log.d(TAG, "onMapLongClick()");
     if(myState == DrawState.NAVIGATE || myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
-      List<ZoneRecord> zoneList = databaseHelper.zoneDatabase.getZonesContainingPoint(clickPoint);
+      List<ZoneRecord> zoneList = databaseHelper.getZoneDatabase().getZonesContainingPoint(clickPoint);
       
       if(zoneList.isEmpty() == false) {
         selectedZone = zoneList.get(0);
@@ -301,8 +301,8 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
     Log.d(TAG, "onPointMoveStop()");
     selectedPoint = clickPoint;
 
-    databaseHelper.zoneDatabase.updatePoint(clickPoint, selectedZone.getId());
-    selectedZone = databaseHelper.zoneDatabase.getZone(selectedZone.getId());
+    databaseHelper.getZoneDatabase().updatePoint(clickPoint, selectedZone.getId());
+    selectedZone = databaseHelper.getZoneDatabase().getZone(selectedZone.getId());
     
     if(myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
       updateSelectedZone();
@@ -325,16 +325,16 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
         }
         
         zoneMap.removePolygon(selectedZone.getId());
-        selectedZone = databaseHelper.zoneDatabase.updateZone(selectedZone);
+        selectedZone = databaseHelper.getZoneDatabase().updateZone(selectedZone);
         selectedPoint = selectedZone.getPoints().get(selected_point_index);
         zoneMap.addZone(new MapZone(selectedZone));
         break;
 
       case ZoneRecord.TOO_FEW_POINTS:
         if(myState == DrawState.NEW_POINTS)
-          databaseHelper.zoneDatabase.deleteZone(selectedZone.getId());
+          databaseHelper.getZoneDatabase().deleteZone(selectedZone.getId());
         else {
-          selectedZone = databaseHelper.zoneDatabase.getZone(selectedZone.getId());
+          selectedZone = databaseHelper.getZoneDatabase().getZone(selectedZone.getId());
           zoneMap.removePolygon(selectedZone.getId());
           zoneMap.addZone(new MapZone(selectedZone));
         }
@@ -343,11 +343,11 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
 
       case ZoneRecord.TOO_MANY_POINTS:
         if(myState == DrawState.NEW_POINTS) {
-          databaseHelper.zoneDatabase.deleteZone(selectedZone.getId());
+          databaseHelper.getZoneDatabase().deleteZone(selectedZone.getId());
         }
         else {
           selectedZone.getPoints().remove(selectedZone.getPoints().size() - 1);
-          selectedZone = databaseHelper.zoneDatabase.updateZone(selectedZone);
+          selectedZone = databaseHelper.getZoneDatabase().updateZone(selectedZone);
           zoneMap.removePolygon(selectedZone.getId());
           zoneMap.addZone(new MapZone(selectedZone));
           
@@ -360,7 +360,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
 
       default:
         zoneMap.removePolygon(selectedZone.getId());
-        databaseHelper.zoneDatabase.deleteZone(selectedZone.getId());
+        databaseHelper.getZoneDatabase().deleteZone(selectedZone.getId());
         
         setState(DrawState.NAVIGATE);
         if(actionMode != null)
@@ -382,12 +382,12 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
       public void onClick(DialogInterface dialog, int id) {
         EditText polygonLabelEdit = (EditText) view.findViewById(R.id.zone_list_row_label);
         if(polygonLabelEdit.getText().length() < 1 || 
-            databaseHelper.zoneDatabase.isLabelAvailable(polygonLabelEdit.getText().toString()) == false) {
+            databaseHelper.getZoneDatabase().isLabelAvailable(polygonLabelEdit.getText().toString()) == false) {
           Toast.makeText(ZoneMapActivity.this, ZoneMapActivity.this.getString(R.string.error_zone_label), Toast.LENGTH_SHORT).show();
           setState(DrawState.NEW_LABEL);
         }
         else {
-          selectedZone = databaseHelper.zoneDatabase.addZone(polygonLabelEdit.getText().toString());
+          selectedZone = databaseHelper.getZoneDatabase().addZone(polygonLabelEdit.getText().toString());
           setState(DrawState.NEW_POINTS);
         }
       }

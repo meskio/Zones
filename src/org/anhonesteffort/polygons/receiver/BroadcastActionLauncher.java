@@ -122,7 +122,7 @@ public class BroadcastActionLauncher extends BroadcastReceiver {
 
     // Zone exit & enter related broadcasts.
     if(intent.getAction().equals(ZoneService.ZONE_ENTER) || intent.getAction().equals(ZoneService.ZONE_EXIT)) {
-      List<ActionRecord> actions = applicationStorage.actionDatabase.getActions(intent.getExtras().getInt(ZoneService.ZONE_ID));
+      List<ActionRecord> actions = applicationStorage.getActionDatabase().getActions(intent.getExtras().getInt(ZoneService.ZONE_ID));
     
       // Launch zone enter & exit actions.
       for(ActionRecord action : actions) {

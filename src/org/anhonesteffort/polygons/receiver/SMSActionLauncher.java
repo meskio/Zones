@@ -71,14 +71,14 @@ public class SMSActionLauncher extends BroadcastReceiver {
 
         // Command: start location updates.
         if(message.toLowerCase(Locale.ENGLISH).startsWith(context.getString(R.string.command_start_location_updates))) {
-          applicationStorage.actionDatabase.addLocationSubscriber(shortMessage.getOriginatingAddress());
+          applicationStorage.getActionDatabase().addLocationSubscriber(shortMessage.getOriginatingAddress());
           SMSSender.sendTextMessage(shortMessage.getOriginatingAddress(), context.getString(R.string.command_start_location_updates_response));
           match = true;
         }
         
         // Command: stop location updates.
         else if(message.toLowerCase(Locale.ENGLISH).startsWith(context.getString(R.string.command_stop_location_updates))) {
-          applicationStorage.actionDatabase.removeLocationSubscriber(shortMessage.getOriginatingAddress());
+          applicationStorage.getActionDatabase().removeLocationSubscriber(shortMessage.getOriginatingAddress());
           SMSSender.sendTextMessage(shortMessage.getOriginatingAddress(), context.getString(R.string.command_stop_location_updates_response));
           match = true;
         }

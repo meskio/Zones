@@ -89,7 +89,7 @@ public class ActionArrayAdapter extends ArrayAdapter<ActionRecord> {
       else
         action.setRunOnExit(isChecked);
 
-      applicationStorage.actionDatabase.updateActionBroadcast(action);
+      applicationStorage.getActionDatabase().updateActionBroadcast(action);
     }
   }
 }

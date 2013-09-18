@@ -26,7 +26,7 @@ public class GoogleZoneMap
   implements OnMapClickListener, OnMapLongClickListener,
     OnMarkerDragListener, OnMarkerClickListener, OnCameraChangeListener {
   
-  private static final String TAG = "org.anhonesteffort.polygons.map.GoogleZoneMap";
+  private static final String TAG = "GoogleZoneMap";
 
   private DatabaseHelper databaseHelper;
   private ZoneMapActivity mapActivity;
@@ -157,7 +157,7 @@ public class GoogleZoneMap
   }
 
   public void focusOnZone(ZoneRecord zoneRecord) {
-    PointRecord[] zoneBounds = databaseHelper.zoneDatabase.getZoneBounds(zoneRecord.getId());
+    PointRecord[] zoneBounds = databaseHelper.getZoneDatabase().getZoneBounds(zoneRecord.getId());
     if(zoneBounds[0].getX() == -1)
       return;
 
@@ -226,7 +226,7 @@ public class GoogleZoneMap
     googleMap.clear();
 
     visibleZone = GoogleGeometryFactory.buildZoneRecord(bounds);
-    visibleZoneList = databaseHelper.zoneDatabase.getZonesIntersecting(visibleZone);
+    visibleZoneList = databaseHelper.getZoneDatabase().getZonesIntersecting(visibleZone);
 
     for(ZoneRecord zoneRecord : visibleZoneList) {
       if(mapActivity.getState() != DrawState.NEW_POINTS || zoneRecord.getId() != mapActivity.getSelectedZone().getId()) {

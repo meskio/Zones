@@ -40,7 +40,7 @@ public class ZoneArrayAdapter extends ArrayAdapter<ZoneRecord> {
     convertView = layoutInflater.inflate(R.layout.zone_list_row_layout, null);
 
     int count = 0;
-    List<ActionRecord> actions = applicationStorage.actionDatabase.getActions(zone.getId());
+    List<ActionRecord> actions = applicationStorage.getActionDatabase().getActions(zone.getId());
     for(ActionRecord action : actions) {
       if(action.runOnEnter())
         count++;
@@ -51,7 +51,7 @@ public class ZoneArrayAdapter extends ArrayAdapter<ZoneRecord> {
     LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     if(lastLocation != null) {
-      meters = (int) applicationStorage.zoneDatabase.distanceBetween(
+      meters = (int) applicationStorage.getZoneDatabase().distanceBetween(
           GoogleGeometryFactory.buildPointRecord(
               new LatLng(
                   lastLocation.getLatitude(),
@@ -70,13 +70,13 @@ public class ZoneArrayAdapter extends ArrayAdapter<ZoneRecord> {
     else
       zoneDetailsView.setText(count + " actions ready at " + meters + "m away.");
 
-    if(applicationStorage.zoneDatabase.isZoneSelected(zone.getId()))
+    if(applicationStorage.getZoneDatabase().isZoneSelected(zone.getId()))
       convertView.setBackgroundResource(R.color.abs__holo_blue_light);
     else
       convertView.setBackgroundResource(0);
 
     convertView.setTag(R.integer.zone_list_row_id_tag, Integer.valueOf(zone.getId()));
-    convertView.setTag(R.integer.zone_list_row_select_tag, Boolean.valueOf(applicationStorage.zoneDatabase.isZoneSelected(zone.getId())));
+    convertView.setTag(R.integer.zone_list_row_select_tag, Boolean.valueOf(applicationStorage.getZoneDatabase().isZoneSelected(zone.getId())));
 
     return convertView;
   }

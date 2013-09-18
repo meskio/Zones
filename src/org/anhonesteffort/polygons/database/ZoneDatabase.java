@@ -12,11 +12,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ZoneDatabase {
-  private static final String TAG = "org.anhonesteffort.polygons.database.ZoneDatabase";
+
+  private static final String TAG = "ZoneDatabase";
+
   private DatabaseHelper dbHelper;
   private ArrayList<GeometryChangeListener> listeners = new ArrayList<GeometryChangeListener>();
 
-  public ZoneDatabase(DatabaseHelper dbHelper) {
+  protected ZoneDatabase(DatabaseHelper dbHelper) {
     this.dbHelper = dbHelper;
     if(isInitialized() == false) {
       initialize();
@@ -24,7 +26,7 @@ public class ZoneDatabase {
     }
   }
 
-  public void initialize() {
+  private void initialize() {
     dbHelper.exec("SELECT InitSpatialMetaData()");
     dbHelper.exec("DROP TABLE IF EXISTS zone");
     dbHelper.exec("DROP TABLE IF EXISTS point");

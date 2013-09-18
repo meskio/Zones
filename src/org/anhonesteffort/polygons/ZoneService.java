@@ -58,8 +58,8 @@ public class ZoneService extends Service implements
     
     // Register for changes in polygon geometries and location subscribers.
     applicationStorage = DatabaseHelper.getInstance(this.getBaseContext());
-    applicationStorage.zoneDatabase.addGeometryChangeListener(this);
-    applicationStorage.actionDatabase.addLocationSubscriberChangeListener(this);
+    applicationStorage.getZoneDatabase().addGeometryChangeListener(this);
+    applicationStorage.getActionDatabase().addLocationSubscriberChangeListener(this);
     
     // Use the BetterLocationManager for location updates.
     locationManager = new BetterLocationManager(this.getApplicationContext());
@@ -84,8 +84,8 @@ public class ZoneService extends Service implements
     super.onDestroy();
     
     // Unregister from changes in polygon geometries, location subscribers, location updates and SCREEN_ON broadcasts.
-    applicationStorage.zoneDatabase.removeGeometryChangeListener(this);
-    applicationStorage.actionDatabase.removeLocationSubscriberChangeListener(this);
+    applicationStorage.getZoneDatabase().removeGeometryChangeListener(this);
+    applicationStorage.getActionDatabase().removeLocationSubscriberChangeListener(this);
     locationManager.removeLocationUpdates(this);
     this.unregisterReceiver(actionLauncher);
   }
@@ -102,9 +102,9 @@ public class ZoneService extends Service implements
     Log.d(TAG, "sendPolygonBroadcasts()");
     
     // Polygons we occupied before, we occupy now.
-    List<ZoneRecord> zonesIOccupied = applicationStorage.zoneDatabase.getZonesOccupied();
+    List<ZoneRecord> zonesIOccupied = applicationStorage.getZoneDatabase().getZonesOccupied();
     PointRecord bestPoint = new PointRecord(0, bestLocation.getLongitude(), bestLocation.getLatitude());
-    List<ZoneRecord> zonesIOccupy = applicationStorage.zoneDatabase.getZonesContainingPoint(bestPoint);
+    List<ZoneRecord> zonesIOccupy = applicationStorage.getZoneDatabase().getZonesContainingPoint(bestPoint);
 
     // Figure out which zoneDatabase we have left.
     boolean have = true;
@@ -115,7 +115,7 @@ public class ZoneService extends Service implements
           have = true;
       }
       if(have == false) {
-        applicationStorage.zoneDatabase.setZoneOccupancy(zoneOccupied.getId(), false);
+        applicationStorage.getZoneDatabase().setZoneOccupancy(zoneOccupied.getId(), false);
 
         // Send the polygon exit broadcast.
         double[] phoneLocation = {bestLocation.getLatitude(), bestLocation.getLongitude()};
@@ -135,7 +135,7 @@ public class ZoneService extends Service implements
           have = true;
       }
       if(have == false) {
-        applicationStorage.zoneDatabase.setZoneOccupancy(zone.getId(), true);
+        applicationStorage.getZoneDatabase().setZoneOccupancy(zone.getId(), true);
 
         // Send the polygon enter broadcast.
         double[] phoneLocation = {bestLocation.getLatitude(), bestLocation.getLongitude()};
@@ -154,7 +154,7 @@ public class ZoneService extends Service implements
     bestLocation = location;
     
     // If we have any location update subscribers oblige them.
-    List<String> locationSubscribers = applicationStorage.actionDatabase.getLocationSubscribers();
+    List<String> locationSubscribers = applicationStorage.getActionDatabase().getLocationSubscribers();
     if(locationSubscribers.size() > 0) {
       locationManager.requestLocationUpdates(SUBSCRIBER_INTERVAL_MS, this);
       for(String subscriber : locationSubscribers)
@@ -166,7 +166,7 @@ public class ZoneService extends Service implements
       PointRecord bestPoint = GoogleGeometryFactory.buildPointRecord(bestLocation);
       double device_velocity_mps = AVG_WALKING_VELOCITY_MPS;
       double time_to_polygon_ms = REGULAR_INTERVAL_MS * 2;
-      double distance_to_polygon_m = applicationStorage.zoneDatabase.distanceToClosestZone(bestPoint);
+      double distance_to_polygon_m = applicationStorage.getZoneDatabase().distanceToClosestZone(bestPoint);
       
       // Assume the user is walking if device velocity unknown.
       if(location.getSpeed() > 0)
