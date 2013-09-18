@@ -15,51 +15,50 @@ import org.anhonesteffort.polygons.database.model.ZoneRecord;
 import java.util.List;
 
 public class ActionListActivity extends SherlockActivity {
-  private static final String TAG          = "org.anhonesteffort.polygons.ActionListActivity";
-  public static final String ZONE_ID       = "org.anhonesteffort.polygons.action.PID";
-  public static final String ENTER_ACTIONS = "org.anhonesteffort.polygons.action.ENTER";
-  public static final String EXIT_ACTIONS  = "org.anhonesteffort.polygons.action.EXIT";
 
+  private static final String TAG    = "ActionListActivity";
+  public static final String ZONE_ID = "org.anhonesteffort.polygons.ActionListActivity.ZONE_ID";
+
+  private DatabaseHelper applicationStorage;
+  private ZoneRecord selectedZone;
   private ListView actionList;
 
   private void initializeList() {
-    DatabaseHelper applicationStorage = DatabaseHelper.getInstance(this.getBaseContext());
-    List<ActionRecord> polygonActions = applicationStorage.actionDb.getActions(getIntent().getExtras().getInt(ZONE_ID));
-    ArrayAdapter<ActionRecord> adapter = new ActionArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, polygonActions);
+    List<ActionRecord> zoneActions = applicationStorage.actionDb.getActions(selectedZone.getId());
+    ArrayAdapter<ActionRecord> actionArrayAdapter = new ActionArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, zoneActions);
 
     actionList = (ListView) findViewById(R.id.list);
-    actionList.setAdapter(adapter);
+    actionList.setAdapter(actionArrayAdapter);
   }
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
-    Log.d(TAG, "onCreate()");
     super.onCreate(savedInstanceState);
-    
+    Log.d(TAG, "onCreate()");
+
+    applicationStorage = DatabaseHelper.getInstance(this.getBaseContext());
+    selectedZone = applicationStorage.zoneDb.getZone(getIntent().getExtras().getInt(ZONE_ID));
+
     setContentView(R.layout.action_list_layout);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setTitle(this.getString(R.string.title_edit_actions));
-
-    DatabaseHelper applicationStorage = DatabaseHelper.getInstance(this.getBaseContext());
-    ZoneRecord selectedZone = applicationStorage.zoneDb.getZone(getIntent().getExtras().getInt(ZONE_ID));
     getSupportActionBar().setSubtitle(selectedZone.getLabel());
   }
 
   @Override
   public void onResume() {
-    Log.d(TAG, "onResume()");
     super.onResume();
+    Log.d(TAG, "onResume()");
+
     initializeList();
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-    
       case android.R.id.home:
         finish();
         break;
-        
     }
     return true;
   }

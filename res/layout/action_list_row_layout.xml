@@ -38,14 +38,14 @@
 	        android:orientation="horizontal" >
 
 		    <CheckBox
-		        android:id="@+id/on_enter"
+		        android:id="@+id/action_on_enter"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:gravity="start"
 		        android:paddingRight="8dp" />
 
 		    <CheckBox
-		        android:id="@+id/on_exit"
+		        android:id="@+id/action_on_exit"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:gravity="start" />

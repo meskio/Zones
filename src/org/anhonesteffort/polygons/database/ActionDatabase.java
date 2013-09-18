@@ -45,12 +45,12 @@ public class ActionDatabase {
     // Create the action broadcast table.
     dbHelper.exec("CREATE TABLE IF NOT EXISTS action_broadcast (" +
                     "action_id INTEGER NOT NULL, " +
-                    "polygon_id INTEGER NOT NULL, " +
+                    "zone_id INTEGER NOT NULL, " +
                     "enter INTEGER NOT NULL, " +
                     "exit INTEGER NOT NULL, " +
-                    "PRIMARY KEY (action_id, polygon_id), " +
+                    "PRIMARY KEY (action_id, zone_id), " +
                     "FOREIGN KEY (action_id) REFERENCES action(id) ON DELETE CASCADE, " +
-                    "FOREIGN KEY (polygon_id) REFERENCES polygon(id) ON DELETE CASCADE" +
+                    "FOREIGN KEY (zone_id) REFERENCES zone(id) ON DELETE CASCADE" +
                   ")");
 
     // Populate the action table.
@@ -96,7 +96,7 @@ public class ActionDatabase {
                   ")");
   }
 
-  // Returns true if the polygon tables have already been initialized.
+  // Returns true if the action tables have already been initialized.
   public boolean isInitialized() {
     BetterStatement actions = dbHelper.prepare("SELECT 1 FROM action LIMIT 1");
     if(actions.step()) {
@@ -158,47 +158,47 @@ public class ActionDatabase {
     return actionNames;
   }
 
-  // Returns a list of all available actionDb with exit & enter appropriately set for the specified polygon.
-  public List<ActionRecord> getActions(int polygon_id) {
+  // Returns a list of all available actionDb with exit & enter appropriately set for the specified zone.
+  public List<ActionRecord> getActions(int zone_id) {
     List<ActionRecord> actions = getActions();
     List<ActionRecord> orderedActions = new LinkedList<ActionRecord>();
-    BetterStatement polygonActions = dbHelper.prepare("SELECT action_id, polygon_id, enter, exit " +
+    BetterStatement zoneActions = dbHelper.prepare("SELECT action_id, zone_id, enter, exit " +
                                                         "FROM action_broadcast " +
-                                                        "WHERE polygon_id = '" + polygon_id + "'");
+                                                        "WHERE zone_id = '" + zone_id + "'");
 
     for(ActionRecord action : actions) {
       boolean found = false;
-      while(polygonActions.step()) {
-        if(action.getID() == polygonActions.getInt(0)) {
+      while(zoneActions.step()) {
+        if(action.getID() == zoneActions.getInt(0)) {
           found = true;
           orderedActions.add(new ActionRecord(
                                    action.getID(),
                                    action.getName(),
                                    action.getDescription(),
-                                   polygonActions.getInt(1),
-                                   (polygonActions.getInt(2) != 0),
-                                   (polygonActions.getInt(3) != 0)));
+                                   zoneActions.getInt(1),
+                                   (zoneActions.getInt(2) != 0),
+                                   (zoneActions.getInt(3) != 0)));
         }
       }
       if(found == false) {
-        action.setPolygonId(polygon_id);
+        action.setZoneId(zone_id);
         orderedActions.add(action);
       }
     }
-    polygonActions.close();
+    zoneActions.close();
     return orderedActions;
   }
 
   public void updateActionBroadcast(ActionRecord action) {
-    Log.d(TAG, "updateActionBroadcast(), action_id: " + action.getID() + ", polygon_id: " + action.getPolygonId());
+    Log.d(TAG, "updateActionBroadcast(), action_id: " + action.getID() + ", zone_id: " + action.getZoneId());
 
     dbHelper.exec("DELETE FROM action_broadcast " +
         "WHERE action_id = '" + action.getID() + "' " +
-        "AND polygon_id = '" + action.getPolygonId() + "'");
+        "AND zone_id = '" + action.getZoneId() + "'");
 
     ContentValues values = new ContentValues();
     values.put("action_id", action.getID());
-    values.put("polygon_id", action.getPolygonId());
+    values.put("zone_id", action.getZoneId());
     values.put("enter", (action.runOnEnter()? 1 : 0));
     values.put("exit", (action.runOnExit()? 1 : 0));
 

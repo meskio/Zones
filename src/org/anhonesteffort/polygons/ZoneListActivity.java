@@ -100,9 +100,6 @@ public class ZoneListActivity extends SherlockActivity implements
     switch (item.getItemId()) {
       case android.R.id.home:
         finish();
-
-      default:
-        break;
     }
     return true;
   }
@@ -135,9 +132,6 @@ public class ZoneListActivity extends SherlockActivity implements
 
       case R.id.edit_zone_label_button:
         showZoneLabelDialog();
-        break;
-
-      default:
         break;
     }
     return false;

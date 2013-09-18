@@ -16,7 +16,7 @@
     android:orientation="vertical" >
 
     <TableRow
-        android:id="@+id/polygon_map_row"
+        android:id="@+id/zone_map_button"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
@@ -24,7 +24,7 @@
         android:clickable="true" >
 
         <ImageView
-            android:id="@+id/polygon_map_image"
+            android:id="@+id/zone_map_image"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -32,7 +32,7 @@
             android:src="@drawable/location_map" />
 
         <TextView
-            android:id="@+id/polygon_map_text"
+            android:id="@+id/zone_map_text"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="3"
@@ -44,7 +44,7 @@
     </TableRow>
 
     <TableRow
-        android:id="@+id/polygon_list_row"
+        android:id="@+id/zone_list_button"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
@@ -52,7 +52,7 @@
         android:clickable="true" >
 
         <ImageView
-            android:id="@+id/polygon_list_image"
+            android:id="@+id/zone_list_image"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -60,7 +60,7 @@
             android:src="@drawable/collections_view_as_list" />
 
         <TextView
-            android:id="@+id/polygon_list_text"
+            android:id="@+id/zone_list_text"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="3"
@@ -72,7 +72,7 @@
     </TableRow>
 
     <TableRow
-        android:id="@+id/settings_row"
+        android:id="@+id/settings_button"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
@@ -100,7 +100,7 @@
     </TableRow>
     
     <TableRow
-        android:id="@+id/help_row"
+        android:id="@+id/help_button"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"

@@ -11,27 +11,27 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import org.anhonesteffort.polygons.map.ZoneMapActivity;
 
 public class MainMenuActivity extends SherlockFragmentActivity {
-  private static final String TAG = "org.anhonesteffort.zoneDb.MainMenuActivity";
+  private static final String TAG = "MainMenuActivity";
   
   @Override
   public void onCreate(Bundle savedInstanceState) {
-    Log.d(TAG, "onCreate()");
     super.onCreate(savedInstanceState);
+    Log.d(TAG, "onCreate()");
+
     setContentView(R.layout.main_menu_layout);
     getSupportActionBar().setTitle(R.string.app_name);
     
-    // Start the background service.
     Intent locationWatchIntent = new Intent(this, ZoneService.class);
     startService(locationWatchIntent);
   }
 
   @Override
   public void onResume() {
-    Log.d(TAG, "onResume()");
     super.onResume();
+    Log.d(TAG, "onResume()");
 
-    TableRow polygonMapButton = (TableRow) findViewById(R.id.polygon_map_row);
-    polygonMapButton.setOnClickListener(new OnClickListener() {
+    TableRow zoneMapButton = (TableRow) findViewById(R.id.zone_map_button);
+    zoneMapButton.setOnClickListener(new OnClickListener() {
       public void onClick(View v) {
         Intent intent = new Intent();
         intent.setClass(getApplicationContext(), ZoneMapActivity.class);
@@ -39,8 +39,8 @@ public class MainMenuActivity extends SherlockFragmentActivity {
       }
     });
 
-    TableRow polygonListButton = (TableRow) findViewById(R.id.polygon_list_row);
-    polygonListButton.setOnClickListener(new OnClickListener() {
+    TableRow zoneListButton = (TableRow) findViewById(R.id.zone_list_button);
+    zoneListButton.setOnClickListener(new OnClickListener() {
       public void onClick(View v) {
         Intent intent = new Intent();
         intent.setClass(getApplicationContext(), ZoneListActivity.class);
@@ -48,8 +48,8 @@ public class MainMenuActivity extends SherlockFragmentActivity {
       }
     });
 
-    TableRow smsSettingsButton = (TableRow) findViewById(R.id.settings_row);
-    smsSettingsButton.setOnClickListener(new OnClickListener() {
+    TableRow settingsButton = (TableRow) findViewById(R.id.settings_button);
+    settingsButton.setOnClickListener(new OnClickListener() {
       public void onClick(View v) {
         Intent intent = new Intent();
         intent.setClass(getApplicationContext(), PreferencesActivity.class);
@@ -57,7 +57,7 @@ public class MainMenuActivity extends SherlockFragmentActivity {
       }
     });
     
-    TableRow helpButton = (TableRow) findViewById(R.id.help_row);
+    TableRow helpButton = (TableRow) findViewById(R.id.help_button);
     helpButton.setOnClickListener(new OnClickListener() {
       public void onClick(View v) {
         Intent intent = new Intent();

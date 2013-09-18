@@ -3,7 +3,6 @@ package org.anhonesteffort.polygons.action;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,47 +20,57 @@ import org.anhonesteffort.polygons.database.model.ActionRecord;
 import java.util.List;
 
 public class ActionArrayAdapter extends ArrayAdapter<ActionRecord> {
-  private static final String TAG = "org.anhonesteffort.polygons.action.ActionArrayAdapter";
-  private List<ActionRecord> items;
-  private Context context;
 
-  public ActionArrayAdapter(Context context, int textViewResourceId, List<ActionRecord> items) {
-    super(context, textViewResourceId, items);
+  private Context context;
+  private List<ActionRecord> actionList;
+
+  public ActionArrayAdapter(Context context, int textViewResourceId, List<ActionRecord> actionList) {
+    super(context, textViewResourceId, actionList);
+
     this.context = context;
-    this.items = items;
+    this.actionList = actionList;
+  }
+
+  private boolean isActionEnabled(ActionRecord action) {
+    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+
+    if((action.getID() == R.integer.action_super_lock ||
+        action.getID() == R.integer.action_super_unlock ||
+        action.getID() == R.integer.action_factory_reset) &&
+        (settings.getBoolean(PreferencesActivity.PREF_DEVICE_ADMIN, false) == false))
+      return false;
+
+    if(action.getID() == R.integer.action_email_alert &&
+        settings.getBoolean(PreferencesActivity.PREF_EMAIL, false) == false)
+      return false;
+
+    return true;
   }
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    ActionRecord action = items.get(position);
-    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+    ActionRecord action = actionList.get(position);
 
-    LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    convertView = vi.inflate(R.layout.action_row_layout, null);
+    LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    convertView = layoutInflater.inflate(R.layout.action_list_row_layout, null);
 
-    if(settings.getBoolean(PreferencesActivity.PREF_DEVICE_ADMIN, false) == false &&
-        (action.getID() == R.integer.action_super_lock || action.getID() == R.integer.action_super_unlock || action.getID() == R.integer.action_factory_reset))
-       return new View(context);
-
-    else if(settings.getBoolean(PreferencesActivity.PREF_EMAIL, false) == false && action.getID() == R.integer.action_email_alert)
+    if(isActionEnabled(action) == false)
       return new View(context);
 
     TextView actionName = (TextView) convertView.findViewById(R.id.action_name);
     TextView actionDescription = (TextView) convertView.findViewById(R.id.action_description);
-    CheckBox enterCheck = (CheckBox) convertView.findViewById(R.id.on_enter);
-    CheckBox exitCheck = (CheckBox) convertView.findViewById(R.id.on_exit);
+    CheckBox actionEnterCheck = (CheckBox) convertView.findViewById(R.id.action_on_enter);
+    CheckBox actionExitCheck = (CheckBox) convertView.findViewById(R.id.action_on_exit);
 
     if(actionName != null) {
       actionName.setText(action.getName());
       actionDescription.setText(action.getDescription());
-      enterCheck.setChecked(action.runOnEnter());
-      exitCheck.setChecked(action.runOnExit());
-      enterCheck.setOnCheckedChangeListener(new onActionChangeListener(action, true, false));
-      exitCheck.setOnCheckedChangeListener(new onActionChangeListener(action, false, true));
+      actionEnterCheck.setChecked(action.runOnEnter());
+      actionExitCheck.setChecked(action.runOnExit());
+      actionEnterCheck.setOnCheckedChangeListener(new onActionChangeListener(action, true, false));
+      actionExitCheck.setOnCheckedChangeListener(new onActionChangeListener(action, false, true));
     }
-    else
-      Log.e(TAG, "actionName TextView is null, skipping.");
-    
+
     return convertView;
   }
 
@@ -80,7 +89,6 @@ public class ActionArrayAdapter extends ArrayAdapter<ActionRecord> {
     public void onCheckedChanged(CompoundButton checkBoxView, boolean isChecked) {
       DatabaseHelper applicationStorage = DatabaseHelper.getInstance(context);
 
-      // Sometimes the ListView is dumb.
       if(checkBoxView.isShown() == false)
         return;
 
