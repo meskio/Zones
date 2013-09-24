@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -22,11 +23,10 @@ import org.anhonesteffort.polygons.action.AudioAlarmer;
 import org.anhonesteffort.polygons.action.CallHistoryCleaner;
 import org.anhonesteffort.polygons.action.ContactCleaner;
 import org.anhonesteffort.polygons.action.LocationReporter;
+import org.anhonesteffort.polygons.database.ActionDatabase;
 import org.anhonesteffort.polygons.database.DatabaseHelper;
 import org.anhonesteffort.polygons.database.model.ActionRecord;
 import org.anhonesteffort.polygons.map.ZoneMapActivity;
-
-import java.util.List;
 
 public class BroadcastActionLauncher extends BroadcastReceiver {
 
@@ -122,22 +122,26 @@ public class BroadcastActionLauncher extends BroadcastReceiver {
 
     // Zone exit & enter related broadcasts.
     if(intent.getAction().equals(ZoneService.ZONE_ENTER) || intent.getAction().equals(ZoneService.ZONE_EXIT)) {
-      List<ActionRecord> actions = applicationStorage.getActionDatabase().getActions(intent.getExtras().getInt(ZoneService.ZONE_ID));
-    
+      int zone_id = intent.getExtras().getInt(ZoneService.ZONE_ID);
+      String zone_label = intent.getExtras().getString(ZoneService.ZONE_LABEL);
+
+      Cursor actions = applicationStorage.getActionDatabase().getActions(zone_id);
+      ActionDatabase.Reader actionReader = new ActionDatabase.Reader(actions);
+
       // Launch zone enter & exit actions.
-      for(ActionRecord action : actions) {
-        if(intent.getAction().equals(ZoneService.ZONE_ENTER) && action.runOnEnter())
-          launchAction(context, intent.getExtras(), action, intent.getAction());
-        else if(intent.getAction().equals(ZoneService.ZONE_EXIT) && action.runOnExit())
-          launchAction(context, intent.getExtras(), action, intent.getAction());
+      while (actionReader.getNext() != null) {
+        if(intent.getAction().equals(ZoneService.ZONE_ENTER) && actionReader.getCurrent().runOnEnter())
+          launchAction(context, intent.getExtras(), actionReader.getCurrent(), intent.getAction());
+        else if(intent.getAction().equals(ZoneService.ZONE_EXIT) && actionReader.getCurrent().runOnExit())
+          launchAction(context, intent.getExtras(), actionReader.getCurrent(), intent.getAction());
       }
       
       // Show status bar notifications.
       if(sharedPreferences.getBoolean(PreferencesActivity.PREF_NOTIFICATIONS, false)) {
         if(intent.getAction().equals(ZoneService.ZONE_ENTER))
-          showNotification(context, true, context.getString(R.string.entered_zone) + " " + intent.getExtras().getString(ZoneService.ZONE_LABEL));
+          showNotification(context, true, context.getString(R.string.entered_zone) + " " + zone_label);
         else if(intent.getAction().equals(ZoneService.ZONE_EXIT))
-          showNotification(context, false, context.getString(R.string.exited_zone) + " " + intent.getExtras().getString(ZoneService.ZONE_LABEL));
+          showNotification(context, false, context.getString(R.string.exited_zone) + " " + zone_label);
       }
       
       // Vibrate on zone enter & exit.
@@ -149,11 +153,14 @@ public class BroadcastActionLauncher extends BroadcastReceiver {
     }
     
     // Enforce the super lock.
-    else if(sharedPreferences.getBoolean(PreferencesActivity.PREF_SUPER_LOCK, false) && intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+    else if(sharedPreferences.getBoolean(PreferencesActivity.PREF_SUPER_LOCK, false) &&
+        intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+
       if(policyManager.isAdminActive(adminReceiver)) {
         Log.d(TAG, "policyManager.lockNow()");
         policyManager.lockNow();
       }
+
     }
   }
 

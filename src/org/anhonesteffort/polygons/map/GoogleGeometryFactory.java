@@ -46,26 +46,26 @@ public class GoogleGeometryFactory {
   }
 
   public static PointRecord buildPointRecord(LatLng point) {
-    PointRecord newPoint =  new PointRecord(-1, point.longitude, point.latitude);
+    PointRecord newPoint =  new PointRecord(-1, -1, point.longitude, point.latitude);
     return newPoint;
   }
 
   public static PointRecord buildPointRecord(Marker marker) {
-    PointRecord newPoint =  new PointRecord(Integer.parseInt(marker.getSnippet()),
+    PointRecord newPoint =  new PointRecord(Integer.parseInt(marker.getSnippet()), -1,
                                                              marker.getPosition().longitude,
                                                              marker.getPosition().latitude);
     return newPoint;
   }
 
   public static PointRecord buildPointRecord(MarkerOptions marker) {
-    PointRecord newPoint =  new PointRecord(Integer.parseInt(marker.getSnippet()),
-        marker.getPosition().longitude,
-        marker.getPosition().latitude);
+    PointRecord newPoint =  new PointRecord(Integer.parseInt(marker.getSnippet()), -1,
+                                                             marker.getPosition().longitude,
+                                                             marker.getPosition().latitude);
     return newPoint;
   }
   
   public static PointRecord buildPointRecord(Location point) {
-    PointRecord newPoint =  new PointRecord(-1, point.getLongitude(), point.getLatitude());
+    PointRecord newPoint =  new PointRecord(-1, -1, point.getLongitude(), point.getLatitude());
     return newPoint;
   }
 

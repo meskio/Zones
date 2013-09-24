@@ -10,7 +10,8 @@ import java.util.List;
  * Date: 9/6/13
  */
 public class ZoneRecord {
-  private static final String TAG = "org.anhonesteffort.database.model.ZoneRecord";
+
+  private static final String TAG = "ZoneRecord";
 
   public static final int MIN_POINTS        = 3;
   public static final int MAX_POINTS        = 10;
@@ -25,11 +26,13 @@ public class ZoneRecord {
   private int id;
   private String label;
   private List<PointRecord> points;
+  private List<ActionRecord> actions;
 
   public ZoneRecord(int id, String label) {
     this.id = id;
     this.label = label;
     points = new LinkedList<PointRecord>();
+    actions = new LinkedList<ActionRecord>();
   }
 
   public ZoneRecord(int id, String label, List<PointRecord> points) {
@@ -48,6 +51,20 @@ public class ZoneRecord {
 
   public List<PointRecord> getPoints() {
     return points;
+  }
+
+  public void removePoint(int point_id) {
+    int remove_index = -1;
+
+    for (int i = 0; i < points.size(); i++) {
+      if(points.get(i).getId() == point_id) {
+        remove_index = i;
+        break;
+      }
+    }
+
+    if (remove_index != -1)
+      points.remove(remove_index);
   }
 
   private void testAllCombinations(List<PointRecord> testPoints, int k) {

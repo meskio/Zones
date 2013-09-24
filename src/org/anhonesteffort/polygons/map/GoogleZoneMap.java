@@ -176,7 +176,7 @@ public class GoogleZoneMap
       mapActivity.onMapLoad();
     }
 
-    PointRecord mapCenter = new PointRecord(0, position.target.longitude, position.target.latitude);
+    PointRecord mapCenter = new PointRecord(0, -1, position.target.longitude, position.target.latitude);
     addZonesWithinBounds(googleMap.getProjection().getVisibleRegion().latLngBounds);
     mapActivity.onMapViewChange(mapCenter, position.zoom);
   }

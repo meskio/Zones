@@ -14,7 +14,7 @@ public class MapPoint extends PointRecord {
   private float fillColor = defaultFillColor;
 
   public MapPoint(PointRecord point) {
-    super(point.getId(), point.getX(), point.getY());
+    super(point.getId(), point.getZoneId(), point.getX(), point.getY());
   }
 
   public void setFillColor(float fillColor) {

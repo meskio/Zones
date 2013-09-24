@@ -103,7 +103,7 @@ public class ZoneService extends Service implements
     
     // Polygons we occupied before, we occupy now.
     List<ZoneRecord> zonesIOccupied = applicationStorage.getZoneDatabase().getZonesOccupied();
-    PointRecord bestPoint = new PointRecord(0, bestLocation.getLongitude(), bestLocation.getLatitude());
+    PointRecord bestPoint = new PointRecord(0, -1, bestLocation.getLongitude(), bestLocation.getLatitude());
     List<ZoneRecord> zonesIOccupy = applicationStorage.getZoneDatabase().getZonesContainingPoint(bestPoint);
 
     // Figure out which zoneDatabase we have left.

@@ -1,6 +1,7 @@
 package org.anhonesteffort.polygons;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.view.LayoutInflater;
@@ -10,8 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
+import org.anhonesteffort.polygons.database.ActionDatabase;
 import org.anhonesteffort.polygons.database.DatabaseHelper;
-import org.anhonesteffort.polygons.database.model.ActionRecord;
 import org.anhonesteffort.polygons.database.model.ZoneRecord;
 import org.anhonesteffort.polygons.map.GoogleGeometryFactory;
 
@@ -40,11 +41,13 @@ public class ZoneArrayAdapter extends ArrayAdapter<ZoneRecord> {
     convertView = layoutInflater.inflate(R.layout.zone_list_row_layout, null);
 
     int count = 0;
-    List<ActionRecord> actions = applicationStorage.getActionDatabase().getActions(zone.getId());
-    for(ActionRecord action : actions) {
-      if(action.runOnEnter())
+    Cursor actionRecords = applicationStorage.getActionDatabase().getActions(zone.getId());
+    ActionDatabase.Reader actionReader = new ActionDatabase.Reader(actionRecords);
+
+    while (actionReader.getNext() != null) {
+      if(actionReader.getCurrent().runOnEnter())
         count++;
-      if(action.runOnExit())
+      if(actionReader.getCurrent().runOnExit())
         count++;
     }
 

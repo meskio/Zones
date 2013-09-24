@@ -1,33 +1,32 @@
 package org.anhonesteffort.polygons;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
+import org.anhonesteffort.polygons.database.ActionCursorAdapter;
 import org.anhonesteffort.polygons.database.DatabaseHelper;
-import org.anhonesteffort.polygons.database.model.ActionRecord;
 import org.anhonesteffort.polygons.database.model.ZoneRecord;
-
-import java.util.List;
 
 public class ActionListActivity extends SherlockActivity {
 
   private static final String TAG    = "ActionListActivity";
   public static final String ZONE_ID = "org.anhonesteffort.polygons.ActionListActivity.ZONE_ID";
 
-  private DatabaseHelper applicationStorage;
+  private DatabaseHelper dbHelper;
   private ZoneRecord selectedZone;
   private ListView actionList;
 
   private void initializeList() {
-    List<ActionRecord> zoneActions = applicationStorage.getActionDatabase().getActions(selectedZone.getId());
-    ArrayAdapter<ActionRecord> actionArrayAdapter = new ActionArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, zoneActions);
+    Cursor zoneActions = dbHelper.getActionDatabase().getActions(selectedZone.getId());
+    CursorAdapter actionAdapter = new ActionCursorAdapter(this, zoneActions);
 
     actionList = (ListView) findViewById(R.id.list);
-    actionList.setAdapter(actionArrayAdapter);
+    actionList.setAdapter(actionAdapter);
   }
 
   @Override
@@ -35,8 +34,8 @@ public class ActionListActivity extends SherlockActivity {
     super.onCreate(savedInstanceState);
     Log.d(TAG, "onCreate()");
 
-    applicationStorage = DatabaseHelper.getInstance(this.getBaseContext());
-    selectedZone = applicationStorage.getZoneDatabase().getZone(getIntent().getExtras().getInt(ZONE_ID));
+    dbHelper = DatabaseHelper.getInstance(this.getBaseContext());
+    selectedZone = dbHelper.getZoneDatabase().getZone(getIntent().getExtras().getInt(ZONE_ID));
 
     setContentView(R.layout.action_list_layout);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);

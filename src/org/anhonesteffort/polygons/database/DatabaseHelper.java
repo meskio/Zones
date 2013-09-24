@@ -15,8 +15,8 @@ public class DatabaseHelper {
   private static final String TAG = "DatabaseHelper";
 
   private static DatabaseHelper instance;
-  private Context applicationContext;
-  private Database db;
+  private Context context;
+  private Database database;
 
   private ActionDatabase actionDatabase;
   private ZoneDatabase zoneDatabase;
@@ -30,28 +30,16 @@ public class DatabaseHelper {
   private DatabaseHelper(File spatialDbFile, Context context) {
     Log.d(TAG, "private DatabaseHelper()");
 
-    applicationContext = context;
-    db = new jsqlite.Database();
+    this.context = context;
+    database = new jsqlite.Database();
 
     try {
-      db.open(spatialDbFile.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
+      database.open(spatialDbFile.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
       zoneDatabase = new ZoneDatabase(this);
       actionDatabase = new ActionDatabase(this);
     } catch (Exception e) {
       displayException(e);
     }
-  }
-  
-  protected static String escapeString(String input) {
-    return input.replace("'", "\'");
-  }
-  
-  protected static String unescapeString(String input) {
-    return input.replace("\'", "'");
-  }
-
-  public String getStringResource(int resource_id) {
-    return applicationContext.getString(resource_id);
   }
 
   public ZoneDatabase getZoneDatabase() {
@@ -62,8 +50,20 @@ public class DatabaseHelper {
     return actionDatabase;
   }
 
+  protected static String escapeString(String input) {
+    return input.replace("'", "\'");
+  }
+  
+  protected static String unescapeString(String input) {
+    return input.replace("\'", "'");
+  }
+
+  protected String getStringResource(int resource_id) {
+    return context.getString(resource_id);
+  }
+
   protected Database getDatabase() {
-    return db;
+    return database;
   }
 
   protected SpatialCursor prepare(String sql) {
@@ -72,7 +72,7 @@ public class DatabaseHelper {
 
   protected void exec(String sql) {
     try {
-      db.exec("PRAGMA foreign_keys=ON; " + sql, null);
+      database.exec("PRAGMA foreign_keys=ON; " + sql, null);
     }
     catch (Exception e) {
       displayException(e);
@@ -127,15 +127,16 @@ public class DatabaseHelper {
     exec(sql);
   }
 
+  protected void displayException(java.lang.Exception e) {
+    Log.e(TAG, "displayException(): " + e.toString());
+  }
+
   public void close() {
     try {
-      db.close();
+      database.close();
     } catch (Exception e) {
       displayException(e);
     }
   }
 
-  public void displayException(java.lang.Exception e) {
-    Log.e(TAG, "displayException(): " + e.toString());
-  }
 }

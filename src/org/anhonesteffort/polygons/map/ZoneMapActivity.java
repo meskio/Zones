@@ -84,7 +84,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
     if(settings.contains(getString(R.string.key_last_known_location))) {
       String location = settings.getString(getString(R.string.key_last_known_location), "");
-      PointRecord point = new PointRecord(-1,
+      PointRecord point = new PointRecord(-1, -1,
                                 Double.parseDouble(location.split(":")[1].split(",")[0]),
                                 Double.parseDouble(location.split(":")[1].split(",")[1]));
       zoneMap.focusOnPoint(point, Double.parseDouble(location.split(":")[0]));
@@ -260,8 +260,9 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
   public void onMapClick(PointRecord clickPoint) {
     Log.d(TAG, "onMapClick()");
     if(myState == DrawState.NEW_POINTS || myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
-      clickPoint = databaseHelper.getZoneDatabase().addPoint(clickPoint, selectedZone.getId());
+      clickPoint = new PointRecord(clickPoint.getId(), selectedZone.getId(), clickPoint.getX(), clickPoint.getY());
       selectedZone.getPoints().add(clickPoint);
+      selectedZone = databaseHelper.getZoneDatabase().updateZone(selectedZone);
       zoneMap.addPoint(new MapPoint(clickPoint));
     }
 
@@ -298,12 +299,13 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
   }
   
   public void onPointMoveStop(PointRecord clickPoint) {
-    Log.d(TAG, "onPointMoveStop()");
+    Log.d(TAG, "onPointMoveStop() " + clickPoint.getId());
     selectedPoint = clickPoint;
 
-    databaseHelper.getZoneDatabase().updatePoint(clickPoint, selectedZone.getId());
-    selectedZone = databaseHelper.getZoneDatabase().getZone(selectedZone.getId());
-    
+    selectedZone.removePoint(clickPoint.getId());
+    selectedZone.getPoints().add(clickPoint);
+    selectedZone = databaseHelper.getZoneDatabase().updateZone(selectedZone);
+
     if(myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
       updateSelectedZone();
       setState(DrawState.EDIT_POINT);
