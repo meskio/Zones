@@ -160,7 +160,6 @@ public class BroadcastActionLauncher extends BroadcastReceiver {
         Log.d(TAG, "policyManager.lockNow()");
         policyManager.lockNow();
       }
-
     }
   }
 

@@ -1,4 +1,4 @@
-package org.anhonesteffort.polygons.database;
+package org.anhonesteffort.polygons;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,8 +13,8 @@ import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import org.anhonesteffort.polygons.PreferencesActivity;
-import org.anhonesteffort.polygons.R;
+import org.anhonesteffort.polygons.database.ActionDatabase;
+import org.anhonesteffort.polygons.database.DatabaseHelper;
 import org.anhonesteffort.polygons.database.model.ActionRecord;
 
 /**
@@ -59,7 +59,7 @@ public class ActionCursorAdapter extends CursorAdapter {
 
   @Override
   public void bindView(View view, Context context, Cursor cursor) {
-    Log.d("ActionCursorAdapter", "newView()");
+    Log.d("ActionCursorAdapter", "bindView()");
 
     ActionDatabase.Reader actionReader = new ActionDatabase.Reader(cursor);
     ActionRecord actionRecord = actionReader.getCurrent();

@@ -8,13 +8,13 @@ import org.anhonesteffort.polygons.database.model.ZoneRecord;
  */
 public class MapZone extends ZoneRecord {
 
-  private final int defaultFillColor   = 0x5F880607;
-  private final int defaultStrokeColor = 0x00;
-  private final int defaultStrokeWidth = 3;
+  private final int FILL_COLOR   = 0x5F880607;
+  private final int STROKE_COLOR = 0x00;
+  private final int STROKE_WIDTH = 3;
 
-  private int fillColor   = defaultFillColor;
-  private int strokeColor = defaultStrokeColor;
-  private int strokeWidth = defaultStrokeWidth;
+  private int fillColor   = FILL_COLOR;
+  private int strokeColor = STROKE_COLOR;
+  private int strokeWidth = STROKE_WIDTH;
 
   public MapZone(ZoneRecord zoneRecord) {
     super(zoneRecord.getId(), zoneRecord.getLabel(), zoneRecord.getPoints());

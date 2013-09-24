@@ -26,13 +26,11 @@ public class ZoneRecord {
   private int id;
   private String label;
   private List<PointRecord> points;
-  private List<ActionRecord> actions;
 
   public ZoneRecord(int id, String label) {
     this.id = id;
     this.label = label;
     points = new LinkedList<PointRecord>();
-    actions = new LinkedList<ActionRecord>();
   }
 
   public ZoneRecord(int id, String label, List<PointRecord> points) {

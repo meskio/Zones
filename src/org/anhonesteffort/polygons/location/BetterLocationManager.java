@@ -1,8 +1,5 @@
 package org.anhonesteffort.polygons.location;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -10,8 +7,11 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BetterLocationManager implements LocationListener {
-  private static final String TAG = "org.anhonesteffort.zoneDatabase.location.BetterLocationManager";
+  private static final String TAG = "BetterLocationManager";
   
   private Context context;
   private LocationManager locationManager;
@@ -35,7 +35,8 @@ public class BetterLocationManager implements LocationListener {
   }
   
   private void addLocationRequest(long minumum_interval_ms, BetterLocationListener listener) {
-    Log.d(TAG, "Added new location listener with " + minumum_interval_ms + "ms minimum interval.");
+    Log.d(TAG, "Adding new location listener with " + minumum_interval_ms + "ms minimum interval.");
+
     LocationRequest request = new LocationRequest(minumum_interval_ms, listener); 
     locationRequests.add(request);
     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, request.minumum_interval_ms, 0, this);

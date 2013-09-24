@@ -59,9 +59,6 @@ public class SMSActionLauncher extends BroadcastReceiver {
 
     // Only process commands if allowed in application preferences.
     if(settings.getBoolean(PreferencesActivity.PREF_SMS_COMMANDS, true)) {
-      Log.d(TAG, "SMS message sender: " + shortMessage.getOriginatingAddress());
-      Log.d(TAG, "SMS message text: " + shortMessage.getDisplayMessageBody());
-
       String message = shortMessage.getDisplayMessageBody();
       String commandPassword = settings.getString(PreferencesActivity.PREF_SMS_COMMAND_PASSWORD, "");
       
@@ -157,9 +154,12 @@ public class SMSActionLauncher extends BroadcastReceiver {
         
         // Start the background service if not already running.
         if(match) {
+          Log.d(TAG, "SMS belonged to Zones");
           resultIntent = new Intent(context.getApplicationContext(), ZoneService.class);
           context.getApplicationContext().startService(resultIntent);
         }
+        else
+          Log.d(TAG, "SMS was not for Zones");
       }
     }
   }

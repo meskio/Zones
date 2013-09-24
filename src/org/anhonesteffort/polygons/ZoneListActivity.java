@@ -3,12 +3,13 @@ package org.anhonesteffort.polygons;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -18,10 +19,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import org.anhonesteffort.polygons.database.DatabaseHelper;
+import org.anhonesteffort.polygons.database.ZoneDatabase;
 import org.anhonesteffort.polygons.database.model.ZoneRecord;
 import org.anhonesteffort.polygons.map.ZoneMapActivity;
-
-import java.util.List;
 
 public class ZoneListActivity extends SherlockActivity implements
   ListView.OnItemClickListener, ListView.OnItemLongClickListener, ActionMode.Callback {
@@ -31,7 +31,7 @@ public class ZoneListActivity extends SherlockActivity implements
 
   private ListView zoneListView;
   private ActionMode mActionMode;
-  private DatabaseHelper applicationStorage;
+  private DatabaseHelper databaseHelper;
   private AlertDialog zoneLabelDialog;
 
   private int select_count = 0;
@@ -47,7 +47,7 @@ public class ZoneListActivity extends SherlockActivity implements
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setSubtitle(R.string.menu_title_zone_list);
 
-    applicationStorage = DatabaseHelper.getInstance(this.getBaseContext());
+    databaseHelper = DatabaseHelper.getInstance(this.getBaseContext());
   }
 
   @Override
@@ -65,7 +65,7 @@ public class ZoneListActivity extends SherlockActivity implements
     Log.d(TAG, "onResume()");
 
     if(!list_is_initialized) {
-      applicationStorage.getZoneDatabase().clearSelectedZones();
+      databaseHelper.getZoneDatabase().clearSelectedZones();
       initializeList();
     }
   }
@@ -78,7 +78,7 @@ public class ZoneListActivity extends SherlockActivity implements
     if(savedInstanceState != null && savedInstanceState.getBoolean(RESTORE_SELECTIONS, false)) {
       initializeList();
 
-      select_count = applicationStorage.getZoneDatabase().getZonesSelected().size();
+      select_count = databaseHelper.getZoneDatabase().getZonesSelected().getCount();
       if(select_count > 0) {
         select_mode_active = true;
         mActionMode = startActionMode(this);
@@ -123,9 +123,13 @@ public class ZoneListActivity extends SherlockActivity implements
     switch (item.getItemId()) {
 
       case R.id.delete_zone_button:
-        for(ZoneRecord zone : applicationStorage.getZoneDatabase().getZonesSelected())
-          applicationStorage.getZoneDatabase().deleteZone(zone.getId());
+        Cursor selectedZones = databaseHelper.getZoneDatabase().getZonesSelected();
+        ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(databaseHelper, selectedZones);
 
+        while (zoneReader.getNext() != null)
+          databaseHelper.getZoneDatabase().deleteZone(zoneReader.getCurrent().getId());
+
+        zoneReader.close();
         mActionMode.finish();
         initializeList();
         break;
@@ -146,7 +150,7 @@ public class ZoneListActivity extends SherlockActivity implements
       zoneListView.getChildAt(i).setTag(R.integer.zone_list_row_select_tag, Boolean.FALSE);
     }
 
-    applicationStorage.getZoneDatabase().clearSelectedZones();
+    databaseHelper.getZoneDatabase().clearSelectedZones();
     select_count = 0;
     select_mode_active = false;
   }
@@ -166,7 +170,7 @@ public class ZoneListActivity extends SherlockActivity implements
       startActivity(intent);
     }
     else {
-      if((view.getTag(R.integer.zone_list_row_select_tag)) == Boolean.TRUE)
+      if(view.getTag(R.integer.zone_list_row_select_tag) == Boolean.TRUE)
         unselectZone(view);
       else
         selectZone(view);
@@ -189,11 +193,11 @@ public class ZoneListActivity extends SherlockActivity implements
   private void initializeList() {
     Log.d(TAG, "initializeList()");
 
-    List<ZoneRecord> zones = applicationStorage.getZoneDatabase().getZones();
-    ArrayAdapter<ZoneRecord> adapter = new ZoneArrayAdapter(this, R.layout.zone_list_row_layout, zones);
+    Cursor zones = databaseHelper.getZoneDatabase().getZones();
+    CursorAdapter zoneAdapter = new ZoneCursorAdapter(this, zones);
 
     zoneListView = (ListView) findViewById(R.id.list);
-    zoneListView.setAdapter(adapter);
+    zoneListView.setAdapter(zoneAdapter);
     zoneListView.setOnItemClickListener(this);
     zoneListView.setOnItemLongClickListener(this);
 
@@ -215,7 +219,7 @@ public class ZoneListActivity extends SherlockActivity implements
     Log.d(TAG, "selectZone()");
 
     select_count++;
-    applicationStorage.getZoneDatabase().setZoneSelected(((Integer) view.getTag(R.integer.zone_list_row_id_tag)).intValue(), true);
+    databaseHelper.getZoneDatabase().setZoneSelected(((Integer) view.getTag(R.integer.zone_list_row_id_tag)).intValue(), true);
     view.setTag(R.integer.zone_list_row_select_tag, Boolean.TRUE);
     view.setBackgroundResource(R.color.abs__holo_blue_light);
     updateActionMode();
@@ -224,7 +228,7 @@ public class ZoneListActivity extends SherlockActivity implements
   private void unselectZone(View view) {
     Log.d(TAG, "unselectZone()");
 
-    applicationStorage.getZoneDatabase().setZoneSelected(((Integer) view.getTag(R.integer.zone_list_row_id_tag)).intValue(), false);
+    databaseHelper.getZoneDatabase().setZoneSelected(((Integer) view.getTag(R.integer.zone_list_row_id_tag)).intValue(), false);
     view.setTag(R.integer.zone_list_row_select_tag, Boolean.FALSE);
     view.setBackgroundResource(0);
     if(--select_count < 1)
@@ -243,8 +247,10 @@ public class ZoneListActivity extends SherlockActivity implements
 
       public void onClick(DialogInterface dialog, int id) {
         EditText zoneLabelEdit = (EditText) view.findViewById(R.id.zone_list_row_label);
-        List<ZoneRecord> selectedZones = applicationStorage.getZoneDatabase().getZonesSelected();
-        handleEditZoneLabel(selectedZones.get(0), zoneLabelEdit.getText().toString());
+        Cursor selectedZones = databaseHelper.getZoneDatabase().getZonesSelected();
+        ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(databaseHelper, selectedZones);
+        handleEditZoneLabel(zoneReader.getNext(), zoneLabelEdit.getText().toString());
+        zoneReader.close();
       }
 
     });
@@ -255,7 +261,7 @@ public class ZoneListActivity extends SherlockActivity implements
   private void handleEditZoneLabel(ZoneRecord selectedZone, String newLabel) {
     if (selectedZone != null) {
       ZoneRecord updatedZone = new ZoneRecord(selectedZone.getId(), newLabel, selectedZone.getPoints());
-      applicationStorage.getZoneDatabase().updateZone(updatedZone);
+      databaseHelper.getZoneDatabase().updateZone(updatedZone);
       mActionMode.finish();
       initializeList();
     }

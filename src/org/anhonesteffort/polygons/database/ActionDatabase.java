@@ -159,7 +159,7 @@ public class ActionDatabase {
     }
   }
 
-  public void initZoneActions(int zone_id) {
+  protected void initZoneActions(int zone_id) {
     ContentValues values;
 
     values = new ContentValues();
@@ -262,7 +262,6 @@ public class ActionDatabase {
     public void close() {
       cursor.close();
     }
-
   }
 
 }

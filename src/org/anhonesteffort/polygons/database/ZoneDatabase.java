@@ -1,6 +1,7 @@
 package org.anhonesteffort.polygons.database;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.util.Log;
 
@@ -8,22 +9,11 @@ import org.anhonesteffort.polygons.database.model.PointRecord;
 import org.anhonesteffort.polygons.database.model.ZoneRecord;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class ZoneDatabase {
 
   private static final String TAG = "ZoneDatabase";
-
-  protected static final String ZONE_TABLE = "zone";
-  protected static final String ZONE_ID    = "_id";
-  protected static final String ZONE_LABEL = "label";
-
-  protected static final String POINT_TABLE     = "point";
-  protected static final String POINT_ID        = "_id";
-  protected static final String POINT_ZONE_ID   = "zone_id";
-  protected static final String POINT_LATITUDE  = "latitude";
-  protected static final String POINT_LONGITUDE = "longitude";
 
   private DatabaseHelper dbHelper;
   private ArrayList<GeometryChangeListener> listeners = new ArrayList<GeometryChangeListener>();
@@ -158,8 +148,8 @@ public class ZoneDatabase {
   }
 
   public ZoneRecord addZone(String label) {
-    Log.d(TAG, "addZone(), label: " + label);
-    ZoneRecord outZone = new ZoneRecord(-1, label);
+    Log.d(TAG, "addZone()");
+    ZoneRecord outZone = null;
 
     ContentValues values = new ContentValues();
     values.put("label", DatabaseHelper.escapeString(label));
@@ -181,7 +171,7 @@ public class ZoneDatabase {
   }
 
   public ZoneRecord updateZone(ZoneRecord zone) {
-    Log.d(TAG, "updateZone(), id: " + zone.getId() + ", label: " + zone.getLabel());
+    Log.d(TAG, "updateZone(), id: " + zone.getId());
 
     if(zoneExists(zone.getId())) {
       String sql = "UPDATE zone SET geometry = GeomFromText('POLYGON((";
@@ -202,40 +192,24 @@ public class ZoneDatabase {
         addPoint(point, zone.getId());
     }
     else
-      zone = new ZoneRecord(-1, "");
+      zone = null;
 
     geometryChange();
     return zone;
   }
 
   public ZoneRecord getZone(int zone_id) {
-    ZoneRecord zone = new ZoneRecord(-1, "");
     SpatialCursor zoneRecords = dbHelper.prepare("SELECT _id, label FROM zone WHERE _id = '" + zone_id + "'");
+    Reader zoneReader = new Reader(dbHelper, zoneRecords);
 
-    if(zoneRecords.moveToNext()) {
-      zone = new ZoneRecord(zoneRecords.getInt(0), DatabaseHelper.unescapeString(zoneRecords.getString(1)));
-      SpatialCursor pointRecords = dbHelper.prepare("SELECT _id, latitude, longitude FROM point WHERE " +
-                                                      "zone_id = '" + zoneRecords.getInt(0) + "'");
+    ZoneRecord zone = zoneReader.getNext();
 
-      while(pointRecords.moveToNext())
-        zone.getPoints().add(getPoint(pointRecords.getInt(0)));
-
-      pointRecords.close();
-    }
-
-    zoneRecords.close();
+    zoneReader.close();
     return zone;
   }
 
-  public List<ZoneRecord> getZones() {
-    List<ZoneRecord> zoneList = new LinkedList<ZoneRecord>();
-    SpatialCursor zoneRecords = dbHelper.prepare("SELECT _id FROM zone");
-
-    while(zoneRecords.moveToNext())
-      zoneList.add(getZone(zoneRecords.getInt(0)));
-
-    zoneRecords.close();
-    return zoneList;
+  public Cursor getZones() {
+    return dbHelper.prepare("SELECT _id, label FROM zone");
   }
 
   public List<ZoneRecord> getZonesContainingPoint(PointRecord point) {
@@ -272,7 +246,7 @@ public class ZoneDatabase {
   }
 
   public PointRecord[] getZoneBounds(int zone_id) {
-    PointRecord[] pointBounds = {new PointRecord(-1, -1, -1, -1), new PointRecord(-1, -1, -1, -1)};
+    PointRecord[] pointBounds = {null, null};
     SpatialCursor zoneRecords = dbHelper.prepare("SELECT " +
                                                    "MbrMinX(geometry), " +
                                                    "MbrMinY(geometry), " +
@@ -378,15 +352,46 @@ public class ZoneDatabase {
     return false;
   }
 
-  public List<ZoneRecord> getZonesSelected() {
-    List<ZoneRecord> zoneList = new ArrayList<ZoneRecord>();
-    SpatialCursor zoneRecords = dbHelper.prepare("SELECT zone_id FROM selected");
+  public Cursor getZonesSelected() {
+    return dbHelper.prepare("SELECT zone_id, label FROM selected JOIN zone ON zone_id = _id");
+  }
 
-    while(zoneRecords.moveToNext())
-      zoneList.add(getZone(zoneRecords.getInt(0)));
+  public static class Reader {
 
-    zoneRecords.close();
-    return zoneList;
+    private DatabaseHelper dbHelper;
+    private Cursor cursor;
+
+    public Reader(DatabaseHelper dbHelper, Cursor cursor) {
+      this.dbHelper = dbHelper;
+      this.cursor = cursor;
+    }
+
+    public ZoneRecord getNext() {
+      if (cursor == null || !cursor.moveToNext())
+        return null;
+
+      return getCurrent();
+    }
+
+    public ZoneRecord getCurrent() {
+      return getZoneRecord(cursor);
+    }
+
+    private ZoneRecord getZoneRecord(Cursor cursor) {
+      ZoneRecord currentZone = new ZoneRecord(cursor.getInt(0), cursor.getString(1));
+      SpatialCursor zonePoints = dbHelper.prepare("SELECT _id FROM point " +
+                                                    "WHERE zone_id = '" + currentZone.getId() + "'");
+
+      while(zonePoints.moveToNext())
+        currentZone.getPoints().add(dbHelper.getZoneDatabase().getPoint(zonePoints.getInt(0)));
+
+      zonePoints.close();
+      return currentZone;
+    }
+
+    public void close() {
+      cursor.close();
+    }
   }
 
 }

@@ -123,7 +123,7 @@ public class DatabaseHelper {
       i++;
     }
 
-    Log.w(TAG, sql);
+    // Log.w(TAG, sql);
     exec(sql);
   }
 

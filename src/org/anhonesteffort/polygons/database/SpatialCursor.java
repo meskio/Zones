@@ -9,7 +9,6 @@ import android.database.DataSetObserver;
 import android.database.SQLException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
 import jsqlite.Stmt;
 
@@ -21,8 +20,6 @@ import java.util.List;
  * Date: 9/18/13
  */
 public class SpatialCursor implements Cursor {
-
-  private static final String TAG = "SpatialCursor";
 
   private static final int FIRST_ROW_INDEX    = 0;
   private static final int FIRST_ROW_POSITION = -1;
@@ -63,25 +60,21 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public int getCount() {
-    Log.d(TAG, "getCount() " + row_count);
     return row_count;
   }
 
   @Override
   public int getPosition() {
-    Log.d(TAG, "getPosition()" + row_position);
     return row_position;
   }
 
   @Override
   public boolean move(int i) {
-    Log.d(TAG, "move() " + i);
     return moveToPosition(row_position + i);
   }
 
   @Override
   public boolean moveToPosition(int i) {
-    Log.d(TAG, "moveToPosition() " + i);
     if (i > row_count || i < FIRST_ROW_POSITION)
       throw new CursorIndexOutOfBoundsException("New index would be out of bounds!");
 
@@ -103,20 +96,16 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public boolean moveToFirst() {
-    Log.d(TAG, "moveToFirst()");
     return moveToPosition(FIRST_ROW_INDEX);
   }
 
   @Override
   public boolean moveToLast() {
-    Log.d(TAG, "moveToLast()");
     return moveToPosition(row_count);
   }
 
   @Override
   public boolean moveToNext() {
-    Log.d(TAG, "moveToNext()");
-
     try {
 
       if (statement.step()) {
@@ -133,41 +122,32 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public boolean moveToPrevious() {
-    Log.d(TAG, "moveToPrevious");
     return moveToPosition(row_position - 1);
   }
 
   @Override
   public boolean isFirst() {
-    Log.d(TAG, "isFirst()");
-
     return (row_position == FIRST_ROW_INDEX);
   }
 
   @Override
   public boolean isLast() {
-    Log.d(TAG, "isLast()");
     return (row_position == row_count);
   }
 
   @Override
   public boolean isBeforeFirst() {
-    Log.d(TAG, "isBeforeFirst()");
     return (row_position < FIRST_ROW_INDEX);
   }
 
   @Override
   public boolean isAfterLast() {
-    Log.d(TAG, "isAfterLast()");
     return (row_position > row_count);
   }
 
   @Override
   public int getColumnIndex(String s) {
-    Log.d(TAG, "getColumnIndex() " + s);
-
     try {
-      Log.d(TAG, " IS = " + statement.bind_parameter_index(s));
       return statement.bind_parameter_index(s);
     } catch (jsqlite.Exception e) {
       return -1;
@@ -176,9 +156,7 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public int getColumnIndexOrThrow(String s) throws IllegalArgumentException {
-    Log.d(TAG, "getColumnIndexOrThrow() " + s);
     try {
-      Log.d(TAG, "IS = " + statement.bind_parameter_index(s));
       return statement.bind_parameter_index(s);
     } catch (jsqlite.Exception e) {
       throw new IllegalArgumentException(e.toString());
@@ -187,10 +165,7 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public String getColumnName(int i) {
-    Log.d(TAG, "getColumnName() " + i);
-
     try {
-      Log.d(TAG, "IS = " + statement.column_name(i));
       return statement.column_name(i);
     } catch (jsqlite.Exception e) {
       throw new SQLException(e.toString());
@@ -199,7 +174,6 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public String[] getColumnNames() {
-    Log.d(TAG, "getColumnNames()");
     List<String> columnNames = new LinkedList<String>();
 
     try {
@@ -211,13 +185,11 @@ public class SpatialCursor implements Cursor {
       throw new SQLException(e.toString());
     }
 
-    Log.d(TAG, "IS = " + columnNames);
     return (String[]) columnNames.toArray();
   }
 
   @Override
   public int getColumnCount() {
-    Log.d(TAG, "getColumnCount()");
     try {
       return statement.column_count();
     } catch (jsqlite.Exception e) {
@@ -236,9 +208,7 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public String getString(int i) {
-    Log.d(TAG, "getString() " + i);
     try {
-      Log.d(TAG, "IS = " + statement.column_string(i));
       return statement.column_string(i);
     } catch (jsqlite.Exception e) {
       throw new SQLException(e.toString());

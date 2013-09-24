@@ -25,6 +25,7 @@ import java.util.List;
 
 public class ZoneService extends Service implements 
   GeometryChangeListener, LocationSubscriberChangeListener, BetterLocationListener {
+
   private static final String TAG            = "ZoneService";
 
   public static final String ZONE_ENTER      = "org.anhonesteffort.polygons.ZoneService.ZONE_ENTER";

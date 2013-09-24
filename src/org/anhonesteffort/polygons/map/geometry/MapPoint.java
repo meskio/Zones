@@ -8,10 +8,10 @@ import org.anhonesteffort.polygons.database.model.PointRecord;
  */
 public class MapPoint extends PointRecord {
 
-  private final float defaultFillColor  = 0.0f;
-  private final float selectedFillColor = 210.0f;
+  private final float FILL_COLOR          = 0.0f;
+  private final float SELECTED_FILL_COLOR = 210.0f;
 
-  private float fillColor = defaultFillColor;
+  private float fillColor = FILL_COLOR;
 
   public MapPoint(PointRecord point) {
     super(point.getId(), point.getZoneId(), point.getX(), point.getY());
@@ -26,7 +26,7 @@ public class MapPoint extends PointRecord {
   }
 
   public float getSelectedFillColor() {
-    return selectedFillColor;
+    return SELECTED_FILL_COLOR;
   }
 
 }

@@ -11,6 +11,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import org.anhonesteffort.polygons.map.ZoneMapActivity;
 
 public class MainMenuActivity extends SherlockFragmentActivity {
+
   private static final String TAG = "MainMenuActivity";
   
   @Override
