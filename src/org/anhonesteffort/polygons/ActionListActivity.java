@@ -1,6 +1,7 @@
 package org.anhonesteffort.polygons;
 
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.CursorAdapter;
@@ -16,25 +17,16 @@ public class ActionListActivity extends SherlockActivity {
   private static final String TAG    = "ActionListActivity";
   public static final String ZONE_ID = "org.anhonesteffort.polygons.ActionListActivity.ZONE_ID";
 
-  private DatabaseHelper dbHelper;
+  private DatabaseHelper databaseHelper;
   private ZoneRecord selectedZone;
-  private ListView actionList;
-
-  private void initializeList() {
-    Cursor zoneActions = dbHelper.getActionDatabase().getActions(selectedZone.getId());
-    CursorAdapter actionAdapter = new ActionCursorAdapter(this, zoneActions);
-
-    actionList = (ListView) findViewById(R.id.list);
-    actionList.setAdapter(actionAdapter);
-  }
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Log.d(TAG, "onCreate()");
 
-    dbHelper = DatabaseHelper.getInstance(this.getBaseContext());
-    selectedZone = dbHelper.getZoneDatabase().getZone(getIntent().getExtras().getInt(ZONE_ID));
+    databaseHelper = DatabaseHelper.getInstance(this);
+    selectedZone = databaseHelper.getZoneDatabase().getZone(getIntent().getExtras().getInt(ZONE_ID));
 
     setContentView(R.layout.action_list_layout);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -47,7 +39,7 @@ public class ActionListActivity extends SherlockActivity {
     super.onResume();
     Log.d(TAG, "onResume()");
 
-    initializeList();
+    new InitializeListTask().execute();
   }
 
   @Override
@@ -59,4 +51,26 @@ public class ActionListActivity extends SherlockActivity {
     }
     return true;
   }
+
+  private class InitializeListTask extends AsyncTask<Void, Void, Integer> {
+
+    private Cursor zoneActions;
+
+    protected Integer doInBackground(Void... params) {
+      zoneActions = databaseHelper.getActionDatabase().getActions(selectedZone.getId());
+      return 0;
+    }
+
+    protected void onProgressUpdate(Void... progress) {
+      // Nothing to do.
+    }
+
+    protected void onPostExecute(Integer result) {
+      CursorAdapter actionAdapter = new ActionCursorAdapter(ActionListActivity.this, zoneActions);
+      ListView actionList = (ListView) findViewById(R.id.list);
+
+      actionList.setAdapter(actionAdapter);
+    }
+  }
+
 }
