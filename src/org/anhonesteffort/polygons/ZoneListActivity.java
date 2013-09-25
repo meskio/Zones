@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +37,7 @@ public class ZoneListActivity extends SherlockActivity implements
 
   private int select_count = 0;
   private boolean select_mode_active = false;
+  private boolean list_is_initializing = false;
   private boolean list_is_initialized = false;
 
   @Override
@@ -62,9 +64,9 @@ public class ZoneListActivity extends SherlockActivity implements
   @Override
   public void onResume() {
     super.onResume();
-    Log.d(TAG, "onResume()");
+    Log.d(TAG, "onResume() " + list_is_initialized);
 
-    if(!list_is_initialized) {
+    if(list_is_initialized == false && list_is_initializing == false) {
       databaseHelper.getZoneDatabase().clearSelectedZones();
       initializeList();
     }
@@ -78,12 +80,12 @@ public class ZoneListActivity extends SherlockActivity implements
     if(savedInstanceState != null && savedInstanceState.getBoolean(RESTORE_SELECTIONS, false)) {
       initializeList();
 
-      select_count = databaseHelper.getZoneDatabase().getZonesSelected().getCount();
+      /*select_count = databaseHelper.getZoneDatabase().getZonesSelected().getCount();
       if(select_count > 0) {
         select_mode_active = true;
         mActionMode = startActionMode(this);
         updateActionMode();
-      }
+      } */
     }
   }
 
@@ -123,15 +125,7 @@ public class ZoneListActivity extends SherlockActivity implements
     switch (item.getItemId()) {
 
       case R.id.delete_zone_button:
-        Cursor selectedZones = databaseHelper.getZoneDatabase().getZonesSelected();
-        ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(databaseHelper, selectedZones);
-
-        while (zoneReader.getNext() != null)
-          databaseHelper.getZoneDatabase().deleteZone(zoneReader.getCurrent().getId());
-
-        zoneReader.close();
-        mActionMode.finish();
-        initializeList();
+        new DeleteSelectedZonesTask().execute();
         break;
 
       case R.id.edit_zone_label_button:
@@ -190,28 +184,86 @@ public class ZoneListActivity extends SherlockActivity implements
     return true;
   }
 
+  private class InitializeListTask extends AsyncTask<Void, Void, Integer> {
+
+    Cursor zoneCursor;
+
+    protected InitializeListTask() {
+      Log.d(TAG, "initializeListTask()");
+
+      list_is_initializing = true;
+      list_is_initialized = false;
+      select_count = 0;
+      select_mode_active = false;
+    }
+
+    protected Integer doInBackground(Void... params) {
+      zoneCursor = databaseHelper.getZoneDatabase().getZones();
+      select_count = databaseHelper.getZoneDatabase().getZonesSelected().getCount();
+      return 0;
+    }
+
+    protected void onProgressUpdate(Void... progress) {
+      // Nothing to do.
+    }
+
+    protected void onPostExecute(Integer result) {
+      CursorAdapter zoneAdapter = new ZoneCursorAdapter(ZoneListActivity.this, zoneCursor);
+
+      zoneListView = (ListView) findViewById(R.id.list);
+      zoneListView.setAdapter(zoneAdapter);
+      zoneListView.setOnItemClickListener(ZoneListActivity.this);
+      zoneListView.setOnItemLongClickListener(ZoneListActivity.this);
+
+      list_is_initialized = true;
+      list_is_initializing = false;
+
+      if(select_count > 0) {
+        select_mode_active = true;
+        mActionMode = startActionMode(ZoneListActivity.this);
+      }
+      updateActionMode();
+    }
+  }
+
+  private class DeleteSelectedZonesTask extends AsyncTask<Void, Void, Integer> {
+
+    protected Integer doInBackground(Void... params) {
+      Cursor selectedZones = databaseHelper.getZoneDatabase().getZonesSelected();
+      ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(databaseHelper, selectedZones);
+
+      while (zoneReader.getNext() != null)
+        databaseHelper.getZoneDatabase().deleteZone(zoneReader.getCurrent().getId());
+
+      zoneReader.close();
+      initializeList();
+      return 0;
+    }
+
+    protected void onProgressUpdate(Void... progress) {
+      // Nothing to do.
+    }
+
+    protected void onPostExecute(Integer result) {
+      // Nothing to do.
+    }
+  }
+
   private void initializeList() {
     Log.d(TAG, "initializeList()");
 
-    Cursor zones = databaseHelper.getZoneDatabase().getZones();
-    CursorAdapter zoneAdapter = new ZoneCursorAdapter(this, zones);
-
-    zoneListView = (ListView) findViewById(R.id.list);
-    zoneListView.setAdapter(zoneAdapter);
-    zoneListView.setOnItemClickListener(this);
-    zoneListView.setOnItemLongClickListener(this);
-
-    select_count = 0;
-    select_mode_active = false;
-    list_is_initialized = true;
+    if (list_is_initializing == false)
+      new InitializeListTask().execute();
   }
 
   private void updateActionMode() {
-    if(select_mode_active == false)
-      mActionMode.finish();
-    else {
-      mActionMode.setSubtitle(select_count + " " + getString(R.string.zones_selected));
-      mActionMode.getMenu().getItem(0).setVisible((select_count == 1));
+    if (mActionMode !=  null) {
+      if(select_mode_active == false)
+        mActionMode.finish();
+      else {
+        mActionMode.setSubtitle(select_count + " " + getString(R.string.zones_selected));
+        mActionMode.getMenu().getItem(0).setVisible((select_count == 1));
+      }
     }
   }
 
