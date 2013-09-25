@@ -236,7 +236,6 @@ public class ZoneListActivity extends SherlockActivity implements
         databaseHelper.getZoneDatabase().deleteZone(zoneReader.getCurrent().getId());
 
       zoneReader.close();
-      initializeList();
       return 0;
     }
 
@@ -245,7 +244,7 @@ public class ZoneListActivity extends SherlockActivity implements
     }
 
     protected void onPostExecute(Integer result) {
-      // Nothing to do.
+      initializeList();
     }
   }
 
