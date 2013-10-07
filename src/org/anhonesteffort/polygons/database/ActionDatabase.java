@@ -15,11 +15,11 @@ public class ActionDatabase {
 
   private static final String TAG = "ActionDatabase";
 
-  private static final String ACTION_SELECTION = "SELECT _id, name, description, " +
-                                                        "zone_id, enter, exit " +
-                                                  "FROM action JOIN zone_action " +
-                                                  "ON _id = action_id ";
-  private static final String ACTION_GROUP_BY  = " GROUP BY _id";
+  private static final String SELECTION_ACTION = "SELECT _id, name, description, " +
+                                                   "zone_id, enter, exit " +
+                                                 "FROM action JOIN zone_action " +
+                                                 "ON _id = action_id ";
+  private static final String GROUP_BY_ACTION  = " GROUP BY _id";
 
   private DatabaseHelper dbHelper;
   private List<LocationSubscriberChangeListener> locationSubscriberListeners;
@@ -213,7 +213,7 @@ public class ActionDatabase {
   }
 
   public Cursor getActions(int zone_id) {
-    return dbHelper.prepare(ACTION_SELECTION + "WHERE zone_action.zone_id = '" + zone_id + "'" + ACTION_GROUP_BY);
+    return dbHelper.prepare(SELECTION_ACTION + "WHERE zone_action.zone_id = '" + zone_id + "'" + GROUP_BY_ACTION);
   }
 
   public void updateZoneAction(ActionRecord action) {

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -20,11 +21,13 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import org.anhonesteffort.polygons.R;
 import org.anhonesteffort.polygons.database.DatabaseHelper;
+import org.anhonesteffort.polygons.database.ZoneDatabase;
 import org.anhonesteffort.polygons.database.model.PointRecord;
 import org.anhonesteffort.polygons.database.model.ZoneRecord;
 import org.anhonesteffort.polygons.map.geometry.MapPoint;
 import org.anhonesteffort.polygons.map.geometry.MapZone;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class ZoneMapActivity extends SherlockFragmentActivity {
@@ -275,10 +278,17 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
   public void onMapLongClick(PointRecord clickPoint) {
     Log.d(TAG, "onMapLongClick()");
     if(myState == DrawState.NAVIGATE || myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
-      List<ZoneRecord> zoneList = databaseHelper.getZoneDatabase().getZonesContainingPoint(clickPoint);
-      
-      if(zoneList.isEmpty() == false) {
-        selectedZone = zoneList.get(0);
+
+      Cursor zoneCursor = databaseHelper.getZoneDatabase().getZonesContainingPoint(clickPoint);
+      ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(zoneCursor);
+
+      List<ZoneRecord> selectedZones = new LinkedList<ZoneRecord>();
+      while(zoneReader.getNext() != null)
+        selectedZones.add(zoneReader.getCurrent());
+
+
+      if(selectedZones.isEmpty() == false) {
+        selectedZone = selectedZones.get(0);
         setState(DrawState.EDIT_ZONE);
         vibrator.vibrate(50);
       }

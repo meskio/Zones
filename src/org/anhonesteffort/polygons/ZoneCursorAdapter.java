@@ -37,12 +37,12 @@ public class ZoneCursorAdapter extends CursorAdapter {
 
   @Override
   public void bindView(View view, Context context, Cursor cursor) {
-    Log.d("ZoneCursorAdapter", "bindView()");
+    Log.d("ZoneCursorAdapter", "bindView() count: " + cursor.getCount());
 
-    DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context);
-    ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(databaseHelper, cursor);
+    ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(cursor);
     ZoneRecord zone = zoneReader.getCurrent();
 
+    DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context);
     Cursor actionRecords = databaseHelper.getActionDatabase().getActions(zone.getId());
     ActionDatabase.Reader actionReader = new ActionDatabase.Reader(actionRecords);
 

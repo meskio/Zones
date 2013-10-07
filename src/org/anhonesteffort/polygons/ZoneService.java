@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.location.Location;
 import android.os.Binder;
 import android.os.IBinder;
@@ -13,6 +14,7 @@ import android.util.Log;
 import org.anhonesteffort.polygons.database.DatabaseHelper;
 import org.anhonesteffort.polygons.database.GeometryChangeListener;
 import org.anhonesteffort.polygons.database.LocationSubscriberChangeListener;
+import org.anhonesteffort.polygons.database.ZoneDatabase;
 import org.anhonesteffort.polygons.database.model.PointRecord;
 import org.anhonesteffort.polygons.database.model.ZoneRecord;
 import org.anhonesteffort.polygons.location.BetterLocationListener;
@@ -21,6 +23,7 @@ import org.anhonesteffort.polygons.map.GoogleGeometryFactory;
 import org.anhonesteffort.polygons.receiver.BroadcastActionLauncher;
 import org.anhonesteffort.polygons.transport.sms.SMSSender;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class ZoneService extends Service implements 
@@ -103,12 +106,23 @@ public class ZoneService extends Service implements
     Log.d(TAG, "sendPolygonBroadcasts()");
     
     // Polygons we occupied before, we occupy now.
-    List<ZoneRecord> zonesIOccupied = applicationStorage.getZoneDatabase().getZonesOccupied();
-    PointRecord bestPoint = new PointRecord(0, -1, bestLocation.getLongitude(), bestLocation.getLatitude());
-    List<ZoneRecord> zonesIOccupy = applicationStorage.getZoneDatabase().getZonesContainingPoint(bestPoint);
+    Cursor occupiedCursor = applicationStorage.getZoneDatabase().getZonesOccupied();
+    ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(occupiedCursor);
 
-    // Figure out which zoneDatabase we have left.
-    boolean have = true;
+    List<ZoneRecord> zonesIOccupied = new LinkedList<ZoneRecord>();
+    while (zoneReader.getNext() != null)
+      zonesIOccupied.add(zoneReader.getCurrent());
+
+    PointRecord bestPoint = new PointRecord(0, -1, bestLocation.getLongitude(), bestLocation.getLatitude());
+    Cursor occupyCursor = applicationStorage.getZoneDatabase().getZonesContainingPoint(bestPoint);
+    zoneReader = new ZoneDatabase.Reader(occupyCursor);
+
+    List<ZoneRecord> zonesIOccupy = new LinkedList<ZoneRecord>();
+    while(zoneReader.getNext() != null)
+      zonesIOccupy.add(zoneReader.getCurrent());
+
+    // Figure out which zoneDatabase we have left. FIX ME I'M UGLY!
+    boolean have;
     for(ZoneRecord zoneOccupied : zonesIOccupied) {
       have = false;
       for(ZoneRecord zone : zonesIOccupy) {

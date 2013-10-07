@@ -9,6 +9,7 @@ import android.database.DataSetObserver;
 import android.database.SQLException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import jsqlite.Stmt;
 
@@ -20,6 +21,8 @@ import java.util.List;
  * Date: 9/18/13
  */
 public class SpatialCursor implements Cursor {
+
+  private static final String TAG = "SpatialCursor";
 
   private static final int FIRST_ROW_INDEX    = 0;
   private static final int FIRST_ROW_POSITION = -1;
@@ -75,7 +78,7 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public boolean moveToPosition(int i) {
-    if (i > row_count || i < FIRST_ROW_POSITION)
+    if (i < FIRST_ROW_POSITION)
       throw new CursorIndexOutOfBoundsException("New index would be out of bounds!");
 
     try {
@@ -101,7 +104,7 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public boolean moveToLast() {
-    return moveToPosition(row_count);
+    return moveToPosition(row_count - 1);
   }
 
   @Override
@@ -132,7 +135,7 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public boolean isLast() {
-    return (row_position == row_count);
+    return (row_position == (row_count - 1));
   }
 
   @Override
@@ -142,13 +145,18 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public boolean isAfterLast() {
-    return (row_position > row_count);
+    return (row_position > (row_count - 1));
   }
 
   @Override
   public int getColumnIndex(String s) {
     try {
-      return statement.bind_parameter_index(s);
+      for (int i = 0; i < statement.column_count(); i++) {
+        if (statement.column_name(i).equals(s))
+          return i;
+      }
+
+      return -1;
     } catch (jsqlite.Exception e) {
       return -1;
     }
@@ -157,7 +165,12 @@ public class SpatialCursor implements Cursor {
   @Override
   public int getColumnIndexOrThrow(String s) throws IllegalArgumentException {
     try {
-      return statement.bind_parameter_index(s);
+      for (int i = 0; i < statement.column_count(); i++) {
+        if (statement.column_name(i).equals(s))
+          return i;
+      }
+
+      throw new IllegalArgumentException("Column " + s + " does not exist in cursor.");
     } catch (jsqlite.Exception e) {
       throw new IllegalArgumentException(e.toString());
     }
@@ -174,18 +187,19 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public String[] getColumnNames() {
-    List<String> columnNames = new LinkedList<String>();
+    String[] columnNames;
 
     try {
 
-      for (int i = 0; i < statement.column_count(); i++)
-        columnNames.add(statement.column_name(i));
+      columnNames = new String[statement.column_count()];
+      for (int i = 0; i < columnNames.length; i++)
+        columnNames[i] = statement.column_name(i);
 
     } catch (jsqlite.Exception e) {
       throw new SQLException(e.toString());
     }
 
-    return (String[]) columnNames.toArray();
+    return columnNames;
   }
 
   @Override
@@ -209,6 +223,7 @@ public class SpatialCursor implements Cursor {
   @Override
   public String getString(int i) {
     try {
+      Log.d(TAG, "getString() " + i + " " + statement.column_string(i));
       return statement.column_string(i);
     } catch (jsqlite.Exception e) {
       throw new SQLException(e.toString());
@@ -245,8 +260,10 @@ public class SpatialCursor implements Cursor {
   @Override
   public int getInt(int i) {
     try {
+      Log.d(TAG, "getInt() " + i + " " + statement.column_int(i));
       return statement.column_int(i);
     } catch (jsqlite.Exception e) {
+      Log.d(TAG, "die pos: " + row_position + " i: " + i);
       throw new SQLException(e.toString());
     }
   }
@@ -272,6 +289,7 @@ public class SpatialCursor implements Cursor {
   @Override
   public double getDouble(int i) {
     try {
+      Log.d(TAG, "getDouble() " + i + " " + statement.column_double(i));
       return statement.column_double(i);
     } catch (jsqlite.Exception e) {
       throw new SQLException(e.toString());
@@ -309,6 +327,7 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public void close() {
+    Log.d(TAG, "close!!!");
     try {
 
       statement.close();

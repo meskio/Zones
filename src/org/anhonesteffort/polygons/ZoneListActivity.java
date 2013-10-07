@@ -77,16 +77,8 @@ public class ZoneListActivity extends SherlockActivity implements
     super.onRestoreInstanceState(savedInstanceState);
     Log.d(TAG, "onRestoreInstanceState()");
 
-    if(savedInstanceState != null && savedInstanceState.getBoolean(RESTORE_SELECTIONS, false)) {
+    if(savedInstanceState != null && savedInstanceState.getBoolean(RESTORE_SELECTIONS, false))
       initializeList();
-
-      /*select_count = databaseHelper.getZoneDatabase().getZonesSelected().getCount();
-      if(select_count > 0) {
-        select_mode_active = true;
-        mActionMode = startActionMode(this);
-        updateActionMode();
-      } */
-    }
   }
 
   @Override
@@ -229,9 +221,8 @@ public class ZoneListActivity extends SherlockActivity implements
   private class DeleteSelectedZonesTask extends AsyncTask<Void, Void, Integer> {
 
     protected Integer doInBackground(Void... params) {
-      Cursor selectedZones = databaseHelper.getZoneDatabase().getZonesSelected();
-      ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(databaseHelper, selectedZones);
-
+      Cursor zoneCursor = databaseHelper.getZoneDatabase().getZonesSelected();
+      ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(zoneCursor);
       while (zoneReader.getNext() != null)
         databaseHelper.getZoneDatabase().deleteZone(zoneReader.getCurrent().getId());
 
@@ -298,8 +289,8 @@ public class ZoneListActivity extends SherlockActivity implements
 
       public void onClick(DialogInterface dialog, int id) {
         EditText zoneLabelEdit = (EditText) view.findViewById(R.id.zone_list_row_label);
-        Cursor selectedZones = databaseHelper.getZoneDatabase().getZonesSelected();
-        ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(databaseHelper, selectedZones);
+        Cursor zoneCursor = databaseHelper.getZoneDatabase().getZonesSelected();
+        ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(zoneCursor);
         handleEditZoneLabel(zoneReader.getNext(), zoneLabelEdit.getText().toString());
         zoneReader.close();
       }

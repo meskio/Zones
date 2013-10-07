@@ -3,21 +3,35 @@ package org.anhonesteffort.polygons.map;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.util.Log;
 import android.util.SparseArray;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.*;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 import org.anhonesteffort.polygons.R;
 import org.anhonesteffort.polygons.database.DatabaseHelper;
+import org.anhonesteffort.polygons.database.ZoneDatabase;
 import org.anhonesteffort.polygons.database.model.PointRecord;
 import org.anhonesteffort.polygons.database.model.ZoneRecord;
+import org.anhonesteffort.polygons.map.ZoneMapActivity.DrawState;
 import org.anhonesteffort.polygons.map.geometry.MapPoint;
 import org.anhonesteffort.polygons.map.geometry.MapZone;
-import org.anhonesteffort.polygons.map.ZoneMapActivity.DrawState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -216,8 +230,7 @@ public class GoogleZoneMap
 
   // Clear the map and redraw all zoneDatabase within provided bounds.
   private void addZonesWithinBounds(LatLngBounds bounds) {
-    ZoneRecord visibleZone;
-    List<ZoneRecord> visibleZoneList;
+    ZoneRecord visibleArea;
     PolygonOptions mapPolygonOptions;
     Polygon mapPolygon;
 
@@ -225,17 +238,21 @@ public class GoogleZoneMap
     mapPolygons.clear();
     googleMap.clear();
 
-    visibleZone = GoogleGeometryFactory.buildZoneRecord(bounds);
-    visibleZoneList = databaseHelper.getZoneDatabase().getZonesIntersecting(visibleZone);
+    visibleArea = GoogleGeometryFactory.buildZoneRecord(bounds);
+    Cursor visibleZones = databaseHelper.getZoneDatabase().getZonesIntersecting(visibleArea);
+    ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(visibleZones);
 
-    for(ZoneRecord zoneRecord : visibleZoneList) {
-      if(mapActivity.getState() != DrawState.NEW_POINTS || zoneRecord.getId() != mapActivity.getSelectedZone().getId()) {
-        mapPolygonOptions = GoogleGeometryFactory.buildPolygonOptions(new MapZone(zoneRecord));
+    while(zoneReader.getNext() != null) {
+      if(mapActivity.getState() != DrawState.NEW_POINTS ||
+          zoneReader.getCurrent().getId() != mapActivity.getSelectedZone().getId()) {
+
+        mapPolygonOptions = GoogleGeometryFactory.buildPolygonOptions(new MapZone(zoneReader.getCurrent()));
         mapPolygon = googleMap.addPolygon(mapPolygonOptions);
 
-        mapPolygons.put(zoneRecord.getId(), mapPolygon);
+        mapPolygons.put(zoneReader.getCurrent().getId(), mapPolygon);
       }
     }
+    visibleZones.close();
   }
 
   public void clearPoints() {
