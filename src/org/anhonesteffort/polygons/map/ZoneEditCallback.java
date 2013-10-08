@@ -46,7 +46,7 @@ public class ZoneEditCallback implements ActionMode.Callback {
         Intent intent = new Intent();
         intent.setClass(mapActivity.getApplicationContext(), ActionListActivity.class);
         intent.putExtra(ActionListActivity.ZONE_ID, mapActivity.getSelectedZone().getId());
-        mapActivity.startActivityForResult(intent, 0);
+        mapActivity.startActivity(intent);
         return true;
 
       case R.id.delete_zone_button:
