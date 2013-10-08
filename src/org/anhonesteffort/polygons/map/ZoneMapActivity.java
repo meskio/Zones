@@ -262,10 +262,10 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
 
   public void onMapClick(PointRecord clickPoint) {
     Log.d(TAG, "onMapClick()");
+
     if(myState == DrawState.NEW_POINTS || myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
-      clickPoint = new PointRecord(clickPoint.getId(), selectedZone.getId(), clickPoint.getX(), clickPoint.getY());
+      clickPoint = databaseHelper.getZoneDatabase().addPoint(clickPoint, selectedZone.getId());
       selectedZone.getPoints().add(clickPoint);
-      selectedZone = databaseHelper.getZoneDatabase().updateZone(selectedZone);
       zoneMap.addPoint(new MapPoint(clickPoint));
     }
 
