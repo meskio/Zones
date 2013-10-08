@@ -286,7 +286,6 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
       while(zoneReader.getNext() != null)
         selectedZones.add(zoneReader.getCurrent());
 
-
       if(selectedZones.isEmpty() == false) {
         selectedZone = selectedZones.get(0);
         setState(DrawState.EDIT_ZONE);

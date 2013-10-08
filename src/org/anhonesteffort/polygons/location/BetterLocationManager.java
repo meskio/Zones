@@ -19,11 +19,11 @@ public class BetterLocationManager implements LocationListener {
   
   private class LocationRequest {
     public BetterLocationListener listener;
-    public long minumum_interval_ms;
+    public long minimum_interval_ms;
     public Location lastLocationUpdate;
     
-    public LocationRequest(long minumum_interval_ms, BetterLocationListener listener) {
-      this.minumum_interval_ms = minumum_interval_ms;
+    public LocationRequest(long minimum_interval_ms, BetterLocationListener listener) {
+      this.minimum_interval_ms = minimum_interval_ms;
       this.listener = listener;
     }
   }
@@ -34,25 +34,25 @@ public class BetterLocationManager implements LocationListener {
     locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
   }
   
-  private void addLocationRequest(long minumum_interval_ms, BetterLocationListener listener) {
-    Log.d(TAG, "Adding new location listener with " + minumum_interval_ms + "ms minimum interval.");
+  private void addLocationRequest(long minimum_interval_ms, BetterLocationListener listener) {
+    Log.d(TAG, "Adding new location listener with " + minimum_interval_ms + "ms minimum interval.");
 
-    LocationRequest request = new LocationRequest(minumum_interval_ms, listener); 
+    LocationRequest request = new LocationRequest(minimum_interval_ms, listener);
     locationRequests.add(request);
-    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, request.minumum_interval_ms, 0, this);
+    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, request.minimum_interval_ms, 0, this);
     if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
       request.listener.onLocationsEnabled();
   }
   
   private void updateLocationRequest(long new_minumum_interval_ms, LocationRequest existingRequest) {
-    double high_bound = existingRequest.minumum_interval_ms + (existingRequest.minumum_interval_ms * 0.10);
-    double low_bound = existingRequest.minumum_interval_ms - (existingRequest.minumum_interval_ms * 0.10);
+    double high_bound = existingRequest.minimum_interval_ms + (existingRequest.minimum_interval_ms * 0.10);
+    double low_bound = existingRequest.minimum_interval_ms - (existingRequest.minimum_interval_ms * 0.10);
     
     // Only update the minimum interval if it is +/- 10% different.
     if(new_minumum_interval_ms >= high_bound || new_minumum_interval_ms <= low_bound) {
       Log.d(TAG, "Updated location listener to " + new_minumum_interval_ms + "ms minimum interval.");
-      existingRequest.minumum_interval_ms = new_minumum_interval_ms;
-      locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, existingRequest.minumum_interval_ms, 0, this);
+      existingRequest.minimum_interval_ms = new_minumum_interval_ms;
+      locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, existingRequest.minimum_interval_ms, 0, this);
     }
   }
   
@@ -66,7 +66,7 @@ public class BetterLocationManager implements LocationListener {
     Log.d(TAG, "points for accuracy: " + score);
     
     // The location gets points for timeliness.
-    score += ((double) (newLocation.getTime() - request.lastLocationUpdate.getTime()) / (double) request.minumum_interval_ms) * 100.0;
+    score += ((double) (newLocation.getTime() - request.lastLocationUpdate.getTime()) / (double) request.minimum_interval_ms) * 100.0;
     Log.d(TAG, "points for accuracy & new time: " + score);
     
     // The location gets points if it has a speed.

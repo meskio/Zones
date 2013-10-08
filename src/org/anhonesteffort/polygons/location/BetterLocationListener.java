@@ -1,10 +1,11 @@
 package org.anhonesteffort.polygons.location;
 
-import java.util.List;
-
 import android.location.Location;
 
+import java.util.List;
+
 public interface BetterLocationListener {
+
   // Called when a better location is available.
   void onBetterLocationAvailable(Location location);
   
