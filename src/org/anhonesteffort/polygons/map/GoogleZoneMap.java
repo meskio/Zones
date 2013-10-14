@@ -66,7 +66,7 @@ public class GoogleZoneMap
         googleMap.setOnMarkerDragListener(this);
         googleMap.setOnMarkerClickListener(this);
         googleMap.setOnCameraChangeListener(this);
-        //googleMap.setMyLocationEnabled(true);
+        googleMap.setMyLocationEnabled(true);
       }
       else {
         Log.e(TAG, "Map failed to load! Why?!");

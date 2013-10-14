@@ -20,16 +20,16 @@ public class ZoneDatabase {
                                                      "FROM point ";
 
   private static final String SELECTION_ZONE_POINT = "SELECT zone._id, zone.label, point.pid, point.zone_id, point.longitude, point.latitude " +
-                                                      "FROM zone JOIN point " +
-                                                      "ON zone._id = point.zone_id ";
+                                                     "FROM zone JOIN point " +
+                                                     "ON zone._id = point.zone_id ";
 
-  private static final String SELECTION_OCCUPY     = "SELECT zone._id, zone.label" +
+  private static final String SELECTION_OCCUPY     = "SELECT zone._id, zone.label " +
                                                      "FROM zone JOIN occupy " +
                                                      "ON zone._id = occupy.zone_id ";
 
   private static final String SELECTION_SELECTED   = "SELECT zone._id, zone.label " +
-                                                      "FROM zone JOIN selected " +
-                                                      "ON zone._id = selected.zone_id ";
+                                                     "FROM zone JOIN selected " +
+                                                     "ON zone._id = selected.zone_id ";
 
   private DatabaseHelper dbHelper;
   private ArrayList<GeometryChangeListener> listeners = new ArrayList<GeometryChangeListener>();
