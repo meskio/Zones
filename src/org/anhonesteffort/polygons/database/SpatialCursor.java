@@ -9,7 +9,6 @@ import android.database.DataSetObserver;
 import android.database.SQLException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
 import jsqlite.Stmt;
 
@@ -223,7 +222,6 @@ public class SpatialCursor implements Cursor {
   @Override
   public String getString(int i) {
     try {
-      Log.d(TAG, "getString() " + i + " " + statement.column_string(i));
       return statement.column_string(i);
     } catch (jsqlite.Exception e) {
       throw new SQLException(e.toString());
@@ -260,10 +258,8 @@ public class SpatialCursor implements Cursor {
   @Override
   public int getInt(int i) {
     try {
-      Log.d(TAG, "getInt() " + i + " " + statement.column_int(i));
       return statement.column_int(i);
     } catch (jsqlite.Exception e) {
-      Log.d(TAG, "die pos: " + row_position + " i: " + i);
       throw new SQLException(e.toString());
     }
   }
@@ -289,7 +285,6 @@ public class SpatialCursor implements Cursor {
   @Override
   public double getDouble(int i) {
     try {
-      Log.d(TAG, "getDouble() " + i + " " + statement.column_double(i));
       return statement.column_double(i);
     } catch (jsqlite.Exception e) {
       throw new SQLException(e.toString());
@@ -327,7 +322,6 @@ public class SpatialCursor implements Cursor {
 
   @Override
   public void close() {
-    Log.d(TAG, "close!!!");
     try {
 
       statement.close();

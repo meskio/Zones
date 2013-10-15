@@ -120,8 +120,8 @@
             android:name=".receiver.BroadcastActionLauncher"
             android:exported="false" >
             <intent-filter>
-                <action android:name="org.anhonesteffort.polygons.POLYGON_ENTER" />
-                <action android:name="org.anhonesteffort.polygons.POLYGON_EXIT" />
+                <action android:name="org.anhonesteffort.polygons.ZoneService.ZONE_ENTER" />
+                <action android:name="org.anhonesteffort.polygons.ZoneService.ZONE_EXIT" />
             </intent-filter>
         </receiver>
 
