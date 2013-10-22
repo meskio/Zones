@@ -8,7 +8,7 @@ import android.view.View.OnClickListener;
 import android.widget.TableRow;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import org.anhonesteffort.polygons.map.ZoneMapActivity;
+import org.anhonesteffort.polygons.map.TestMapActivity;
 
 public class MainMenuActivity extends SherlockFragmentActivity {
 
@@ -35,7 +35,7 @@ public class MainMenuActivity extends SherlockFragmentActivity {
     zoneMapButton.setOnClickListener(new OnClickListener() {
       public void onClick(View v) {
         Intent intent = new Intent();
-        intent.setClass(getApplicationContext(), ZoneMapActivity.class);
+        intent.setClass(getApplicationContext(), TestMapActivity.class);
         startActivity(intent);
       }
     });
