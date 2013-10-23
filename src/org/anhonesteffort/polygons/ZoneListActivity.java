@@ -36,7 +36,6 @@ public class ZoneListActivity extends SherlockActivity implements
   private AlertDialog zoneLabelDialog;
 
   private int select_count = 0;
-  private boolean select_mode_active = false;
   private boolean list_is_initializing = false;
   private boolean list_is_initialized = false;
 
@@ -66,10 +65,7 @@ public class ZoneListActivity extends SherlockActivity implements
     super.onResume();
     Log.d(TAG, "onResume() " + list_is_initialized);
 
-    if(list_is_initialized == false && list_is_initializing == false) {
-      databaseHelper.getZoneDatabase().clearSelectedZones();
-      initializeList();
-    }
+    initializeList();
   }
 
   @Override
@@ -86,15 +82,19 @@ public class ZoneListActivity extends SherlockActivity implements
     super.onSaveInstanceState(outState);
     Log.d(TAG, "onSaveInstanceState()");
 
-    outState.putBoolean(RESTORE_SELECTIONS, select_mode_active);
+    outState.putBoolean(RESTORE_SELECTIONS, select_count > 0);
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
+
     switch (item.getItemId()) {
+
       case android.R.id.home:
         finish();
+
     }
+
     return true;
   }
 
@@ -104,6 +104,7 @@ public class ZoneListActivity extends SherlockActivity implements
     inflater.inflate(R.menu.zone_list_menu, menu);
     mode.setTitle(getString(R.string.title_zone_list_batch));
     mode.setSubtitle(select_count + " " + getString(R.string.zones_selected));
+
     return true;
   }
 
@@ -123,6 +124,7 @@ public class ZoneListActivity extends SherlockActivity implements
       case R.id.edit_zone_label_button:
         showZoneLabelDialog();
         break;
+
     }
     return false;
   }
@@ -138,7 +140,14 @@ public class ZoneListActivity extends SherlockActivity implements
 
     databaseHelper.getZoneDatabase().clearSelectedZones();
     select_count = 0;
-    select_mode_active = false;
+  }
+
+  private void handleDisplayZoneMap(int zone_id) {
+    Intent intent = new Intent(this, ZoneMapActivity.class);
+    intent.putExtra(ZoneMapActivity.SELECTED_ZONE_ID, zone_id);
+    intent.putExtra(ZoneMapActivity.SAVED_STATE, ZoneMapActivity.DrawState.EDIT_ZONE.ordinal());
+    intent.putExtra(ZoneMapActivity.SELECTED_ZONE_FOCUS, true);
+    startActivity(intent);
   }
 
   @Override
@@ -146,15 +155,8 @@ public class ZoneListActivity extends SherlockActivity implements
     if(view.isShown() == false)
       return;
 
-    if(select_mode_active == false) {
-      Integer zone_id = (Integer) view.getTag(R.integer.zone_list_row_id_tag);
-
-      Intent intent = new Intent(this, ZoneMapActivity.class);
-      intent.putExtra(ZoneMapActivity.SELECTED_ZONE_ID, zone_id);
-      intent.putExtra(ZoneMapActivity.SAVED_STATE, ZoneMapActivity.DrawState.EDIT_ZONE.ordinal());
-      intent.putExtra(ZoneMapActivity.SELECTED_ZONE_FOCUS, true);
-      startActivity(intent);
-    }
+    if(select_count == 0)
+      handleDisplayZoneMap((Integer) view.getTag(R.integer.zone_list_row_id_tag));
     else {
       if(view.getTag(R.integer.zone_list_row_select_tag) == Boolean.TRUE)
         unselectZone(view);
@@ -168,75 +170,12 @@ public class ZoneListActivity extends SherlockActivity implements
     if(view.isShown() == false)
       return true;
 
-    if(select_mode_active == false && (view.getTag(R.integer.zone_list_row_select_tag)) == Boolean.FALSE) {
-      select_mode_active = true;
+    if(select_count == 0 && (view.getTag(R.integer.zone_list_row_select_tag)) == Boolean.FALSE) {
       mActionMode = startActionMode(this);
       selectZone(view);
     }
+
     return true;
-  }
-
-  private class InitializeListTask extends AsyncTask<Void, Void, Integer> {
-
-    Cursor zoneCursor;
-
-    protected InitializeListTask() {
-      Log.d(TAG, "initializeListTask()");
-
-      list_is_initializing = true;
-      list_is_initialized = false;
-      select_count = 0;
-      select_mode_active = false;
-    }
-
-    protected Integer doInBackground(Void... params) {
-      zoneCursor = databaseHelper.getZoneDatabase().getZones();
-      select_count = databaseHelper.getZoneDatabase().getZonesSelected().getCount();
-      return 0;
-    }
-
-    protected void onProgressUpdate(Void... progress) {
-      // Nothing to do.
-    }
-
-    protected void onPostExecute(Integer result) {
-      CursorAdapter zoneAdapter = new ZoneCursorAdapter(ZoneListActivity.this, zoneCursor);
-
-      zoneListView = (ListView) findViewById(R.id.list);
-      zoneListView.setAdapter(zoneAdapter);
-      zoneListView.setOnItemClickListener(ZoneListActivity.this);
-      zoneListView.setOnItemLongClickListener(ZoneListActivity.this);
-
-      list_is_initialized = true;
-      list_is_initializing = false;
-
-      if(select_count > 0) {
-        select_mode_active = true;
-        mActionMode = startActionMode(ZoneListActivity.this);
-      }
-      updateActionMode();
-    }
-  }
-
-  private class DeleteSelectedZonesTask extends AsyncTask<Void, Void, Integer> {
-
-    protected Integer doInBackground(Void... params) {
-      Cursor zoneCursor = databaseHelper.getZoneDatabase().getZonesSelected();
-      ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(zoneCursor);
-      while (zoneReader.getNext() != null)
-        databaseHelper.getZoneDatabase().deleteZone(zoneReader.getCurrent().getId());
-
-      zoneReader.close();
-      return 0;
-    }
-
-    protected void onProgressUpdate(Void... progress) {
-      // Nothing to do.
-    }
-
-    protected void onPostExecute(Integer result) {
-      initializeList();
-    }
   }
 
   private void initializeList() {
@@ -248,22 +187,25 @@ public class ZoneListActivity extends SherlockActivity implements
 
   private void updateActionMode() {
     if (mActionMode !=  null) {
-      if(select_mode_active == false)
+      if(select_count == 0)
         mActionMode.finish();
       else {
         mActionMode.setSubtitle(select_count + " " + getString(R.string.zones_selected));
         mActionMode.getMenu().getItem(0).setVisible((select_count == 1));
       }
     }
+    else if (select_count > 0)
+      mActionMode = startActionMode(ZoneListActivity.this);
   }
 
   private void selectZone(View view) {
     Log.d(TAG, "selectZone()");
 
-    select_count++;
     databaseHelper.getZoneDatabase().setZoneSelected(((Integer) view.getTag(R.integer.zone_list_row_id_tag)).intValue(), true);
     view.setTag(R.integer.zone_list_row_select_tag, Boolean.TRUE);
     view.setBackgroundResource(R.color.abs__holo_blue_light);
+    select_count++;
+
     updateActionMode();
   }
 
@@ -273,8 +215,7 @@ public class ZoneListActivity extends SherlockActivity implements
     databaseHelper.getZoneDatabase().setZoneSelected(((Integer) view.getTag(R.integer.zone_list_row_id_tag)).intValue(), false);
     view.setTag(R.integer.zone_list_row_select_tag, Boolean.FALSE);
     view.setBackgroundResource(0);
-    if(--select_count < 1)
-      select_mode_active = false;
+    --select_count;
 
     updateActionMode();
   }
@@ -305,6 +246,72 @@ public class ZoneListActivity extends SherlockActivity implements
       ZoneRecord updatedZone = new ZoneRecord(selectedZone.getId(), newLabel, selectedZone.getPoints());
       databaseHelper.getZoneDatabase().updateZone(updatedZone);
       mActionMode.finish();
+      initializeList();
+    }
+  }
+
+  private class InitializeListTask extends AsyncTask<Void, Void, Integer> {
+
+    private Cursor zoneCursor;
+
+    protected InitializeListTask() {
+      Log.d(TAG, "initializeListTask()");
+
+      list_is_initializing = true;
+      list_is_initialized = false;
+      select_count = 0;
+    }
+
+    @Override
+    protected Integer doInBackground(Void... params) {
+      zoneCursor = databaseHelper.getZoneDatabase().getZonesSelected();
+      select_count = zoneCursor.getCount();
+      zoneCursor.close();
+
+      zoneCursor = databaseHelper.getZoneDatabase().getZones();
+      return 0;
+    }
+
+    @Override
+    protected void onProgressUpdate(Void... progress) {
+      // Nothing to do.
+    }
+
+    @Override
+    protected void onPostExecute(Integer result) {
+      CursorAdapter zoneAdapter = new ZoneCursorAdapter(ZoneListActivity.this, zoneCursor);
+
+      zoneListView = (ListView) findViewById(R.id.list);
+      zoneListView.setAdapter(zoneAdapter);
+      zoneListView.setOnItemClickListener(ZoneListActivity.this);
+      zoneListView.setOnItemLongClickListener(ZoneListActivity.this);
+
+      list_is_initialized = true;
+      list_is_initializing = false;
+      updateActionMode();
+    }
+  }
+
+  private class DeleteSelectedZonesTask extends AsyncTask<Void, Void, Integer> {
+
+    @Override
+    protected Integer doInBackground(Void... params) {
+      Cursor zoneCursor = databaseHelper.getZoneDatabase().getZonesSelected();
+      ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(zoneCursor);
+      while (zoneReader.getNext() != null)
+        databaseHelper.getZoneDatabase().deleteZone(zoneReader.getCurrent().getId());
+
+      zoneReader.close();
+      return 0;
+    }
+
+    @Override
+    protected void onProgressUpdate(Void... progress) {
+      // Nothing to do.
+    }
+
+    @Override
+    protected void onPostExecute(Integer result) {
       initializeList();
     }
   }
