@@ -60,7 +60,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
   public void onCreate(Bundle savedInstanceState) {
     Log.d(TAG, "onCreate()");
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.polygon_map_layout);
+    setContentView(R.layout.zone_map_layout);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setSubtitle(R.string.menu_title_polygon_map);
 
