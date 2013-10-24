@@ -24,14 +24,18 @@ import org.anhonesteffort.polygons.database.DatabaseHelper;
 import org.anhonesteffort.polygons.database.ZoneDatabase;
 import org.anhonesteffort.polygons.database.model.PointRecord;
 import org.anhonesteffort.polygons.database.model.ZoneRecord;
-import org.anhonesteffort.polygons.map.geometry.MapPoint;
-import org.anhonesteffort.polygons.map.geometry.MapZone;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class ZoneMapActivity extends SherlockFragmentActivity {
-  private static final String TAG                = "org.anhonesteffort.polygons.map.ZoneMapActivity";
+  private static final String TAG = "org.anhonesteffort.polygons.map.ZoneMapActivity";
+
+  protected static final int   ZONE_FILL_COLOR    = 0x5F880607;
+  protected static final float ZONE_STROKE_WIDTH  = 3;
+  protected static final float POINT_DEFAULT_HUE  = 0.0f;
+  protected static final float POINT_SELECTED_HUE = 210.0f;
+
   public final static String SAVED_STATE         = "org.anhonesteffort.polygons.map.SAVED_STATE";
   public final static String SELECTED_ZONE_ID    = "org.anhonesteffort.polygons.map.SELECTED_ZONE_ID";
   public final static String SELECTED_ZONE_FOCUS = "org.anhonesteffort.polygons.map.SELECTED_ZONE_FOCUS";
@@ -172,7 +176,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
         actionMode = this.getSherlock().startActionMode(newPointsCallback);
         
         for(PointRecord point : selectedZone.getPoints())
-          zoneMap.addPoint(new MapPoint(point));
+          zoneMap.addPoint(point);
         break;
 
       case EDIT_ZONE:
@@ -188,7 +192,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
         zoneMap.clearPoints();
         selectedPoint = null;
         for(PointRecord point : selectedZone.getPoints())
-          zoneMap.addPoint(new MapPoint(point));
+          zoneMap.addPoint(point);
         break;
         
       case EDIT_POINT:
@@ -203,8 +207,8 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
         
         zoneMap.clearPoints();
         for(PointRecord point : selectedZone.getPoints())
-          zoneMap.addPoint(new MapPoint(point));
-        zoneMap.selectPoint(new MapPoint(selectedPoint));
+          zoneMap.addPoint(point);
+        zoneMap.selectPoint(selectedPoint);
         break;
 
         default:
@@ -253,10 +257,10 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
     
     if(myState == DrawState.NEW_POINTS || myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
       for(PointRecord point : selectedZone.getPoints())
-        zoneMap.addPoint(new MapPoint(point));
+        zoneMap.addPoint(point);
       
       if(myState == DrawState.EDIT_POINT)
-        zoneMap.selectPoint(new MapPoint(selectedPoint));
+        zoneMap.selectPoint(selectedPoint);
     }
   }
 
@@ -266,7 +270,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
     if(myState == DrawState.NEW_POINTS || myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
       clickPoint = databaseHelper.getZoneDatabase().addPoint(clickPoint, selectedZone.getId());
       selectedZone.getPoints().add(clickPoint);
-      zoneMap.addPoint(new MapPoint(clickPoint));
+      zoneMap.addPoint(clickPoint);
     }
 
     if(myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
@@ -309,11 +313,18 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
   
   public void onPointMoveStop(PointRecord clickPoint) {
     Log.d(TAG, "onPointMoveStop() " + clickPoint.getId());
-    selectedPoint = clickPoint;
 
     selectedZone.removePoint(clickPoint.getId());
     selectedZone.getPoints().add(clickPoint);
+
+    int selected_point_index = 0;
+    for(int i = 0; i < selectedZone.getPoints().size(); i++) {
+      if (selectedZone.getPoints().get(i).getId() == clickPoint.getId())
+        selected_point_index = i;
+    }
+
     selectedZone = databaseHelper.getZoneDatabase().updateZone(selectedZone);
+    selectedPoint = selectedZone.getPoints().get(selected_point_index);
 
     if(myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
       updateSelectedZone();
@@ -327,6 +338,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
     
     switch(selectedZone.makeValid()) {
       case ZoneRecord.OK:
+
         int selected_point_index = 0;
         if(selectedPoint != null) {
           for(int i = 0; i < selectedZone.getPoints().size(); i++) {
@@ -335,10 +347,10 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
           }
         }
         
-        zoneMap.removePolygon(selectedZone.getId());
+        zoneMap.removeZone(selectedZone.getId());
         selectedZone = databaseHelper.getZoneDatabase().updateZone(selectedZone);
         selectedPoint = selectedZone.getPoints().get(selected_point_index);
-        zoneMap.addZone(new MapZone(selectedZone));
+        zoneMap.addZone(selectedZone);
         break;
 
       case ZoneRecord.TOO_FEW_POINTS:
@@ -346,8 +358,8 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
           databaseHelper.getZoneDatabase().deleteZone(selectedZone.getId());
         else {
           selectedZone = databaseHelper.getZoneDatabase().getZone(selectedZone.getId());
-          zoneMap.removePolygon(selectedZone.getId());
-          zoneMap.addZone(new MapZone(selectedZone));
+          zoneMap.removeZone(selectedZone.getId());
+          zoneMap.addZone(selectedZone);
         }
         Toast.makeText(this, this.getString(R.string.error_too_few_points), Toast.LENGTH_SHORT).show();
         break;
@@ -359,8 +371,8 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
         else {
           selectedZone.getPoints().remove(selectedZone.getPoints().size() - 1);
           selectedZone = databaseHelper.getZoneDatabase().updateZone(selectedZone);
-          zoneMap.removePolygon(selectedZone.getId());
-          zoneMap.addZone(new MapZone(selectedZone));
+          zoneMap.removeZone(selectedZone.getId());
+          zoneMap.addZone(selectedZone);
           
           if(actionMode != null)
             actionMode.finish();
@@ -370,7 +382,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
         break;
 
       default:
-        zoneMap.removePolygon(selectedZone.getId());
+        zoneMap.removeZone(selectedZone.getId());
         databaseHelper.getZoneDatabase().deleteZone(selectedZone.getId());
         
         setState(DrawState.NAVIGATE);

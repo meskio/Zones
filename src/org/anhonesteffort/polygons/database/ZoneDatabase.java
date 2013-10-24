@@ -102,7 +102,7 @@ public class ZoneDatabase {
   }
 
   public boolean isLabelAvailable(String label) {
-    SpatialCursor zoneRecords = dbHelper.prepare(SELECTION_ZONE_POINT + "WHERE zone.label = '" +
+    SpatialCursor zoneRecords = dbHelper.prepare(SELECTION_ZONE + "WHERE zone.label = '" +
                                                     DatabaseHelper.escapeString(label) + "'");
     if(zoneRecords.getCount() > 0) {
       zoneRecords.close();
@@ -133,27 +133,18 @@ public class ZoneDatabase {
   }
 
   public PointRecord addPoint(PointRecord point, int zone_id) {
-    PointRecord retPoint = new PointRecord(point.getId(), point.getZoneId(), point.getX(), point.getY());
+    PointRecord retPoint = null;
+
     ContentValues values = new ContentValues();
+    values.put("zone_id", zone_id);
+    values.put("latitude", point.getY());
+    values.put("longitude", point.getX());
+    dbHelper.insert("point", values);
 
-    if (point.getId() != -1) {
-      values.put("pid", point.getId());
-      values.put("zone_id", zone_id);
-      values.put("latitude", point.getY());
-      values.put("longitude", point.getX());
-      dbHelper.insert("point", values);
-    }
-    else {
-      values.put("zone_id", zone_id);
-      values.put("latitude", point.getY());
-      values.put("longitude", point.getX());
-      dbHelper.insert("point", values);
-
-      SpatialCursor pointRecords = dbHelper.prepare(SELECTION_POINT + "ORDER BY pid DESC LIMIT 1");
-      if(pointRecords.moveToNext())
-        retPoint = new PointRecord(pointRecords.getInt(0), zone_id, point.getX(), point.getY());
-      pointRecords.close();
-    }
+    SpatialCursor pointRecords = dbHelper.prepare(SELECTION_POINT + "ORDER BY pid DESC LIMIT 1");
+    if(pointRecords.moveToNext())
+      retPoint = new PointRecord(pointRecords.getInt(0), zone_id, point.getX(), point.getY());
+    pointRecords.close();
 
     return retPoint;
   }
@@ -198,7 +189,7 @@ public class ZoneDatabase {
 
   public ZoneRecord updateZone(ZoneRecord zone) {
     Log.d(TAG, "updateZone(), id: " + zone.getId());
-    ZoneRecord updatedZone = new ZoneRecord(zone.getId(), zone.getLabel());
+    ZoneRecord retZone = new ZoneRecord(zone.getId(), zone.getLabel());
 
     if (zoneExists(zone.getId())) {
       if (zone.getPoints().isEmpty() == false) {
@@ -214,17 +205,17 @@ public class ZoneDatabase {
 
         dbHelper.exec("DELETE FROM point WHERE zone_id = '" + zone.getId() + "'");
         for(PointRecord point : zone.getPoints())
-          updatedZone.getPoints().add(addPoint(point, updatedZone.getId()));
+          retZone.getPoints().add(addPoint(point, zone.getId()));
       }
 
       dbHelper.exec("UPDATE zone SET label = '" + DatabaseHelper.escapeString(zone.getLabel()) + "' " +
                     "WHERE _id = '" + zone.getId() + "'");
     }
     else
-      updatedZone = null;
+      retZone = null;
 
     geometryChange();
-    return updatedZone;
+    return retZone;
   }
 
   public ZoneRecord getZone(int zone_id) {

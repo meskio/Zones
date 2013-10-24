@@ -30,8 +30,6 @@ import org.anhonesteffort.polygons.database.ZoneDatabase;
 import org.anhonesteffort.polygons.database.model.PointRecord;
 import org.anhonesteffort.polygons.database.model.ZoneRecord;
 import org.anhonesteffort.polygons.map.ZoneMapActivity.DrawState;
-import org.anhonesteffort.polygons.map.geometry.MapPoint;
-import org.anhonesteffort.polygons.map.geometry.MapZone;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,42 +83,20 @@ public class GoogleZoneMap
     }
   }
 
-  public void addPoint(MapPoint point) {
+  public void addPoint(PointRecord point) {
     MarkerOptions marker = GoogleGeometryFactory.buildMarkerOptions(point);
-    marker.draggable(true);
-    marker.icon(BitmapDescriptorFactory.defaultMarker(point.getFillColor()));
     mapMarkers.add(googleMap.addMarker(marker));
   }
-
-  public void removePoint(MapPoint point) {
-    Marker removeMarker = null;
-
-    for(Marker marker : mapMarkers) {
-      if(point.getId() == Integer.parseInt(marker.getSnippet()))
-        removeMarker = marker;
-    }
-
-    if(removeMarker != null) {
-      removeMarker.remove();
-      mapMarkers.remove(removeMarker);
-    }
-  }
   
-  public void selectPoint(MapPoint point) {
+  public void selectPoint(PointRecord point) {
     for(Marker marker : mapMarkers) {
-      if(point.getId() == Integer.parseInt(marker.getSnippet()))
-        marker.setIcon(BitmapDescriptorFactory.defaultMarker(point.getSelectedFillColor()));
+      PointRecord mapPoint = GoogleGeometryFactory.buildPointRecord(marker);
+      if(point.getId() == mapPoint.getId())
+        marker.setIcon(BitmapDescriptorFactory.defaultMarker(ZoneMapActivity.POINT_SELECTED_HUE));
     }
   }
-  
-  public ArrayList<MapPoint> getPoints() {
-    ArrayList<MapPoint> mapPoints = new ArrayList<MapPoint>();
-    for(Marker marker : mapMarkers)
-      mapPoints.add(new MapPoint(GoogleGeometryFactory.buildPointRecord(marker)));
-    return mapPoints;
-  }
 
-  public void addZone(MapZone mapZone) {
+  public void addZone(ZoneRecord mapZone) {
     Log.d(TAG, "addZone(), zone_id: " + mapZone.getId());
 
     PolygonOptions mapPolygonOptions = GoogleGeometryFactory.buildPolygonOptions(mapZone);
@@ -129,11 +105,11 @@ public class GoogleZoneMap
     mapPolygons.append(mapZone.getId(), mapPolygon);
   }
 
-  public void removePolygon(int polygon_id) {
-    Log.d(TAG, "deleteZone(), polygon_id: " + polygon_id);
-    if(mapPolygons.get(polygon_id, null) != null) {
-      mapPolygons.get(polygon_id).remove();
-      mapPolygons.remove(polygon_id);
+  public void removeZone(int zone_id) {
+    Log.d(TAG, "deleteZone(), zone_id: " + zone_id);
+    if(mapPolygons.get(zone_id, null) != null) {
+      mapPolygons.get(zone_id).remove();
+      mapPolygons.remove(zone_id);
     }
   }
 
@@ -230,6 +206,8 @@ public class GoogleZoneMap
 
   // Clear the map and redraw all zoneDatabase within provided bounds.
   private void addZonesWithinBounds(LatLngBounds bounds) {
+    Log.d(TAG, "addZonesWithinBounds()");
+
     ZoneRecord visibleArea;
     PolygonOptions mapPolygonOptions;
     Polygon mapPolygon;
@@ -246,9 +224,8 @@ public class GoogleZoneMap
       if(mapActivity.getState() != DrawState.NEW_POINTS ||
           zoneReader.getCurrent().getId() != mapActivity.getSelectedZone().getId()) {
 
-        mapPolygonOptions = GoogleGeometryFactory.buildPolygonOptions(new MapZone(zoneReader.getCurrent()));
+        mapPolygonOptions = GoogleGeometryFactory.buildPolygonOptions(zoneReader.getCurrent());
         mapPolygon = googleMap.addPolygon(mapPolygonOptions);
-
         mapPolygons.put(zoneReader.getCurrent().getId(), mapPolygon);
       }
     }

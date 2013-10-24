@@ -2,6 +2,7 @@ package org.anhonesteffort.polygons.map;
 
 import android.location.Location;
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -9,7 +10,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import org.anhonesteffort.polygons.database.model.PointRecord;
 import org.anhonesteffort.polygons.database.model.ZoneRecord;
-import org.anhonesteffort.polygons.map.geometry.MapZone;
 
 public class GoogleGeometryFactory {
 
@@ -18,6 +18,9 @@ public class GoogleGeometryFactory {
     LatLng position = new LatLng(point.getY(), point.getX());
     marker.position(position);
     marker.snippet(Integer.toString(point.getId()));
+    marker.icon(BitmapDescriptorFactory.defaultMarker(ZoneMapActivity.POINT_DEFAULT_HUE));
+    marker.draggable(true);
+
     return marker;
   }
 
@@ -27,22 +30,11 @@ public class GoogleGeometryFactory {
 
   public static PolygonOptions buildPolygonOptions(ZoneRecord zoneRecord) {
     PolygonOptions polygonOptions = new PolygonOptions();
+
     for(PointRecord point : zoneRecord.getPoints())
       polygonOptions.add(buildLatLng(point));
-    return polygonOptions;
-  }
 
-  public static PolygonOptions buildPolygonOptions(MapZone mapZone) {
-    PolygonOptions polygonOptions = new PolygonOptions();
-
-    for(PointRecord point : mapZone.getPoints())
-      polygonOptions.add(buildLatLng(point));
-
-    polygonOptions.fillColor(mapZone.getFillColor());
-    polygonOptions.strokeColor(mapZone.getStrokeColor());
-    polygonOptions.strokeWidth(mapZone.getStrokeWidth());
-
-    return polygonOptions;
+    return polygonOptions.fillColor(ZoneMapActivity.ZONE_FILL_COLOR).strokeWidth(ZoneMapActivity.ZONE_STROKE_WIDTH);
   }
 
   public static PointRecord buildPointRecord(LatLng point) {

@@ -52,7 +52,7 @@ public class ZoneEditCallback implements ActionMode.Callback {
       case R.id.delete_zone_button:
         mapActivity.getSelectedZone().getPoints().clear();
         applicationStorage.getZoneDatabase().deleteZone(mapActivity.getSelectedZone().getId());
-        zoneMap.removePolygon(mapActivity.getSelectedZone().getId());
+        zoneMap.removeZone(mapActivity.getSelectedZone().getId());
         mode.finish();
         return true;
     }
