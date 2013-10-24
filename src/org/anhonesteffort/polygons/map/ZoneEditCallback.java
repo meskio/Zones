@@ -43,8 +43,7 @@ public class ZoneEditCallback implements ActionMode.Callback {
   public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
     switch (item.getItemId()) {
       case R.id.polygon_action_button:
-        Intent intent = new Intent();
-        intent.setClass(mapActivity.getApplicationContext(), ActionListActivity.class);
+        Intent intent = new Intent(mapActivity.getApplicationContext(), ActionListActivity.class);
         intent.putExtra(ActionListActivity.ZONE_ID, mapActivity.getSelectedZone().getId());
         mapActivity.startActivity(intent);
         return true;

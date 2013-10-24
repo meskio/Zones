@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,15 +29,12 @@ public class ZoneCursorAdapter extends CursorAdapter {
 
   @Override
   public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-    Log.d("ZoneCursorAdapter", "newView()");
     LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     return layoutInflater.inflate(R.layout.zone_list_row_layout, null);
   }
 
   @Override
   public void bindView(View view, Context context, Cursor cursor) {
-    Log.d("ZoneCursorAdapter", "bindView() count: " + cursor.getCount());
-
     ZoneDatabase.Reader zoneReader = new ZoneDatabase.Reader(cursor);
     ZoneRecord zone = zoneReader.getCurrent();
 

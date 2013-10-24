@@ -7,14 +7,12 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import org.anhonesteffort.polygons.R;
-import org.anhonesteffort.polygons.database.model.ZoneRecord;
 import org.anhonesteffort.polygons.map.ZoneMapActivity.DrawState;
 
 public class NewPointsCallback implements ActionMode.Callback {
   private static final String TAG = "org.anhonesteffort.polygons.map.NewPointsCallback";
   private ZoneMapActivity mapActivity;
-  private ZoneRecord selectedZone;
-  
+
   public NewPointsCallback(ZoneMapActivity mapActivity) {
     this.mapActivity = mapActivity;
   }
@@ -25,9 +23,7 @@ public class NewPointsCallback implements ActionMode.Callback {
     MenuInflater inflater = mode.getMenuInflater();
     inflater.inflate(R.menu.new_points_menu, menu);
     mode.setTitle(mapActivity.getString(R.string.title_new_polygon_points));
-    
-    selectedZone = mapActivity.getSelectedZone();
-    mode.setSubtitle(selectedZone.getLabel());
+    mode.setSubtitle(mapActivity.getSelectedZone().getLabel());
     return true;
   }
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +32,6 @@ public class ActionCursorAdapter extends CursorAdapter {
 
   @Override
   public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-    Log.d("ActionCursorAdapter", "newView()");
-
     LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     ActionDatabase.Reader actionReader = new ActionDatabase.Reader(cursor);
     ActionRecord actionRecord = actionReader.getCurrent();
@@ -59,8 +56,6 @@ public class ActionCursorAdapter extends CursorAdapter {
 
   @Override
   public void bindView(View view, Context context, Cursor cursor) {
-    Log.d("ActionCursorAdapter", "bindView()");
-
     ActionDatabase.Reader actionReader = new ActionDatabase.Reader(cursor);
     ActionRecord actionRecord = actionReader.getCurrent();
 

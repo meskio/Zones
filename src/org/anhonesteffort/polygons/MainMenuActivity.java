@@ -21,7 +21,7 @@ public class MainMenuActivity extends SherlockFragmentActivity {
 
     setContentView(R.layout.main_menu_layout);
     getSupportActionBar().setTitle(R.string.app_name);
-    
+
     Intent zoneService = new Intent(this, ZoneService.class);
     startService(zoneService);
   }
