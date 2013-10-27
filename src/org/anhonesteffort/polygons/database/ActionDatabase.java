@@ -105,12 +105,9 @@ public class ActionDatabase {
   private boolean isInitialized() {
     try {
 
-      SpatialCursor actionRecords = dbHelper.prepare("SELECT 1 FROM action LIMIT 1");
-      if(actionRecords.getCount() > 0) {
-        actionRecords.close();
-        return true;
-      }
+      SpatialCursor actionRecords = dbHelper.prepare("SELECT 1 FROM action");
       actionRecords.close();
+      return true;
 
     } catch (SQLException e) {
       dbHelper.displayException(e);

@@ -79,12 +79,9 @@ public class ZoneDatabase {
   private boolean isInitialized() {
     try {
 
-      SpatialCursor zonesQuery = dbHelper.prepare("SELECT 1 FROM zone LIMIT 1");
-      if(zonesQuery.getCount() > 0) {
-        zonesQuery.close();
-        return true;
-      }
+      SpatialCursor zonesQuery = dbHelper.prepare("SELECT 1 FROM zone");
       zonesQuery.close();
+      return true;
 
     } catch (SQLException e) {
       dbHelper.displayException(e);

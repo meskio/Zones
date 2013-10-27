@@ -28,18 +28,20 @@ public class DatabaseHelper {
   }
 
   private DatabaseHelper(File spatialDbFile, Context context) {
-    Log.d(TAG, "private DatabaseHelper()");
-
+    Log.d(TAG, "private DatabaseHelper() start");
     this.context = context;
-    database = new jsqlite.Database();
 
     try {
+      database = new jsqlite.Database();
       database.open(spatialDbFile.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
       zoneDatabase = new ZoneDatabase(this);
       actionDatabase = new ActionDatabase(this);
+
     } catch (Exception e) {
       displayException(e);
     }
+
+    Log.d(TAG, "private DatabaseHelper() end");
   }
 
   public ZoneDatabase getZoneDatabase() {

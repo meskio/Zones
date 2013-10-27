@@ -98,9 +98,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name="org.anhonesteffort.polygons.ZoneService"
-            android:process=":zone_service_process" />
-
+        <service android:name="org.anhonesteffort.polygons.ZoneService" />
         <service android:name="org.anhonesteffort.polygons.action.LocationReporter" />
         <service android:name="org.anhonesteffort.polygons.action.AudioAlarmer" />
         <service android:name="org.anhonesteffort.polygons.action.ContactCleaner" />
