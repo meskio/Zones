@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -14,7 +17,6 @@ import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
-import org.anhonesteffort.polygons.ZoneService.ZoneServiceBinder;
 import org.anhonesteffort.polygons.receiver.AdminReceiver;
 
 @SuppressWarnings("deprecation")
@@ -33,7 +35,7 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
   public static final String PREF_SMS_COMMANDS          = "pref_allow_sms_commands";
   public static final String PREF_SMS_COMMAND_PASSWORD  = "pref_sms_command_password";
 
-  private ZoneService zoneService;
+  private Messenger mService = null;
   private boolean zoneServiceBound = false;
   
   @Override
@@ -46,7 +48,6 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
     this.getSupportActionBar().setSubtitle(R.string.menu_title_settings);
 
     Intent locationWatchIntent = new Intent(this, ZoneService.class);
-    startService(locationWatchIntent);
     bindService(locationWatchIntent, mConnection, Context.BIND_AUTO_CREATE);
 
     updateAdminPreferenceCheckBox();
@@ -86,14 +87,14 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
     @Override
     public void onServiceConnected(ComponentName className, IBinder service) {
       Log.d(TAG, "onServiceConnected()");
-      ZoneServiceBinder binder = (ZoneServiceBinder) service;
-      zoneService = binder.getService();
+      mService = new Messenger(service);
       zoneServiceBound = true;
     }
 
     @Override
     public void onServiceDisconnected(ComponentName arg0) {
       Log.d(TAG, "onServiceDisconnected()");
+      mService = null;
       zoneServiceBound = false;
     }
 
@@ -115,16 +116,22 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
       CheckBoxPreference enableGeofencing = (CheckBoxPreference) preference;
+      Message serviceMessage;
 
       if((Boolean) newValue) {
-        if(zoneServiceBound)
-          zoneService.onGeofencingPreferenceChange(true);
+        serviceMessage = Message.obtain(null, ZoneService.MESSAGE_GEOFENCING_ENABLED, 0, 0);
         enableGeofencing.setChecked(true);
       }
       else {
-        if(zoneServiceBound)
-          zoneService.onGeofencingPreferenceChange(false);
+        serviceMessage = Message.obtain(null, ZoneService.MESSAGE_GEOFENCING_DISABLED, 0, 0);
         enableGeofencing.setChecked(false);
+      }
+
+      try {
+        if (zoneServiceBound)
+          mService.send(serviceMessage);
+      } catch (RemoteException e) {
+        e.printStackTrace();
       }
 
       return false;

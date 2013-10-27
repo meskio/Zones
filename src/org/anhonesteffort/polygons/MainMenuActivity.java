@@ -34,8 +34,7 @@ public class MainMenuActivity extends SherlockFragmentActivity {
     TableRow zoneMapButton = (TableRow) findViewById(R.id.zone_map_button);
     zoneMapButton.setOnClickListener(new OnClickListener() {
       public void onClick(View v) {
-        Intent intent = new Intent();
-        intent.setClass(getApplicationContext(), ZoneMapActivity.class);
+        Intent intent = new Intent(getApplicationContext(), ZoneMapActivity.class);
         startActivity(intent);
       }
     });
@@ -43,8 +42,7 @@ public class MainMenuActivity extends SherlockFragmentActivity {
     TableRow zoneListButton = (TableRow) findViewById(R.id.zone_list_button);
     zoneListButton.setOnClickListener(new OnClickListener() {
       public void onClick(View v) {
-        Intent intent = new Intent();
-        intent.setClass(getApplicationContext(), ZoneListActivity.class);
+        Intent intent = new Intent(getApplicationContext(), ZoneListActivity.class);
         startActivity(intent);
       }
     });
@@ -52,8 +50,7 @@ public class MainMenuActivity extends SherlockFragmentActivity {
     TableRow settingsButton = (TableRow) findViewById(R.id.settings_button);
     settingsButton.setOnClickListener(new OnClickListener() {
       public void onClick(View v) {
-        Intent intent = new Intent();
-        intent.setClass(getApplicationContext(), PreferencesActivity.class);
+        Intent intent = new Intent(getApplicationContext(), PreferencesActivity.class);
         startActivity(intent);
       }
     });
@@ -61,8 +58,7 @@ public class MainMenuActivity extends SherlockFragmentActivity {
     TableRow helpButton = (TableRow) findViewById(R.id.help_button);
     helpButton.setOnClickListener(new OnClickListener() {
       public void onClick(View v) {
-        Intent intent = new Intent();
-        intent.setClass(getApplicationContext(), HelpActivity.class);
+        Intent intent = new Intent(getApplicationContext(), HelpActivity.class);
         startActivity(intent);
       }
     });

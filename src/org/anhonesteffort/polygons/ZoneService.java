@@ -6,8 +6,10 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
-import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -36,24 +38,21 @@ public class ZoneService extends Service implements
   public static final String ZONE_ID         = "org.anhonesteffort.polygons.ZoneService.ZONE_ID";
   public static final String ZONE_LABEL      = "org.anhonesteffort.polygons.ZoneService.ZONE_LABEL";
   public static final String DEVICE_LOCATION = "org.anhonesteffort.polygons.ZoneService.DEVICE_LOCATION";
-  
+
+  public static final int MESSAGE_GEOFENCING_ENABLED  = 1337;
+  public static final int MESSAGE_GEOFENCING_DISABLED = 1336;
+
   private static final int MINIMUM_INTERVAL_MS         = 1500;
   private static final int REGULAR_INTERVAL_MS         = 120000;
   private static final int SUBSCRIBER_INTERVAL_MS      = 30000;
   private static final double AVG_WALKING_VELOCITY_MPS = 1.5;
 
-  private final IBinder binder = new ZoneServiceBinder();
+  private final Messenger mMessenger = new Messenger(new ZoneMessageHandler());
   private DatabaseHelper applicationStorage;
   private BroadcastActionLauncher actionLauncher;
   
   private BetterLocationManager locationManager;
   private Location bestLocation;
-
-  public class ZoneServiceBinder extends Binder {
-    public ZoneService getService() {
-      return ZoneService.this;
-    }
-  }
 
   @Override
   public void onCreate() {
@@ -79,7 +78,7 @@ public class ZoneService extends Service implements
   @Override
   public IBinder onBind(Intent intent) {
     Log.d(TAG, "onBind()");
-    return binder;
+    return mMessenger.getBinder();
   }
   
   @Override
@@ -94,12 +93,31 @@ public class ZoneService extends Service implements
     this.unregisterReceiver(actionLauncher);
   }
   
-  public void onGeofencingPreferenceChange(boolean enabled) {
+  private void handleGeofencingPreferenceChange(boolean enabled) {
     Log.d(TAG, "Geofencing preference set to: " + enabled);
     if(enabled)
       locationManager.requestLocationUpdates(MINIMUM_INTERVAL_MS, this);
     else
       locationManager.removeLocationUpdates(this);
+  }
+
+  class ZoneMessageHandler extends Handler {
+    @Override
+    public void handleMessage(Message msg) {
+      switch (msg.what) {
+
+        case MESSAGE_GEOFENCING_ENABLED:
+          handleGeofencingPreferenceChange(true);
+          break;
+
+        case MESSAGE_GEOFENCING_DISABLED:
+          handleGeofencingPreferenceChange(false);
+          break;
+
+        default:
+          super.handleMessage(msg);
+      }
+    }
   }
 
   public void sendPolygonBroadcasts() {
