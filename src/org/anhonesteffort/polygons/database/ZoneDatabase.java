@@ -16,11 +16,14 @@ public class ZoneDatabase {
 
   private static final String SELECTION_ZONE       = "SELECT zone._id, zone.label FROM zone ";
 
-  private static final String SELECTION_POINT      = "SELECT pid, zone_id, longitude, latitude " +
+  private static final String SELECTION_POINT      = "SELECT p_id, zone_id, longitude, latitude " +
                                                      "FROM point ";
 
-  private static final String SELECTION_ZONE_POINT = "SELECT zone._id, zone.label, point.pid, point.zone_id, point.longitude, point.latitude " +
-                                                     "FROM zone JOIN point " +
+  private static final String SELECTION_ZONE_POINT = "SELECT zone._id, zone.label, point.p_id, point.zone_id, point.longitude, point.latitude " +
+                                                     "FROM zone JOIN " +
+                                                       "(SELECT p_id, zone_id, longitude, latitude " +
+                                                        "FROM point " +
+                                                        "ORDER BY p_order) AS point " +
                                                      "ON zone._id = point.zone_id ";
 
   private static final String SELECTION_OCCUPY     = "SELECT zone._id, zone.label " +
@@ -56,8 +59,9 @@ public class ZoneDatabase {
     dbHelper.exec("SELECT AddGeometryColumn('zone', 'geometry', 4326, 'GEOMETRY')");
 
     dbHelper.exec("CREATE TABLE IF NOT EXISTS point (" +
-                    "pid INTEGER NOT NULL PRIMARY KEY, " +
+                    "p_id INTEGER NOT NULL PRIMARY KEY, " +
                     "zone_id INTEGER NOT NULL, " +
+                    "p_order INTEGER NOT NULL, " +
                     "latitude REAL NOT NULL, " +
                     "longitude REAL NOT NULL, " +
                     "FOREIGN KEY (zone_id) REFERENCES zone(_id) ON DELETE CASCADE" +
@@ -130,15 +134,15 @@ public class ZoneDatabase {
   }
 
   public PointRecord addPoint(PointRecord point, int zone_id) {
-    PointRecord retPoint = null;
-
     ContentValues values = new ContentValues();
     values.put("zone_id", zone_id);
+    values.put("p_order", -1);
     values.put("latitude", point.getY());
     values.put("longitude", point.getX());
     dbHelper.insert("point", values);
 
-    SpatialCursor pointRecords = dbHelper.prepare(SELECTION_POINT + "ORDER BY pid DESC LIMIT 1");
+    PointRecord retPoint = null;
+    SpatialCursor pointRecords = dbHelper.prepare(SELECTION_POINT + "ORDER BY p_id DESC LIMIT 1");
     if(pointRecords.moveToNext())
       retPoint = new PointRecord(pointRecords.getInt(0), zone_id, point.getX(), point.getY());
     pointRecords.close();
@@ -148,7 +152,7 @@ public class ZoneDatabase {
 
   public PointRecord getPoint(int point_id) {
     PointRecord outPoint = null;
-    SpatialCursor pointRecords = dbHelper.prepare(SELECTION_POINT + "WHERE pid = '" + point_id + "'");
+    SpatialCursor pointRecords = dbHelper.prepare(SELECTION_POINT + "WHERE p_id = '" + point_id + "'");
 
     if(pointRecords.moveToNext())
       outPoint = new PointRecord(pointRecords.getInt(0),
@@ -161,7 +165,7 @@ public class ZoneDatabase {
   }
 
   public ZoneRecord addZone(String label) {
-    Log.d(TAG, "addZone()");
+    Log.d(TAG, "addZone() " + label);
     ZoneRecord outZone = null;
 
     ContentValues values = new ContentValues();
@@ -184,14 +188,13 @@ public class ZoneDatabase {
     dbHelper.exec("DELETE FROM zone WHERE _id = '" + zone_id + "'");
   }
 
-  public ZoneRecord updateZone(ZoneRecord zone) {
+  public void updateZone(ZoneRecord zone) {
     Log.d(TAG, "updateZone(), id: " + zone.getId());
-    ZoneRecord retZone = new ZoneRecord(zone.getId(), zone.getLabel());
 
     if (zoneExists(zone.getId())) {
+
       if (zone.getPoints().isEmpty() == false) {
         String sql = "UPDATE zone SET geometry = GeomFromText('POLYGON((";
-
         for (int i = 0; i < zone.getPoints().size(); i++) {
           if (i != 0)
             sql += ",";
@@ -200,19 +203,25 @@ public class ZoneDatabase {
         sql += "," + zone.getPoints().get(0).getX() + " " + zone.getPoints().get(0).getY();
         dbHelper.exec(sql + "))', 4326) WHERE _id = '" + zone.getId() + "'");
 
-        dbHelper.exec("DELETE FROM point WHERE zone_id = '" + zone.getId() + "'");
+        sql = "DELETE FROM point WHERE p_id NOT IN (";
         for(PointRecord point : zone.getPoints())
-          retZone.getPoints().add(addPoint(point, zone.getId()));
+          sql += "'" + point.getId() + "', ";
+        dbHelper.exec(sql + "'-2') AND zone_id = '" + zone.getId() + "'");
+
+        for (int i = 0; i < zone.getPoints().size(); i++)
+          dbHelper.exec("UPDATE point SET p_order = '" + i + "', " +
+              "longitude = '" + zone.getPoints().get(i).getX() + "', " +
+              "latitude = '" + zone.getPoints().get(i).getY() + "' " +
+              "WHERE p_id = '" + zone.getPoints().get(i).getId() + "'");
       }
 
       dbHelper.exec("UPDATE zone SET label = '" + DatabaseHelper.escapeString(zone.getLabel()) + "' " +
                     "WHERE _id = '" + zone.getId() + "'");
     }
     else
-      retZone = null;
+      zone = null;
 
     geometryChange();
-    return retZone;
   }
 
   public ZoneRecord getZone(int zone_id) {
@@ -364,7 +373,7 @@ public class ZoneDatabase {
     public Reader(Cursor cursor) {
       this.cursor = cursor;
 
-      if(cursor.getColumnIndex("pid") != -1)
+      if(cursor.getColumnIndex("p_id") != -1 || cursor.getColumnIndex("point.p_id") != -1)
         has_points = true;
     }
 
@@ -387,18 +396,14 @@ public class ZoneDatabase {
     }
 
     private ZoneRecord addPoints(ZoneRecord newZone) {
-      PointRecord point = new PointRecord(cursor.getInt(2), cursor.getInt(3), cursor.getDouble(4), cursor.getDouble(5));
-      newZone.getPoints().add(point);
-
+      newZone.getPoints().add(new PointRecord(cursor.getInt(2), cursor.getInt(3), cursor.getDouble(4), cursor.getDouble(5)));
       while(cursor.moveToNext()) {
         if (cursor.getInt(0) != newZone.getId())
           break;
-
-        point = new PointRecord(cursor.getInt(2), cursor.getInt(3), cursor.getDouble(4), cursor.getDouble(5));
-        newZone.getPoints().add(point);
+        newZone.getPoints().add(new PointRecord(cursor.getInt(2), cursor.getInt(3), cursor.getDouble(4), cursor.getDouble(5)));
       }
-      zone_start_pos = cursor.getPosition();
 
+      zone_start_pos = cursor.getPosition();
       return newZone;
     }
 

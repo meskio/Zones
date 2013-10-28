@@ -254,7 +254,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
   public void onMapViewChange(PointRecord viewCenter, double view_zoom) {
     lastViewPoint = viewCenter;
     last_zoom_level = view_zoom;
-    
+
     if(myState == DrawState.NEW_POINTS || myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
       for(PointRecord point : selectedZone.getPoints())
         zoneMap.addPoint(point);
@@ -314,22 +314,16 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
   public void onPointMoveStop(PointRecord clickPoint) {
     Log.d(TAG, "onPointMoveStop() " + clickPoint.getId());
 
-    selectedZone.removePoint(clickPoint.getId());
-    selectedZone.getPoints().add(clickPoint);
-
-    int selected_point_index = 0;
-    for(int i = 0; i < selectedZone.getPoints().size(); i++) {
-      if (selectedZone.getPoints().get(i).getId() == clickPoint.getId())
-        selected_point_index = i;
-    }
-
-    selectedZone = databaseHelper.getZoneDatabase().updateZone(selectedZone);
-    selectedPoint = selectedZone.getPoints().get(selected_point_index);
+    selectedPoint = clickPoint;
+    selectedZone.removePoint(selectedPoint.getId());
+    selectedZone.getPoints().add(selectedPoint);
 
     if(myState == DrawState.EDIT_ZONE || myState == DrawState.EDIT_POINT) {
       updateSelectedZone();
       setState(DrawState.EDIT_POINT);
     }
+    else
+      databaseHelper.getZoneDatabase().updateZone(selectedZone);
   }
 
   // Redraws the selected polygon on map, updates in database.
@@ -338,18 +332,8 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
     
     switch(selectedZone.makeValid()) {
       case ZoneRecord.OK:
-
-        int selected_point_index = 0;
-        if(selectedPoint != null) {
-          for(int i = 0; i < selectedZone.getPoints().size(); i++) {
-            if(selectedZone.getPoints().get(i).getId() == selectedPoint.getId())
-              selected_point_index = i;
-          }
-        }
-        
         zoneMap.removeZone(selectedZone.getId());
-        selectedZone = databaseHelper.getZoneDatabase().updateZone(selectedZone);
-        selectedPoint = selectedZone.getPoints().get(selected_point_index);
+        databaseHelper.getZoneDatabase().updateZone(selectedZone);
         zoneMap.addZone(selectedZone);
         break;
 
@@ -370,7 +354,7 @@ public class ZoneMapActivity extends SherlockFragmentActivity {
         }
         else {
           selectedZone.getPoints().remove(selectedZone.getPoints().size() - 1);
-          selectedZone = databaseHelper.getZoneDatabase().updateZone(selectedZone);
+          databaseHelper.getZoneDatabase().updateZone(selectedZone);
           zoneMap.removeZone(selectedZone.getId());
           zoneMap.addZone(selectedZone);
           

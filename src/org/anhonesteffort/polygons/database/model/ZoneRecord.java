@@ -15,6 +15,7 @@ public class ZoneRecord {
 
   public static final int MIN_POINTS        = 3;
   public static final int MAX_POINTS        = 10;
+
   public static final int OK                = 0;
   public static final int TOO_FEW_POINTS    = 1;
   public static final int TOO_MANY_POINTS   = 2;
@@ -65,6 +66,26 @@ public class ZoneRecord {
       points.remove(remove_index);
   }
 
+  // Returns true if polygon intersects itself one or more times.
+  private boolean intersectsSelf() {
+    LatLonLineSegment line1;
+    LatLonLineSegment line2;
+
+    // Loop through all the lines that form the polygon.
+    for(int i = 0; i < (points.size() - 1); i++) {
+      line1 = new LatLonLineSegment(points.get(i), points.get(i+1));
+
+      // Check if that line segment intersects with any other line segment.
+      for(int j = (i + 1); j < (points.size() - 1); j++) {
+        line2 = new LatLonLineSegment(points.get(j), points.get(j+1));
+        line2.shrink(0.000000000001, 0.000000000001);
+        if(line1.intersects(line2))
+          return true;
+      }
+    }
+    return false;
+  }
+
   private void testAllCombinations(List<PointRecord> testPoints, int k) {
     for(int i = k; i < testPoints.size(); i++) {
       java.util.Collections.swap(testPoints, i, k);
@@ -88,26 +109,6 @@ public class ZoneRecord {
         points.addAll(testPoints);
       }
     }
-  }
-
-  // Returns true if polygon intersects itself one or more times.
-  private boolean intersectsSelf() {
-    LatLonLineSegment line1;
-    LatLonLineSegment line2;
-
-    // Loop through all the lines that form the polygon.
-    for(int i = 0; i < (points.size() - 1); i++) {
-      line1 = new LatLonLineSegment(points.get(i), points.get(i+1));
-
-      // Check if that line segment intersects with any other line segment.
-      for(int j = (i + 1); j < (points.size() - 1); j++) {
-        line2 = new LatLonLineSegment(points.get(j), points.get(j+1));
-        line2.shrink(0.000000000001, 0.000000000001);
-        if(line1.intersects(line2))
-          return true;
-      }
-    }
-    return false;
   }
 
   // Attempts to create a valid polygon which does not intersect itself.

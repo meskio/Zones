@@ -97,8 +97,6 @@ public class GoogleZoneMap
   }
 
   public void addZone(ZoneRecord mapZone) {
-    Log.d(TAG, "addZone(), zone_id: " + mapZone.getId());
-
     PolygonOptions mapPolygonOptions = GoogleGeometryFactory.buildPolygonOptions(mapZone);
     Polygon mapPolygon = googleMap.addPolygon(mapPolygonOptions);
 
@@ -106,7 +104,7 @@ public class GoogleZoneMap
   }
 
   public void removeZone(int zone_id) {
-    Log.d(TAG, "deleteZone(), zone_id: " + zone_id);
+    Log.d(TAG, "removeZone(), zone_id: " + zone_id);
     if(mapPolygons.get(zone_id, null) != null) {
       mapPolygons.get(zone_id).remove();
       mapPolygons.remove(zone_id);
@@ -190,7 +188,6 @@ public class GoogleZoneMap
   @Override
   public void onMarkerDragStart(Marker dragMarker) {
     mapActivity.onPointMoveStart(GoogleGeometryFactory.buildPointRecord(dragMarker));
-    return;
   }
 
   @Override
@@ -201,7 +198,6 @@ public class GoogleZoneMap
   @Override
   public void onMarkerDragEnd(Marker dragMarker) {
     mapActivity.onPointMoveStop(GoogleGeometryFactory.buildPointRecord(dragMarker));
-    return;
   }
 
   // Clear the map and redraw all zoneDatabase within provided bounds.
